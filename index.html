@@ -50,6 +50,11 @@
           </label>
 
           <label>
+            Max gold cost
+            <input id="maxGoldCost" type="number" min="0" step="1" value="0">
+          </label>
+
+          <label>
             Per page
             <input id="pageSize" type="number" min="1" max="100" step="1" value="25">
           </label>
@@ -69,6 +74,12 @@
           <span id="snapshotMeta"></span>
         </section>
 
+        <section class="sort-bar" aria-label="Sort results">
+          <span>Sort by</span>
+          <button class="sort-button active" type="button" data-sort="gain">Gain %</button>
+          <button class="sort-button" type="button" data-sort="profit">Profit</button>
+        </section>
+
         <section id="results" class="results"></section>
         <nav id="pagination" class="pagination" aria-label="Result pages"></nav>
       </section>
@@ -83,7 +94,16 @@
               <h2></h2>
               <p class="path-text"></p>
             </div>
-            <div class="gain"></div>
+            <div class="result-metrics">
+              <div class="metric">
+                <span>Gain %</span>
+                <strong class="gain"></strong>
+              </div>
+              <div class="metric">
+                <span>Profit / 1M gold</span>
+                <strong class="profit-score"></strong>
+              </div>
+            </div>
           </div>
           <ol class="steps"></ol>
         </div>

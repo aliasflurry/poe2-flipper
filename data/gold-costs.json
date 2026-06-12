@@ -1,0 +1,3346 @@
+{
+    "updatedAt":  "2026-06-12T15:45:46.0535530Z",
+    "source":  "https://poe2db.tw/Currency_Exchange",
+    "costs":  [
+                  {
+                      "name":  "Orb of Augmentation",
+                      "slug":  "Orb_of_Augmentation",
+                      "gold":  20
+                  },
+                  {
+                      "name":  "Greater Orb of Augmentation",
+                      "slug":  "Greater_Orb_of_Augmentation",
+                      "gold":  60
+                  },
+                  {
+                      "name":  "Perfect Orb of Augmentation",
+                      "slug":  "Perfect_Orb_of_Augmentation",
+                      "gold":  180
+                  },
+                  {
+                      "name":  "Orb of Transmutation",
+                      "slug":  "Orb_of_Transmutation",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Greater Orb of Transmutation",
+                      "slug":  "Greater_Orb_of_Transmutation",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Perfect Orb of Transmutation",
+                      "slug":  "Perfect_Orb_of_Transmutation",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Regal Orb",
+                      "slug":  "Regal_Orb",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Greater Regal Orb",
+                      "slug":  "Greater_Regal_Orb",
+                      "gold":  360
+                  },
+                  {
+                      "name":  "Perfect Regal Orb",
+                      "slug":  "Perfect_Regal_Orb",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Exalted Orb",
+                      "slug":  "Exalted_Orb",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Greater Exalted Orb",
+                      "slug":  "Greater_Exalted_Orb",
+                      "gold":  360
+                  },
+                  {
+                      "name":  "Perfect Exalted Orb",
+                      "slug":  "Perfect_Exalted_Orb",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Chaos Orb",
+                      "slug":  "Chaos_Orb",
+                      "gold":  160
+                  },
+                  {
+                      "name":  "Greater Chaos Orb",
+                      "slug":  "Greater_Chaos_Orb",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Perfect Chaos Orb",
+                      "slug":  "Perfect_Chaos_Orb",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Vaal Orb",
+                      "slug":  "Vaal_Orb",
+                      "gold":  160
+                  },
+                  {
+                      "name":  "Orb of Alchemy",
+                      "slug":  "Orb_of_Alchemy",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Divine Orb",
+                      "slug":  "Divine_Orb",
+                      "gold":  800
+                  },
+                  {
+                      "name":  "Orb of Chance",
+                      "slug":  "Orb_of_Chance",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Orb of Annulment",
+                      "slug":  "Orb_of_Annulment",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Artificer\u0027s Orb",
+                      "slug":  "Artificers_Orb",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Fracturing Orb",
+                      "slug":  "Fracturing_Orb",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Hinekora\u0027s Lock",
+                      "slug":  "Hinekoras_Lock",
+                      "gold":  6000
+                  },
+                  {
+                      "name":  "Mirror of Kalandra",
+                      "slug":  "Mirror_of_Kalandra",
+                      "gold":  25000
+                  },
+                  {
+                      "name":  "Cryptic Key",
+                      "slug":  "Cryptic_Key",
+                      "gold":  2500
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 1)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_1%29",
+                      "gold":  270
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 2)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_2%29",
+                      "gold":  421
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 3)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_3%29",
+                      "gold":  498
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 4)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_4%29",
+                      "gold":  576
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 5)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_5%29",
+                      "gold":  654
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 6)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_6%29",
+                      "gold":  746
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 7)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_7%29",
+                      "gold":  830
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 8)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_8%29",
+                      "gold":  915
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 9)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_9%29",
+                      "gold":  1004
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 10)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_10%29",
+                      "gold":  1243
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 11)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_11%29",
+                      "gold":  1353
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 12)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_12%29",
+                      "gold":  1524
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 13)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_13%29",
+                      "gold":  1654
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 14)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_14%29",
+                      "gold":  1873
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 15)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_15%29",
+                      "gold":  2317
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 16)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_16%29",
+                      "gold":  2579
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 17)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_17%29",
+                      "gold":  2922
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 18)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_18%29",
+                      "gold":  3309
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 19)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_19%29",
+                      "gold":  4010
+                  },
+                  {
+                      "name":  "Thaumaturgic Flux (Level 20)",
+                      "slug":  "Thaumaturgic_Flux_%28Level_20%29",
+                      "gold":  16107
+                  },
+                  {
+                      "name":  "Lesser Jeweller\u0027s Orb",
+                      "slug":  "Lesser_Jewellers_Orb",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Greater Jeweller\u0027s Orb",
+                      "slug":  "Greater_Jewellers_Orb",
+                      "gold":  600
+                  },
+                  {
+                      "name":  "Perfect Jeweller\u0027s Orb",
+                      "slug":  "Perfect_Jewellers_Orb",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Transmutation Shard",
+                      "slug":  "Transmutation_Shard",
+                      "gold":  4
+                  },
+                  {
+                      "name":  "Regal Shard",
+                      "slug":  "Regal_Shard",
+                      "gold":  12
+                  },
+                  {
+                      "name":  "Artificer\u0027s Shard",
+                      "slug":  "Artificers_Shard",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Chance Shard",
+                      "slug":  "Chance_Shard",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Armourer\u0027s Scrap",
+                      "slug":  "Armourers_Scrap",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Blacksmith\u0027s Whetstone",
+                      "slug":  "Blacksmiths_Whetstone",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Arcanist\u0027s Etcher",
+                      "slug":  "Arcanists_Etcher",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Glassblower\u0027s Bauble",
+                      "slug":  "Glassblowers_Bauble",
+                      "gold":  750
+                  },
+                  {
+                      "name":  "Gemcutter\u0027s Prism",
+                      "slug":  "Gemcutters_Prism",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Scroll of Wisdom",
+                      "slug":  "Scroll_of_Wisdom",
+                      "gold":  1
+                  },
+                  {
+                      "name":  "Lesser Essence of the Body",
+                      "slug":  "Lesser_Essence_of_the_Body",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Lesser Essence of the Mind",
+                      "slug":  "Lesser_Essence_of_the_Mind",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Lesser Essence of Enhancement",
+                      "slug":  "Lesser_Essence_of_Enhancement",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Lesser Essence of Abrasion",
+                      "slug":  "Lesser_Essence_of_Abrasion",
+                      "gold":  70
+                  },
+                  {
+                      "name":  "Lesser Essence of Flames",
+                      "slug":  "Lesser_Essence_of_Flames",
+                      "gold":  60
+                  },
+                  {
+                      "name":  "Lesser Essence of Insulation",
+                      "slug":  "Lesser_Essence_of_Insulation",
+                      "gold":  60
+                  },
+                  {
+                      "name":  "Lesser Essence of Ice",
+                      "slug":  "Lesser_Essence_of_Ice",
+                      "gold":  60
+                  },
+                  {
+                      "name":  "Lesser Essence of Thawing",
+                      "slug":  "Lesser_Essence_of_Thawing",
+                      "gold":  60
+                  },
+                  {
+                      "name":  "Lesser Essence of Electricity",
+                      "slug":  "Lesser_Essence_of_Electricity",
+                      "gold":  60
+                  },
+                  {
+                      "name":  "Lesser Essence of Grounding",
+                      "slug":  "Lesser_Essence_of_Grounding",
+                      "gold":  60
+                  },
+                  {
+                      "name":  "Lesser Essence of Ruin",
+                      "slug":  "Lesser_Essence_of_Ruin",
+                      "gold":  90
+                  },
+                  {
+                      "name":  "Lesser Essence of Command",
+                      "slug":  "Lesser_Essence_of_Command",
+                      "gold":  90
+                  },
+                  {
+                      "name":  "Lesser Essence of Battle",
+                      "slug":  "Lesser_Essence_of_Battle",
+                      "gold":  80
+                  },
+                  {
+                      "name":  "Lesser Essence of Sorcery",
+                      "slug":  "Lesser_Essence_of_Sorcery",
+                      "gold":  80
+                  },
+                  {
+                      "name":  "Lesser Essence of Haste",
+                      "slug":  "Lesser_Essence_of_Haste",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Lesser Essence of Alacrity",
+                      "slug":  "Lesser_Essence_of_Alacrity",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Lesser Essence of the Infinite",
+                      "slug":  "Lesser_Essence_of_the_Infinite",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Lesser Essence of Seeking",
+                      "slug":  "Lesser_Essence_of_Seeking",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Lesser Essence of Opulence",
+                      "slug":  "Lesser_Essence_of_Opulence",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Essence of the Body",
+                      "slug":  "Essence_of_the_Body",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Essence of the Mind",
+                      "slug":  "Essence_of_the_Mind",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Essence of Enhancement",
+                      "slug":  "Essence_of_Enhancement",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Essence of Abrasion",
+                      "slug":  "Essence_of_Abrasion",
+                      "gold":  140
+                  },
+                  {
+                      "name":  "Essence of Flames",
+                      "slug":  "Essence_of_Flames",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Essence of Insulation",
+                      "slug":  "Essence_of_Insulation",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Essence of Ice",
+                      "slug":  "Essence_of_Ice",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Essence of Thawing",
+                      "slug":  "Essence_of_Thawing",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Essence of Electricity",
+                      "slug":  "Essence_of_Electricity",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Essence of Grounding",
+                      "slug":  "Essence_of_Grounding",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Essence of Ruin",
+                      "slug":  "Essence_of_Ruin",
+                      "gold":  180
+                  },
+                  {
+                      "name":  "Essence of Command",
+                      "slug":  "Essence_of_Command",
+                      "gold":  180
+                  },
+                  {
+                      "name":  "Essence of Battle",
+                      "slug":  "Essence_of_Battle",
+                      "gold":  160
+                  },
+                  {
+                      "name":  "Essence of Sorcery",
+                      "slug":  "Essence_of_Sorcery",
+                      "gold":  160
+                  },
+                  {
+                      "name":  "Essence of Haste",
+                      "slug":  "Essence_of_Haste",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Essence of Alacrity",
+                      "slug":  "Essence_of_Alacrity",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Essence of the Infinite",
+                      "slug":  "Essence_of_the_Infinite",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Essence of Seeking",
+                      "slug":  "Essence_of_Seeking",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Essence of Opulence",
+                      "slug":  "Essence_of_Opulence",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Greater Essence of the Body",
+                      "slug":  "Greater_Essence_of_the_Body",
+                      "gold":  300
+                  },
+                  {
+                      "name":  "Greater Essence of the Mind",
+                      "slug":  "Greater_Essence_of_the_Mind",
+                      "gold":  300
+                  },
+                  {
+                      "name":  "Greater Essence of Enhancement",
+                      "slug":  "Greater_Essence_of_Enhancement",
+                      "gold":  300
+                  },
+                  {
+                      "name":  "Greater Essence of the Infinite",
+                      "slug":  "Greater_Essence_of_the_Infinite",
+                      "gold":  330
+                  },
+                  {
+                      "name":  "Greater Essence of Flames",
+                      "slug":  "Greater_Essence_of_Flames",
+                      "gold":  370
+                  },
+                  {
+                      "name":  "Greater Essence of Insulation",
+                      "slug":  "Greater_Essence_of_Insulation",
+                      "gold":  370
+                  },
+                  {
+                      "name":  "Greater Essence of Ice",
+                      "slug":  "Greater_Essence_of_Ice",
+                      "gold":  370
+                  },
+                  {
+                      "name":  "Greater Essence of Thawing",
+                      "slug":  "Greater_Essence_of_Thawing",
+                      "gold":  370
+                  },
+                  {
+                      "name":  "Greater Essence of Electricity",
+                      "slug":  "Greater_Essence_of_Electricity",
+                      "gold":  370
+                  },
+                  {
+                      "name":  "Greater Essence of Grounding",
+                      "slug":  "Greater_Essence_of_Grounding",
+                      "gold":  370
+                  },
+                  {
+                      "name":  "Greater Essence of Abrasion",
+                      "slug":  "Greater_Essence_of_Abrasion",
+                      "gold":  410
+                  },
+                  {
+                      "name":  "Greater Essence of Battle",
+                      "slug":  "Greater_Essence_of_Battle",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Greater Essence of Sorcery",
+                      "slug":  "Greater_Essence_of_Sorcery",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Greater Essence of Ruin",
+                      "slug":  "Greater_Essence_of_Ruin",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Greater Essence of Command",
+                      "slug":  "Greater_Essence_of_Command",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Greater Essence of Haste",
+                      "slug":  "Greater_Essence_of_Haste",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Greater Essence of Alacrity",
+                      "slug":  "Greater_Essence_of_Alacrity",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Greater Essence of Seeking",
+                      "slug":  "Greater_Essence_of_Seeking",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Greater Essence of Opulence",
+                      "slug":  "Greater_Essence_of_Opulence",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Perfect Essence of the Body",
+                      "slug":  "Perfect_Essence_of_the_Body",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of the Mind",
+                      "slug":  "Perfect_Essence_of_the_Mind",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Enhancement",
+                      "slug":  "Perfect_Essence_of_Enhancement",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Abrasion",
+                      "slug":  "Perfect_Essence_of_Abrasion",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Flames",
+                      "slug":  "Perfect_Essence_of_Flames",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Insulation",
+                      "slug":  "Perfect_Essence_of_Insulation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Ice",
+                      "slug":  "Perfect_Essence_of_Ice",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Thawing",
+                      "slug":  "Perfect_Essence_of_Thawing",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Electricity",
+                      "slug":  "Perfect_Essence_of_Electricity",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Grounding",
+                      "slug":  "Perfect_Essence_of_Grounding",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Ruin",
+                      "slug":  "Perfect_Essence_of_Ruin",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Command",
+                      "slug":  "Perfect_Essence_of_Command",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Battle",
+                      "slug":  "Perfect_Essence_of_Battle",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Sorcery",
+                      "slug":  "Perfect_Essence_of_Sorcery",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Haste",
+                      "slug":  "Perfect_Essence_of_Haste",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Alacrity",
+                      "slug":  "Perfect_Essence_of_Alacrity",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of the Infinite",
+                      "slug":  "Perfect_Essence_of_the_Infinite",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Seeking",
+                      "slug":  "Perfect_Essence_of_Seeking",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Perfect Essence of Opulence",
+                      "slug":  "Perfect_Essence_of_Opulence",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Essence of Hysteria",
+                      "slug":  "Essence_of_Hysteria",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Essence of Delirium",
+                      "slug":  "Essence_of_Delirium",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Essence of Horror",
+                      "slug":  "Essence_of_Horror",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Essence of Insanity",
+                      "slug":  "Essence_of_Insanity",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Essence of the Abyss",
+                      "slug":  "Essence_of_the_Abyss",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Essence of the Breach",
+                      "slug":  "Essence_of_the_Breach",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Simulacrum Splinter",
+                      "slug":  "Simulacrum_Splinter",
+                      "gold":  3
+                  },
+                  {
+                      "name":  "Simulacrum",
+                      "slug":  "Simulacrum",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Raven\u0027s Reflection",
+                      "slug":  "Ravens_Reflection",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Raven-Touched Shard",
+                      "slug":  "Raven-Touched_Shard",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Diluted Liquid Ire",
+                      "slug":  "Diluted_Liquid_Ire",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Diluted Liquid Guilt",
+                      "slug":  "Diluted_Liquid_Guilt",
+                      "gold":  140
+                  },
+                  {
+                      "name":  "Diluted Liquid Greed",
+                      "slug":  "Diluted_Liquid_Greed",
+                      "gold":  180
+                  },
+                  {
+                      "name":  "Liquid Paranoia",
+                      "slug":  "Liquid_Paranoia",
+                      "gold":  220
+                  },
+                  {
+                      "name":  "Liquid Envy",
+                      "slug":  "Liquid_Envy",
+                      "gold":  300
+                  },
+                  {
+                      "name":  "Liquid Disgust",
+                      "slug":  "Liquid_Disgust",
+                      "gold":  400
+                  },
+                  {
+                      "name":  "Liquid Despair",
+                      "slug":  "Liquid_Despair",
+                      "gold":  520
+                  },
+                  {
+                      "name":  "Concentrated Liquid Fear",
+                      "slug":  "Concentrated_Liquid_Fear",
+                      "gold":  700
+                  },
+                  {
+                      "name":  "Concentrated Liquid Suffering",
+                      "slug":  "Concentrated_Liquid_Suffering",
+                      "gold":  920
+                  },
+                  {
+                      "name":  "Concentrated Liquid Isolation",
+                      "slug":  "Concentrated_Liquid_Isolation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Diluted Liquid Ire",
+                      "slug":  "Ancient_Diluted_Liquid_Ire",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Ancient Diluted Liquid Guilt",
+                      "slug":  "Ancient_Diluted_Liquid_Guilt",
+                      "gold":  140
+                  },
+                  {
+                      "name":  "Ancient Diluted Liquid Greed",
+                      "slug":  "Ancient_Diluted_Liquid_Greed",
+                      "gold":  180
+                  },
+                  {
+                      "name":  "Ancient Liquid Paranoia",
+                      "slug":  "Ancient_Liquid_Paranoia",
+                      "gold":  220
+                  },
+                  {
+                      "name":  "Ancient Liquid Envy",
+                      "slug":  "Ancient_Liquid_Envy",
+                      "gold":  300
+                  },
+                  {
+                      "name":  "Ancient Liquid Disgust",
+                      "slug":  "Ancient_Liquid_Disgust",
+                      "gold":  400
+                  },
+                  {
+                      "name":  "Ancient Liquid Despair",
+                      "slug":  "Ancient_Liquid_Despair",
+                      "gold":  520
+                  },
+                  {
+                      "name":  "Ancient Concentrated Liquid Fear",
+                      "slug":  "Ancient_Concentrated_Liquid_Fear",
+                      "gold":  700
+                  },
+                  {
+                      "name":  "Ancient Concentrated Liquid Suffering",
+                      "slug":  "Ancient_Concentrated_Liquid_Suffering",
+                      "gold":  920
+                  },
+                  {
+                      "name":  "Ancient Concentrated Liquid Isolation",
+                      "slug":  "Ancient_Concentrated_Liquid_Isolation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Potent Liquid Melancholy",
+                      "slug":  "Potent_Liquid_Melancholy",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Potent Liquid Ferocity",
+                      "slug":  "Potent_Liquid_Ferocity",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Potent Liquid Contempt",
+                      "slug":  "Potent_Liquid_Contempt",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Ancient Potent Liquid Melancholy",
+                      "slug":  "Ancient_Potent_Liquid_Melancholy",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Ancient Potent Liquid Ferocity",
+                      "slug":  "Ancient_Potent_Liquid_Ferocity",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Ancient Potent Liquid Contempt",
+                      "slug":  "Ancient_Potent_Liquid_Contempt",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Breach Splinter",
+                      "slug":  "Breach_Splinter",
+                      "gold":  3
+                  },
+                  {
+                      "name":  "Breachstone",
+                      "slug":  "Breachstone",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Flesh Catalyst",
+                      "slug":  "Flesh_Catalyst",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Neural Catalyst",
+                      "slug":  "Neural_Catalyst",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Carapace Catalyst",
+                      "slug":  "Carapace_Catalyst",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Adaptive Catalyst",
+                      "slug":  "Adaptive_Catalyst",
+                      "gold":  160
+                  },
+                  {
+                      "name":  "Xoph\u0027s Catalyst",
+                      "slug":  "Xophs_Catalyst",
+                      "gold":  260
+                  },
+                  {
+                      "name":  "Tul\u0027s Catalyst",
+                      "slug":  "Tuls_Catalyst",
+                      "gold":  260
+                  },
+                  {
+                      "name":  "Esh\u0027s Catalyst",
+                      "slug":  "Eshs_Catalyst",
+                      "gold":  260
+                  },
+                  {
+                      "name":  "Uul-Netol\u0027s Catalyst",
+                      "slug":  "Uul-Netols_Catalyst",
+                      "gold":  360
+                  },
+                  {
+                      "name":  "Reaver Catalyst",
+                      "slug":  "Reaver_Catalyst",
+                      "gold":  560
+                  },
+                  {
+                      "name":  "Sibilant Catalyst",
+                      "slug":  "Sibilant_Catalyst",
+                      "gold":  560
+                  },
+                  {
+                      "name":  "Chayula\u0027s Catalyst",
+                      "slug":  "Chayulas_Catalyst",
+                      "gold":  960
+                  },
+                  {
+                      "name":  "Skittering Catalyst",
+                      "slug":  "Skittering_Catalyst",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Necrotic Catalyst",
+                      "slug":  "Necrotic_Catalyst",
+                      "gold":  560
+                  },
+                  {
+                      "name":  "Refined Flesh Catalyst",
+                      "slug":  "Refined_Flesh_Catalyst",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Refined Neural Catalyst",
+                      "slug":  "Refined_Neural_Catalyst",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Refined Carapace Catalyst",
+                      "slug":  "Refined_Carapace_Catalyst",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Refined Uul-Netol\u0027s Catalyst",
+                      "slug":  "Refined_Uul-Netols_Catalyst",
+                      "gold":  800
+                  },
+                  {
+                      "name":  "Refined Xoph\u0027s Catalyst",
+                      "slug":  "Refined_Xophs_Catalyst",
+                      "gold":  1300
+                  },
+                  {
+                      "name":  "Refined Tul\u0027s Catalyst",
+                      "slug":  "Refined_Tuls_Catalyst",
+                      "gold":  1300
+                  },
+                  {
+                      "name":  "Refined Esh\u0027s Catalyst",
+                      "slug":  "Refined_Eshs_Catalyst",
+                      "gold":  1300
+                  },
+                  {
+                      "name":  "Refined Chayula\u0027s Catalyst",
+                      "slug":  "Refined_Chayulas_Catalyst",
+                      "gold":  1800
+                  },
+                  {
+                      "name":  "Refined Reaver Catalyst",
+                      "slug":  "Refined_Reaver_Catalyst",
+                      "gold":  2800
+                  },
+                  {
+                      "name":  "Refined Sibilant Catalyst",
+                      "slug":  "Refined_Sibilant_Catalyst",
+                      "gold":  2800
+                  },
+                  {
+                      "name":  "Refined Skittering Catalyst",
+                      "slug":  "Refined_Skittering_Catalyst",
+                      "gold":  4800
+                  },
+                  {
+                      "name":  "Refined Adaptive Catalyst",
+                      "slug":  "Refined_Adaptive_Catalyst",
+                      "gold":  5000
+                  },
+                  {
+                      "name":  "Refined Necrotic Catalyst",
+                      "slug":  "Refined_Necrotic_Catalyst",
+                      "gold":  2800
+                  },
+                  {
+                      "name":  "Breachlord Sac",
+                      "slug":  "Breachlord_Sac",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Gnawed Jawbone",
+                      "slug":  "Gnawed_Jawbone",
+                      "gold":  180
+                  },
+                  {
+                      "name":  "Preserved Jawbone",
+                      "slug":  "Preserved_Jawbone",
+                      "gold":  540
+                  },
+                  {
+                      "name":  "Ancient Jawbone",
+                      "slug":  "Ancient_Jawbone",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Gnawed Rib",
+                      "slug":  "Gnawed_Rib",
+                      "gold":  180
+                  },
+                  {
+                      "name":  "Preserved Rib",
+                      "slug":  "Preserved_Rib",
+                      "gold":  540
+                  },
+                  {
+                      "name":  "Ancient Rib",
+                      "slug":  "Ancient_Rib",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Gnawed Collarbone",
+                      "slug":  "Gnawed_Collarbone",
+                      "gold":  180
+                  },
+                  {
+                      "name":  "Preserved Collarbone",
+                      "slug":  "Preserved_Collarbone",
+                      "gold":  540
+                  },
+                  {
+                      "name":  "Ancient Collarbone",
+                      "slug":  "Ancient_Collarbone",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Preserved Cranium",
+                      "slug":  "Preserved_Cranium",
+                      "gold":  540
+                  },
+                  {
+                      "name":  "Preserved Vertebrae",
+                      "slug":  "Preserved_Vertebrae",
+                      "gold":  540
+                  },
+                  {
+                      "name":  "Altered Collarbone",
+                      "slug":  "Altered_Collarbone",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Omen of Abyssal Echoes",
+                      "slug":  "Omen_of_Abyssal_Echoes",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of the Sovereign",
+                      "slug":  "Omen_of_the_Sovereign",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of the Liege",
+                      "slug":  "Omen_of_the_Liege",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of the Blackblooded",
+                      "slug":  "Omen_of_the_Blackblooded",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of Putrefaction",
+                      "slug":  "Omen_of_Putrefaction",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of Light",
+                      "slug":  "Omen_of_Light",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of Sinistral Necromancy",
+                      "slug":  "Omen_of_Sinistral_Necromancy",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of Dextral Necromancy",
+                      "slug":  "Omen_of_Dextral_Necromancy",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Kulemak\u0027s Invitation",
+                      "slug":  "Kulemaks_Invitation",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Amanamu\u0027s Gaze",
+                      "slug":  "Amanamus_Gaze",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Tecrod\u0027s Gaze",
+                      "slug":  "Tecrods_Gaze",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Kurgal\u0027s Gaze",
+                      "slug":  "Kurgals_Gaze",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Ulaman\u0027s Gaze",
+                      "slug":  "Ulamans_Gaze",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Architect\u0027s Orb",
+                      "slug":  "Architects_Orb",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Crystallised Corruption",
+                      "slug":  "Crystallised_Corruption",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Core Destabiliser",
+                      "slug":  "Core_Destabiliser",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Ancient Infuser",
+                      "slug":  "Ancient_Infuser",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Vaal Cultivation Orb",
+                      "slug":  "Vaal_Cultivation_Orb",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Vaal Armourer\u0027s Infuser",
+                      "slug":  "Vaal_Armourers_Infuser",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Vaal Blacksmith\u0027s Infuser",
+                      "slug":  "Vaal_Blacksmiths_Infuser",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Vaal Arcanist\u0027s Infuser",
+                      "slug":  "Vaal_Arcanists_Infuser",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Vaal Catalysing Infuser",
+                      "slug":  "Vaal_Catalysing_Infuser",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Orb of Extraction",
+                      "slug":  "Orb_of_Extraction",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Vaal Siphoner",
+                      "slug":  "Vaal_Siphoner",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Guatelitzi\u0027s Thesis",
+                      "slug":  "Guatelitzis_Thesis",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Citaqualotl\u0027s Thesis",
+                      "slug":  "Citaqualotls_Thesis",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Jiquani\u0027s Thesis",
+                      "slug":  "Jiquanis_Thesis",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Quipolatl\u0027s Thesis",
+                      "slug":  "Quipolatls_Thesis",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Cowardly Fate",
+                      "slug":  "Cowardly_Fate",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Deadly Fate",
+                      "slug":  "Deadly_Fate",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Victorious Fate",
+                      "slug":  "Victorious_Fate",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Ancient Crisis Fragment",
+                      "slug":  "Ancient_Crisis_Fragment",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Faded Crisis Fragment",
+                      "slug":  "Faded_Crisis_Fragment",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Weathered Crisis Fragment",
+                      "slug":  "Weathered_Crisis_Fragment",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Origin Cradle",
+                      "slug":  "Origin_Cradle",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Origin Spark",
+                      "slug":  "Origin_Spark",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Origin Core",
+                      "slug":  "Origin_Core",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Call of the Shadows",
+                      "slug":  "Call_of_the_Shadows",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Twilight Reliquary Key",
+                      "slug":  "Twilight_Reliquary_Key",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Xesht\u0027s Reliquary Key",
+                      "slug":  "Xeshts_Reliquary_Key",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "The Trialmaster\u0027s Reliquary Key",
+                      "slug":  "The_Trialmasters_Reliquary_Key",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ritualistic Reliquary Key",
+                      "slug":  "Ritualistic_Reliquary_Key",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Tangmazu\u0027s Reliquary Key",
+                      "slug":  "Tangmazus_Reliquary_Key",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Olroth\u0027s Reliquary Key",
+                      "slug":  "Olroths_Reliquary_Key",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "The Arbiter\u0027s Reliquary Key",
+                      "slug":  "The_Arbiters_Reliquary_Key",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Zarokh\u0027s Reliquary Key: Against the Darkness",
+                      "slug":  "Zarokhs_Reliquary_Key%3A_Against_the_Darkness",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Zarokh\u0027s Reliquary Key: Sandstorm Visage",
+                      "slug":  "Zarokhs_Reliquary_Key%3A_Sandstorm_Visage",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Zarokh\u0027s Reliquary Key: Blessed Bonds",
+                      "slug":  "Zarokhs_Reliquary_Key%3A_Blessed_Bonds",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Zarokh\u0027s Reliquary Key: Sekhema\u0027s Resolve",
+                      "slug":  "Zarokhs_Reliquary_Key%3A_Sekhemas_Resolve",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Zarokh\u0027s Reliquary Key: Temporalis",
+                      "slug":  "Zarokhs_Reliquary_Key%3A_Temporalis",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Azmeri Reliquary Key",
+                      "slug":  "Azmeri_Reliquary_Key",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Lesser Desert Rune",
+                      "slug":  "Lesser_Desert_Rune",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Desert Rune",
+                      "slug":  "Desert_Rune",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Greater Desert Rune",
+                      "slug":  "Greater_Desert_Rune",
+                      "gold":  750
+                  },
+                  {
+                      "name":  "Lesser Glacial Rune",
+                      "slug":  "Lesser_Glacial_Rune",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Glacial Rune",
+                      "slug":  "Glacial_Rune",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Greater Glacial Rune",
+                      "slug":  "Greater_Glacial_Rune",
+                      "gold":  750
+                  },
+                  {
+                      "name":  "Lesser Storm Rune",
+                      "slug":  "Lesser_Storm_Rune",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Storm Rune",
+                      "slug":  "Storm_Rune",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Greater Storm Rune",
+                      "slug":  "Greater_Storm_Rune",
+                      "gold":  750
+                  },
+                  {
+                      "name":  "Lesser Iron Rune",
+                      "slug":  "Lesser_Iron_Rune",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Iron Rune",
+                      "slug":  "Iron_Rune",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Greater Iron Rune",
+                      "slug":  "Greater_Iron_Rune",
+                      "gold":  750
+                  },
+                  {
+                      "name":  "Lesser Body Rune",
+                      "slug":  "Lesser_Body_Rune",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Body Rune",
+                      "slug":  "Body_Rune",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Greater Body Rune",
+                      "slug":  "Greater_Body_Rune",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Lesser Mind Rune",
+                      "slug":  "Lesser_Mind_Rune",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Mind Rune",
+                      "slug":  "Mind_Rune",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Greater Mind Rune",
+                      "slug":  "Greater_Mind_Rune",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Lesser Vision Rune",
+                      "slug":  "Lesser_Vision_Rune",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Vision Rune",
+                      "slug":  "Vision_Rune",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Greater Vision Rune",
+                      "slug":  "Greater_Vision_Rune",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Lesser Rebirth Rune",
+                      "slug":  "Lesser_Rebirth_Rune",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Rebirth Rune",
+                      "slug":  "Rebirth_Rune",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Greater Rebirth Rune",
+                      "slug":  "Greater_Rebirth_Rune",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Lesser Inspiration Rune",
+                      "slug":  "Lesser_Inspiration_Rune",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Inspiration Rune",
+                      "slug":  "Inspiration_Rune",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Greater Inspiration Rune",
+                      "slug":  "Greater_Inspiration_Rune",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Lesser Stone Rune",
+                      "slug":  "Lesser_Stone_Rune",
+                      "gold":  175
+                  },
+                  {
+                      "name":  "Stone Rune",
+                      "slug":  "Stone_Rune",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Greater Stone Rune",
+                      "slug":  "Greater_Stone_Rune",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Lesser Robust Rune",
+                      "slug":  "Lesser_Robust_Rune",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Robust Rune",
+                      "slug":  "Robust_Rune",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Greater Robust Rune",
+                      "slug":  "Greater_Robust_Rune",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Lesser Adept Rune",
+                      "slug":  "Lesser_Adept_Rune",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Adept Rune",
+                      "slug":  "Adept_Rune",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Greater Adept Rune",
+                      "slug":  "Greater_Adept_Rune",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Lesser Resolve Rune",
+                      "slug":  "Lesser_Resolve_Rune",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Resolve Rune",
+                      "slug":  "Resolve_Rune",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Greater Resolve Rune",
+                      "slug":  "Greater_Resolve_Rune",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Masterwork Rune",
+                      "slug":  "Masterwork_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Lesser Ward Rune",
+                      "slug":  "Lesser_Ward_Rune",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Ward Rune",
+                      "slug":  "Ward_Rune",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Greater Ward Rune",
+                      "slug":  "Greater_Ward_Rune",
+                      "gold":  750
+                  },
+                  {
+                      "name":  "Lesser Charging Rune",
+                      "slug":  "Lesser_Charging_Rune",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Charging Rune",
+                      "slug":  "Charging_Rune",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Greater Charging Rune",
+                      "slug":  "Greater_Charging_Rune",
+                      "gold":  750
+                  },
+                  {
+                      "name":  "Perfect Desert Rune",
+                      "slug":  "Perfect_Desert_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Glacial Rune",
+                      "slug":  "Perfect_Glacial_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Storm Rune",
+                      "slug":  "Perfect_Storm_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Iron Rune",
+                      "slug":  "Perfect_Iron_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Body Rune",
+                      "slug":  "Perfect_Body_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Mind Rune",
+                      "slug":  "Perfect_Mind_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Rebirth Rune",
+                      "slug":  "Perfect_Rebirth_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Inspiration Rune",
+                      "slug":  "Perfect_Inspiration_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Stone Rune",
+                      "slug":  "Perfect_Stone_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Vision Rune",
+                      "slug":  "Perfect_Vision_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Robust Rune",
+                      "slug":  "Perfect_Robust_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Adept Rune",
+                      "slug":  "Perfect_Adept_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Resolve Rune",
+                      "slug":  "Perfect_Resolve_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Ward Rune",
+                      "slug":  "Perfect_Ward_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Charging Rune",
+                      "slug":  "Perfect_Charging_Rune",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Greater Rune of Leadership",
+                      "slug":  "Greater_Rune_of_Leadership",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Greater Rune of Tithing",
+                      "slug":  "Greater_Rune_of_Tithing",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Greater Rune of Alacrity",
+                      "slug":  "Greater_Rune_of_Alacrity",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Greater Rune of Nobility",
+                      "slug":  "Greater_Rune_of_Nobility",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Farrul\u0027s Rune of the Hunt",
+                      "slug":  "Farruls_Rune_of_the_Hunt",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Thane Myrk\u0027s Rune of Summer",
+                      "slug":  "Thane_Myrks_Rune_of_Summer",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Lady Hestra\u0027s Rune of Winter",
+                      "slug":  "Lady_Hestras_Rune_of_Winter",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Thane Leld\u0027s Rune of Spring",
+                      "slug":  "Thane_Lelds_Rune_of_Spring",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Fenumus\u0027 Rune of Agony",
+                      "slug":  "Fenumus_Rune_of_Agony",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Thane Girt\u0027s Rune of Wildness",
+                      "slug":  "Thane_Girts_Rune_of_Wildness",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Hedgewitch Assandra\u0027s Rune of Wisdom",
+                      "slug":  "Hedgewitch_Assandras_Rune_of_Wisdom",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Saqawal\u0027s Rune of the Sky",
+                      "slug":  "Saqawals_Rune_of_the_Sky",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "The Greatwolf\u0027s Rune of Willpower",
+                      "slug":  "The_Greatwolfs_Rune_of_Willpower",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Craiceann\u0027s Rune of Recovery",
+                      "slug":  "Craiceanns_Rune_of_Recovery",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Craiceann\u0027s Rune of Warding",
+                      "slug":  "Craiceanns_Rune_of_Warding",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Countess Seske\u0027s Rune of Archery",
+                      "slug":  "Countess_Seskes_Rune_of_Archery",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Saqawal\u0027s Rune of Erosion",
+                      "slug":  "Saqawals_Rune_of_Erosion",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Saqawal\u0027s Rune of Memory",
+                      "slug":  "Saqawals_Rune_of_Memory",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "The Greatwolf\u0027s Rune of Claws",
+                      "slug":  "The_Greatwolfs_Rune_of_Claws",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Courtesan Mannan\u0027s Rune of Cruelty",
+                      "slug":  "Courtesan_Mannans_Rune_of_Cruelty",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Thane Grannell\u0027s Rune of Mastery",
+                      "slug":  "Thane_Grannells_Rune_of_Mastery",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Fenumus\u0027 Rune of Spinning",
+                      "slug":  "Fenumus_Rune_of_Spinning",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Fenumus\u0027 Rune of Draining",
+                      "slug":  "Fenumus_Rune_of_Draining",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Farrul\u0027s Rune of Grace",
+                      "slug":  "Farruls_Rune_of_Grace",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Farrul\u0027s Rune of the Chase",
+                      "slug":  "Farruls_Rune_of_the_Chase",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of Splinters",
+                      "slug":  "Ancient_Rune_of_Splinters",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of Dueling",
+                      "slug":  "Ancient_Rune_of_Dueling",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of the Titan",
+                      "slug":  "Ancient_Rune_of_the_Titan",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of Shattering",
+                      "slug":  "Ancient_Rune_of_Shattering",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of Prowess",
+                      "slug":  "Ancient_Rune_of_Prowess",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of Control",
+                      "slug":  "Ancient_Rune_of_Control",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of Discovery",
+                      "slug":  "Ancient_Rune_of_Discovery",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of Decay",
+                      "slug":  "Ancient_Rune_of_Decay",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of Witchcraft",
+                      "slug":  "Ancient_Rune_of_Witchcraft",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of the Horde",
+                      "slug":  "Ancient_Rune_of_the_Horde",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of Animosity",
+                      "slug":  "Ancient_Rune_of_Animosity",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of Detonation",
+                      "slug":  "Ancient_Rune_of_Detonation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ancient Rune of Retaliation",
+                      "slug":  "Ancient_Rune_of_Retaliation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of Vitality",
+                      "slug":  "Rune_of_Vitality",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of the Hunt",
+                      "slug":  "Rune_of_the_Hunt",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of Acrobatics",
+                      "slug":  "Rune_of_Acrobatics",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of Culmination",
+                      "slug":  "Rune_of_Culmination",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of Renown",
+                      "slug":  "Rune_of_Renown",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of Accumulation",
+                      "slug":  "Rune_of_Accumulation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of Foundations",
+                      "slug":  "Rune_of_Foundations",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of the Prism",
+                      "slug":  "Rune_of_the_Prism",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of the Blossom",
+                      "slug":  "Rune_of_the_Blossom",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of Consistency",
+                      "slug":  "Rune_of_Consistency",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of Reach",
+                      "slug":  "Rune_of_Reach",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of Vital Flame",
+                      "slug":  "Rune_of_Vital_Flame",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rune of Confrontation",
+                      "slug":  "Rune_of_Confrontation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Reinforcement",
+                      "slug":  "Warding_Rune_of_Reinforcement",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Protection",
+                      "slug":  "Warding_Rune_of_Protection",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Disintegration",
+                      "slug":  "Warding_Rune_of_Disintegration",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Desperation",
+                      "slug":  "Warding_Rune_of_Desperation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Symbiosis",
+                      "slug":  "Warding_Rune_of_Symbiosis",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Courage",
+                      "slug":  "Warding_Rune_of_Courage",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Stability",
+                      "slug":  "Warding_Rune_of_Stability",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Glancing",
+                      "slug":  "Warding_Rune_of_Glancing",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Heart",
+                      "slug":  "Warding_Rune_of_Heart",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Nourishment",
+                      "slug":  "Warding_Rune_of_Nourishment",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Annihilation",
+                      "slug":  "Warding_Rune_of_Annihilation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Armature",
+                      "slug":  "Warding_Rune_of_Armature",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Obsession",
+                      "slug":  "Warding_Rune_of_Obsession",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Equinox",
+                      "slug":  "Warding_Rune_of_Equinox",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Salvaging",
+                      "slug":  "Warding_Rune_of_Salvaging",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Bodyguards",
+                      "slug":  "Warding_Rune_of_Bodyguards",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Warding Rune of Hollowing",
+                      "slug":  "Warding_Rune_of_Hollowing",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Serle\u0027s Triumph",
+                      "slug":  "Serles_Triumph",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Cadigan\u0027s Epiphany",
+                      "slug":  "Cadigans_Epiphany",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Astrid\u0027s Creativity",
+                      "slug":  "Astrids_Creativity",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Emergent Vigour",
+                      "slug":  "Emergent_Vigour",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Emergent Possibility",
+                      "slug":  "Emergent_Possibility",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Emergent Protection",
+                      "slug":  "Emergent_Protection",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Emergent Instinct",
+                      "slug":  "Emergent_Instinct",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Uhtred\u0027s Sidereus",
+                      "slug":  "Uhtreds_Sidereus",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Kolr\u0027s Hunt",
+                      "slug":  "Kolrs_Hunt",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Vorana\u0027s Carnage",
+                      "slug":  "Voranas_Carnage",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Thrud\u0027s Might",
+                      "slug":  "Thruds_Might",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Medved\u0027s Tending",
+                      "slug":  "Medveds_Tending",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Katla\u0027s Gloom",
+                      "slug":  "Katlas_Gloom",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Aldur\u0027s Legacy",
+                      "slug":  "Aldurs_Legacy",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Passion of Aldur",
+                      "slug":  "Passion_of_Aldur",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Breath of Aldur",
+                      "slug":  "Breath_of_Aldur",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Ire of Aldur",
+                      "slug":  "Ire_of_Aldur",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Betrayal of Aldur",
+                      "slug":  "Betrayal_of_Aldur",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Omen of Sinistral Alchemy",
+                      "slug":  "Omen_of_Sinistral_Alchemy",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Omen of Dextral Alchemy",
+                      "slug":  "Omen_of_Dextral_Alchemy",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Omen of Sinistral Coronation",
+                      "slug":  "Omen_of_Sinistral_Coronation",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Omen of Dextral Coronation",
+                      "slug":  "Omen_of_Dextral_Coronation",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Omen of Homogenising Coronation",
+                      "slug":  "Omen_of_Homogenising_Coronation",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Omen of Refreshment",
+                      "slug":  "Omen_of_Refreshment",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Omen of Resurgence",
+                      "slug":  "Omen_of_Resurgence",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Omen of Corruption",
+                      "slug":  "Omen_of_Corruption",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Omen of Amelioration",
+                      "slug":  "Omen_of_Amelioration",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Omen of Sinistral Exaltation",
+                      "slug":  "Omen_of_Sinistral_Exaltation",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Omen of Dextral Exaltation",
+                      "slug":  "Omen_of_Dextral_Exaltation",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Omen of Homogenising Exaltation",
+                      "slug":  "Omen_of_Homogenising_Exaltation",
+                      "gold":  600
+                  },
+                  {
+                      "name":  "Omen of Catalysing Exaltation",
+                      "slug":  "Omen_of_Catalysing_Exaltation",
+                      "gold":  600
+                  },
+                  {
+                      "name":  "Omen of Greater Annulment",
+                      "slug":  "Omen_of_Greater_Annulment",
+                      "gold":  920
+                  },
+                  {
+                      "name":  "Omen of Whittling",
+                      "slug":  "Omen_of_Whittling",
+                      "gold":  800
+                  },
+                  {
+                      "name":  "Omen of Sinistral Erasure",
+                      "slug":  "Omen_of_Sinistral_Erasure",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of Dextral Erasure",
+                      "slug":  "Omen_of_Dextral_Erasure",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of Chaotic Rarity",
+                      "slug":  "Omen_of_Chaotic_Rarity",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Omen of Chaotic Quantity",
+                      "slug":  "Omen_of_Chaotic_Quantity",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Omen of Chaotic Monsters",
+                      "slug":  "Omen_of_Chaotic_Monsters",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Omen of Chaotic Effectiveness",
+                      "slug":  "Omen_of_Chaotic_Effectiveness",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Omen of Sinistral Annulment",
+                      "slug":  "Omen_of_Sinistral_Annulment",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of Dextral Annulment",
+                      "slug":  "Omen_of_Dextral_Annulment",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of Chance",
+                      "slug":  "Omen_of_Chance",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of the Ancients",
+                      "slug":  "Omen_of_the_Ancients",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Omen of Dextral Crystallisation",
+                      "slug":  "Omen_of_Dextral_Crystallisation",
+                      "gold":  800
+                  },
+                  {
+                      "name":  "Omen of Sinistral Crystallisation",
+                      "slug":  "Omen_of_Sinistral_Crystallisation",
+                      "gold":  800
+                  },
+                  {
+                      "name":  "Omen of Greater Exaltation",
+                      "slug":  "Omen_of_Greater_Exaltation",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Omen of the Blessed",
+                      "slug":  "Omen_of_the_Blessed",
+                      "gold":  800
+                  },
+                  {
+                      "name":  "Omen of Sanctification",
+                      "slug":  "Omen_of_Sanctification",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Omen of Gambling",
+                      "slug":  "Omen_of_Gambling",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Omen of Bartering",
+                      "slug":  "Omen_of_Bartering",
+                      "gold":  120
+                  },
+                  {
+                      "name":  "Omen of Answered Prayers",
+                      "slug":  "Omen_of_Answered_Prayers",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Omen of the Hunt",
+                      "slug":  "Omen_of_the_Hunt",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Omen of Reinforcements",
+                      "slug":  "Omen_of_Reinforcements",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Omen of Secret Compartments",
+                      "slug":  "Omen_of_Secret_Compartments",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Head of the King",
+                      "slug":  "Head_of_the_King",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "An Audience with the King",
+                      "slug":  "An_Audience_with_the_King",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Soul Core of Topotante",
+                      "slug":  "Soul_Core_of_Topotante",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Soul Core of Tacati",
+                      "slug":  "Soul_Core_of_Tacati",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Soul Core of Opiloti",
+                      "slug":  "Soul_Core_of_Opiloti",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Soul Core of Jiquani",
+                      "slug":  "Soul_Core_of_Jiquani",
+                      "gold":  850
+                  },
+                  {
+                      "name":  "Soul Core of Zalatl",
+                      "slug":  "Soul_Core_of_Zalatl",
+                      "gold":  850
+                  },
+                  {
+                      "name":  "Soul Core of Citaqualotl",
+                      "slug":  "Soul_Core_of_Citaqualotl",
+                      "gold":  850
+                  },
+                  {
+                      "name":  "Soul Core of Puhuarte",
+                      "slug":  "Soul_Core_of_Puhuarte",
+                      "gold":  850
+                  },
+                  {
+                      "name":  "Soul Core of Tzamoto",
+                      "slug":  "Soul_Core_of_Tzamoto",
+                      "gold":  850
+                  },
+                  {
+                      "name":  "Soul Core of Xopec",
+                      "slug":  "Soul_Core_of_Xopec",
+                      "gold":  850
+                  },
+                  {
+                      "name":  "Soul Core of Quipolatl",
+                      "slug":  "Soul_Core_of_Quipolatl",
+                      "gold":  850
+                  },
+                  {
+                      "name":  "Soul Core of Ticaba",
+                      "slug":  "Soul_Core_of_Ticaba",
+                      "gold":  850
+                  },
+                  {
+                      "name":  "Soul Core of Atmohua",
+                      "slug":  "Soul_Core_of_Atmohua",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Soul Core of Cholotl",
+                      "slug":  "Soul_Core_of_Cholotl",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Soul Core of Zantipi",
+                      "slug":  "Soul_Core_of_Zantipi",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Soul Core of Azcapa",
+                      "slug":  "Soul_Core_of_Azcapa",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Atmohua\u0027s Soul Core of Retreat",
+                      "slug":  "Atmohuas_Soul_Core_of_Retreat",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Hayoxi\u0027s Soul Core of Heatproofing",
+                      "slug":  "Hayoxis_Soul_Core_of_Heatproofing",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Zalatl\u0027s Soul Core of Insulation",
+                      "slug":  "Zalatls_Soul_Core_of_Insulation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Topotante\u0027s Soul Core of Dampening",
+                      "slug":  "Topotantes_Soul_Core_of_Dampening",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Opiloti\u0027s Soul Core of Assault",
+                      "slug":  "Opilotis_Soul_Core_of_Assault",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Guatelitzi\u0027s Soul Core of Endurance",
+                      "slug":  "Guatelitzis_Soul_Core_of_Endurance",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Xopec\u0027s Soul Core of Power",
+                      "slug":  "Xopecs_Soul_Core_of_Power",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Xipocado\u0027s Soul Core of Dominion",
+                      "slug":  "Xipocados_Soul_Core_of_Dominion",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Citaqualotl\u0027s Soul Core of Foulness",
+                      "slug":  "Citaqualotls_Soul_Core_of_Foulness",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Cholotl\u0027s Soul Core of War",
+                      "slug":  "Cholotls_Soul_Core_of_War",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Tacati\u0027s Soul Core of Affliction",
+                      "slug":  "Tacatis_Soul_Core_of_Affliction",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Quipolatl\u0027s Soul Core of Flow",
+                      "slug":  "Quipolatls_Soul_Core_of_Flow",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Tzamoto\u0027s Soul Core of Ferocity",
+                      "slug":  "Tzamotos_Soul_Core_of_Ferocity",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Uromoti\u0027s Soul Core of Attenuation",
+                      "slug":  "Uromotis_Soul_Core_of_Attenuation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Estazunti\u0027s Soul Core of Convalescence",
+                      "slug":  "Estazuntis_Soul_Core_of_Convalescence",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Bear Idol",
+                      "slug":  "Bear_Idol",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Primate Idol",
+                      "slug":  "Primate_Idol",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Stag Idol",
+                      "slug":  "Stag_Idol",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Boar Idol",
+                      "slug":  "Boar_Idol",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Snake Idol",
+                      "slug":  "Snake_Idol",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Wolf Idol",
+                      "slug":  "Wolf_Idol",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Cat Idol",
+                      "slug":  "Cat_Idol",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Owl Idol",
+                      "slug":  "Owl_Idol",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Ox Idol",
+                      "slug":  "Ox_Idol",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Fox Idol",
+                      "slug":  "Fox_Idol",
+                      "gold":  850
+                  },
+                  {
+                      "name":  "Rabbit Idol",
+                      "slug":  "Rabbit_Idol",
+                      "gold":  850
+                  },
+                  {
+                      "name":  "Idol of Thruldana",
+                      "slug":  "Idol_of_Thruldana",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Maxarius",
+                      "slug":  "Idol_of_Maxarius",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Eeshta",
+                      "slug":  "Idol_of_Eeshta",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Egrin",
+                      "slug":  "Idol_of_Egrin",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Ralakesh",
+                      "slug":  "Idol_of_Ralakesh",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Sirrius",
+                      "slug":  "Idol_of_Sirrius",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Grold",
+                      "slug":  "Idol_of_Grold",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Greust",
+                      "slug":  "Idol_of_Greust",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Yeena",
+                      "slug":  "Idol_of_Yeena",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Eramir",
+                      "slug":  "Idol_of_Eramir",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Oak",
+                      "slug":  "Idol_of_Oak",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Alira",
+                      "slug":  "Idol_of_Alira",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Kraityn",
+                      "slug":  "Idol_of_Kraityn",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of Silk",
+                      "slug":  "Idol_of_Silk",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Panther Idol",
+                      "slug":  "Panther_Idol",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Hawk Idol",
+                      "slug":  "Hawk_Idol",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Stoat Idol",
+                      "slug":  "Stoat_Idol",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of the Sycophant",
+                      "slug":  "Idol_of_the_Sycophant",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of the Martyr",
+                      "slug":  "Idol_of_the_Martyr",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Idol of the Pharisee",
+                      "slug":  "Idol_of_the_Pharisee",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Carved Cunning",
+                      "slug":  "Carved_Cunning",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Carved Majesty",
+                      "slug":  "Carved_Majesty",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Carved Mischief",
+                      "slug":  "Carved_Mischief",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Carved Tenacity",
+                      "slug":  "Carved_Tenacity",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Uncut Support Gem (Level 1)",
+                      "slug":  "Uncut_Support_Gem_%28Level_1%29",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Uncut Support Gem (Level 2)",
+                      "slug":  "Uncut_Support_Gem_%28Level_2%29",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Uncut Support Gem (Level 3)",
+                      "slug":  "Uncut_Support_Gem_%28Level_3%29",
+                      "gold":  300
+                  },
+                  {
+                      "name":  "Uncut Support Gem (Level 4)",
+                      "slug":  "Uncut_Support_Gem_%28Level_4%29",
+                      "gold":  400
+                  },
+                  {
+                      "name":  "Uncut Support Gem (Level 5)",
+                      "slug":  "Uncut_Support_Gem_%28Level_5%29",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 4)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_4%29",
+                      "gold":  576
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 5)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_5%29",
+                      "gold":  654
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 6)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_6%29",
+                      "gold":  746
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 7)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_7%29",
+                      "gold":  830
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 8)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_8%29",
+                      "gold":  915
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 9)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_9%29",
+                      "gold":  1004
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 10)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_10%29",
+                      "gold":  1243
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 11)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_11%29",
+                      "gold":  1353
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 12)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_12%29",
+                      "gold":  1524
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 13)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_13%29",
+                      "gold":  1654
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 14)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_14%29",
+                      "gold":  1873
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 15)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_15%29",
+                      "gold":  2317
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 16)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_16%29",
+                      "gold":  2579
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 17)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_17%29",
+                      "gold":  2922
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 18)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_18%29",
+                      "gold":  3309
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 19)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_19%29",
+                      "gold":  4010
+                  },
+                  {
+                      "name":  "Uncut Spirit Gem (Level 20)",
+                      "slug":  "Uncut_Spirit_Gem_%28Level_20%29",
+                      "gold":  16107
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 1)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_1%29",
+                      "gold":  270
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 2)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_2%29",
+                      "gold":  421
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 3)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_3%29",
+                      "gold":  498
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 4)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_4%29",
+                      "gold":  576
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 5)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_5%29",
+                      "gold":  654
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 6)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_6%29",
+                      "gold":  746
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 7)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_7%29",
+                      "gold":  830
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 8)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_8%29",
+                      "gold":  915
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 9)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_9%29",
+                      "gold":  1004
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 10)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_10%29",
+                      "gold":  1243
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 11)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_11%29",
+                      "gold":  1353
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 12)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_12%29",
+                      "gold":  1524
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 13)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_13%29",
+                      "gold":  1654
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 14)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_14%29",
+                      "gold":  1873
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 15)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_15%29",
+                      "gold":  2317
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 16)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_16%29",
+                      "gold":  2579
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 17)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_17%29",
+                      "gold":  2922
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 18)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_18%29",
+                      "gold":  3309
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 19)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_19%29",
+                      "gold":  4010
+                  },
+                  {
+                      "name":  "Uncut Skill Gem (Level 20)",
+                      "slug":  "Uncut_Skill_Gem_%28Level_20%29",
+                      "gold":  16107
+                  },
+                  {
+                      "name":  "Atalui\u0027s Bloodletting",
+                      "slug":  "/us/Ataluis_Bloodletting",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Einhar\u0027s Beastrite",
+                      "slug":  "/us/Einhars_Beastrite",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Brutus\u0027 Brain",
+                      "slug":  "/us/Brutus_Brain",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Uruk\u0027s Smelting",
+                      "slug":  "/us/Uruks_Smelting",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Paquate\u0027s Pact",
+                      "slug":  "/us/Paquates_Pact",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Vilenta\u0027s Propulsion",
+                      "slug":  "/us/Vilentas_Propulsion",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ailith\u0027s Chimes",
+                      "slug":  "/us/Ailiths_Chimes",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Tecrod\u0027s Revenge",
+                      "slug":  "/us/Tecrods_Revenge",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Doedre\u0027s Undoing",
+                      "slug":  "/us/Doedres_Undoing",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ratha\u0027s Assault",
+                      "slug":  "/us/Rathas_Assault",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Arjun\u0027s Medal",
+                      "slug":  "/us/Arjuns_Medal",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Kaom\u0027s Madness",
+                      "slug":  "/us/Kaoms_Madness",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Sione\u0027s Temper",
+                      "slug":  "/us/Siones_Temper",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ixchel\u0027s Torment",
+                      "slug":  "/us/Ixchels_Torment",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Romira\u0027s Requital",
+                      "slug":  "/us/Romiras_Requital",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Tawhoa\u0027s Tending",
+                      "slug":  "/us/Tawhoas_Tending",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Dominus\u0027 Grasp",
+                      "slug":  "/us/Dominus_Grasp",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Dialla\u0027s Desire",
+                      "slug":  "/us/Diallas_Desire",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Kalisa\u0027s Crescendo",
+                      "slug":  "/us/Kalisas_Crescendo",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Kulemak\u0027s Dominion",
+                      "slug":  "/us/Kulemaks_Dominion",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Amanamu\u0027s Tithe",
+                      "slug":  "/us/Amanamus_Tithe",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Xoph\u0027s Pyre",
+                      "slug":  "/us/Xophs_Pyre",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Esh\u0027s Radiance",
+                      "slug":  "/us/Eshs_Radiance",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Tul\u0027s Stillness",
+                      "slug":  "/us/Tuls_Stillness",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Uul-Netol\u0027s Embrace",
+                      "slug":  "/us/Uul-Netols_Embrace",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rakiata\u0027s Flow",
+                      "slug":  "/us/Rakiatas_Flow",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Garukhan\u0027s Resolve",
+                      "slug":  "/us/Garukhans_Resolve",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Tasalio\u0027s Rhythm",
+                      "slug":  "/us/Tasalios_Rhythm",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Tacati\u0027s Ire",
+                      "slug":  "/us/Tacatis_Ire",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Rigwald\u0027s Ferocity",
+                      "slug":  "/us/Rigwalds_Ferocity",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Khatal\u0027s Rejuvenation",
+                      "slug":  "/us/Khatals_Rejuvenation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Bhatair\u0027s Vengeance",
+                      "slug":  "/us/Bhatairs_Vengeance",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Uhtred\u0027s Exodus",
+                      "slug":  "/us/Uhtreds_Exodus",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Uhtred\u0027s Omen",
+                      "slug":  "/us/Uhtreds_Omen",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Uhtred\u0027s Augury",
+                      "slug":  "/us/Uhtreds_Augury",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Daresso\u0027s Passion",
+                      "slug":  "/us/Daressos_Passion",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Ahn\u0027s Citadel",
+                      "slug":  "/us/Ahns_Citadel",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Atziri\u0027s Allure",
+                      "slug":  "/us/Atziris_Allure",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Hayoxi\u0027s Fulmination",
+                      "slug":  "/us/Hayoxis_Fulmination",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Zarokh\u0027s Refrain",
+                      "slug":  "/us/Zarokhs_Refrain",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Kurgal\u0027s Leash",
+                      "slug":  "/us/Kurgals_Leash",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Varashta\u0027s Blessing",
+                      "slug":  "/us/Varashtas_Blessing",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Arbiter\u0027s Ignition",
+                      "slug":  "/us/Arbiters_Ignition",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Arakaali\u0027s Lust",
+                      "slug":  "/us/Arakaalis_Lust",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Xibaqua\u0027s Rending",
+                      "slug":  "/us/Xibaquas_Rending",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Guatelitzi\u0027s Ablation",
+                      "slug":  "/us/Guatelitzis_Ablation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Atziri\u0027s Communion",
+                      "slug":  "/us/Atziris_Communion",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Atziri\u0027s Impatience",
+                      "slug":  "/us/Atziris_Impatience",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Zerphi\u0027s Infamy",
+                      "slug":  "/us/Zerphis_Infamy",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Zarokh\u0027s Revolt",
+                      "slug":  "/us/Zarokhs_Revolt",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Oisín\u0027s Oath",
+                      "slug":  "/us/Ois%C3%ADns_Oath",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Cirel\u0027s Cultivation",
+                      "slug":  "/us/Cirels_Cultivation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Morgana\u0027s Tempest",
+                      "slug":  "/us/Morganas_Tempest",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Eonyr\u0027s Thunder",
+                      "slug":  "/us/Eonyrs_Thunder",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Helbrym\u0027s Hide",
+                      "slug":  "/us/Helbryms_Hide",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Her Declaration",
+                      "slug":  "/us/Her_Declaration",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Prototype Seventeen",
+                      "slug":  "/us/Prototype_Seventeen",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Seraph\u0027s Heart",
+                      "slug":  "/us/Seraphs_Heart",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Uhtred\u0027s Rite",
+                      "slug":  "/us/Uhtreds_Rite",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Trickster\u0027s Shard",
+                      "slug":  "/us/Tricksters_Shard",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Arbiter\u0027s Reach",
+                      "slug":  "/us/Arbiters_Reach",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Tangmazu\u0027s Thurible",
+                      "slug":  "/us/Tangmazus_Thurible",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Esh\u0027s Prowess",
+                      "slug":  "/us/Eshs_Prowess",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Breachlord\u0027s Rift",
+                      "slug":  "/us/Breachlords_Rift",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Breachlord\u0027s Amalgam",
+                      "slug":  "/us/Breachlords_Amalgam",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Vruun\u0027s Aftermath",
+                      "slug":  "/us/Vruuns_Aftermath",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Vruun\u0027s Inevitability",
+                      "slug":  "/us/Vruuns_Inevitability",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Uhtred\u0027s Constellation",
+                      "slug":  "/us/Uhtreds_Constellation",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Medved\u0027s Felling",
+                      "slug":  "/us/Medveds_Felling",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Vorana\u0027s Siege",
+                      "slug":  "/us/Voranas_Siege",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Styrn\u0027s Mountain",
+                      "slug":  "/us/Styrns_Mountain",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Styrn\u0027s Ferocity",
+                      "slug":  "/us/Styrns_Ferocity",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Catha\u0027s Brilliance",
+                      "slug":  "/us/Cathas_Brilliance",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Mórrigan\u0027s Insight",
+                      "slug":  "/us/M%C3%B3rrigans_Insight",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Tul\u0027s Avalanche",
+                      "slug":  "/us/Tuls_Avalanche",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Olroth\u0027s Hubris",
+                      "slug":  "/us/Olroths_Hubris",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Olroth\u0027s Conviction",
+                      "slug":  "/us/Olroths_Conviction",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Expedition Logbook",
+                      "slug":  "Expedition_Logbook",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Shattered Triskelion",
+                      "slug":  "Shattered_Triskelion",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "The Triskelion Reforged",
+                      "slug":  "The_Triskelion_Reforged",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Aldur\u0027s Saga",
+                      "slug":  "Aldurs_Saga",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "Medved\u0027s Saga",
+                      "slug":  "Medveds_Saga",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "Vorana\u0027s Saga",
+                      "slug":  "Voranas_Saga",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "Uhtred\u0027s Saga",
+                      "slug":  "Uhtreds_Saga",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "Olroth\u0027s Saga",
+                      "slug":  "Olroths_Saga",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "Verisium",
+                      "slug":  "Verisium",
+                      "gold":  10
+                  },
+                  {
+                      "name":  "Exceptional Verisium",
+                      "slug":  "Exceptional_Verisium",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Medved\u0027s Crest of the Circle",
+                      "slug":  "Medveds_Crest_of_the_Circle",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Vorana\u0027s Crest of the Scythe",
+                      "slug":  "Voranas_Crest_of_the_Scythe",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Uhtred\u0027s Crest of the Chalice",
+                      "slug":  "Uhtreds_Crest_of_the_Chalice",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Olroth\u0027s Crest of the Sun",
+                      "slug":  "Olroths_Crest_of_the_Sun",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Runic Alloy",
+                      "slug":  "Runic_Alloy",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Adaptive Alloy",
+                      "slug":  "Adaptive_Alloy",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Protective Alloy",
+                      "slug":  "Protective_Alloy",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Expansive Alloy",
+                      "slug":  "Expansive_Alloy",
+                      "gold":  300
+                  },
+                  {
+                      "name":  "Swift Alloy",
+                      "slug":  "Swift_Alloy",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Cyclonic Alloy",
+                      "slug":  "Cyclonic_Alloy",
+                      "gold":  600
+                  },
+                  {
+                      "name":  "Prismatic Alloy",
+                      "slug":  "Prismatic_Alloy",
+                      "gold":  800
+                  },
+                  {
+                      "name":  "Mystic Alloy",
+                      "slug":  "Mystic_Alloy",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Sovereign Alloy",
+                      "slug":  "Sovereign_Alloy",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Celestial Alloy",
+                      "slug":  "Celestial_Alloy",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Transcendent Alloy",
+                      "slug":  "Transcendent_Alloy",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "The Runebinder\u0027s Alloy",
+                      "slug":  "The_Runebinders_Alloy",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "The Runefather\u0027s Alloy",
+                      "slug":  "The_Runefathers_Alloy",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "Blazing Flux",
+                      "slug":  "Blazing_Flux",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Chilling Flux",
+                      "slug":  "Chilling_Flux",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Crackling Flux",
+                      "slug":  "Crackling_Flux",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Void Flux",
+                      "slug":  "Void_Flux",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "Perfect Flux",
+                      "slug":  "Perfect_Flux",
+                      "gold":  5000
+                  },
+                  {
+                      "name":  "Starlit Ore",
+                      "slug":  "Starlit_Ore",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "Venerable Starlit Ore",
+                      "slug":  "Venerable_Starlit_Ore",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "Revered Starlit Ore",
+                      "slug":  "Revered_Starlit_Ore",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "Veridical Starlit Ore",
+                      "slug":  "Veridical_Starlit_Ore",
+                      "gold":  2000
+                  },
+                  {
+                      "name":  "Warding Starlit Ore",
+                      "slug":  "Warding_Starlit_Ore",
+                      "gold":  2000
+                  }
+              ]
+}

@@ -8,6 +8,7 @@ A static GitHub Pages tool that reads poe2scout exchange snapshot data and ranks
 - The app converts every pair into two directed trades.
 - A route is profitable when multiplying the trade rates returns more of the starting currency than it began with.
 - Volume and stock filters help remove routes that are likely too thin to execute.
+- Gold costs are read from `data/gold-costs.json`, generated from `https://poe2db.tw/Currency_Exchange`.
 
 ## Publish on GitHub Pages
 

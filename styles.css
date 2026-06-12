@@ -203,6 +203,33 @@ button:focus-visible {
   border-bottom: 1px solid var(--line);
 }
 
+.sort-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 26px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.sort-button {
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #100f0d;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 800;
+  padding: 0 12px;
+}
+
+.sort-button:hover,
+.sort-button.active {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
 .results {
   display: grid;
   gap: 12px;
@@ -317,14 +344,35 @@ h2 {
   overflow-wrap: anywhere;
 }
 
-.gain {
+.result-metrics {
   flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(94px, 1fr));
+  gap: 8px;
+}
+
+.metric {
   border-radius: 6px;
   background: color-mix(in srgb, var(--accent) 18%, transparent);
   color: var(--accent);
-  font-size: 1.25rem;
-  font-weight: 900;
   padding: 8px 10px;
+  text-align: right;
+}
+
+.metric span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+
+.metric strong {
+  display: block;
+  color: var(--accent);
+  font-size: 1.15rem;
+  font-weight: 900;
 }
 
 .steps {
@@ -414,6 +462,7 @@ h2 {
   .topbar,
   .controls,
   .status-line,
+  .sort-bar,
   .results,
   .pagination {
     padding-left: 16px;
@@ -427,9 +476,14 @@ h2 {
 
   .result-summary,
   .status-line,
+  .sort-bar,
   .pagination {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .result-metrics {
+    width: 100%;
   }
 
   .result-rank {
