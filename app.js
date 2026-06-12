@@ -1,13 +1,18 @@
 const SNAPSHOT_URL = "data/snapshot.json";
+const GOLD_COSTS_URL = "data/gold-costs.json";
 const LIVE_API_URL = "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs";
 const EXCLUDED_STORAGE_KEY = "poe2-exchange-excluded-items";
 
 const state = {
   rawPairs: [],
   items: new Map(),
+  goldCostsByName: new Map(),
+  goldCostsByItem: new Map(),
   edgesByFrom: new Map(),
   lastLoadedAt: null,
   currentPage: 1,
+  sortBy: "gain",
+  sortDirection: "desc",
   excludedItems: new Set()
 };
 
@@ -18,6 +23,7 @@ const els = {
   pathLength: document.querySelector("#pathLength"),
   minVolume: document.querySelector("#minVolume"),
   minStock: document.querySelector("#minStock"),
+  maxGoldCost: document.querySelector("#maxGoldCost"),
   pageSize: document.querySelector("#pageSize"),
   excludeSearch: document.querySelector("#excludeSearch"),
   excludeOptions: document.querySelector("#excludeOptions"),
@@ -26,6 +32,7 @@ const els = {
   snapshotMeta: document.querySelector("#snapshotMeta"),
   results: document.querySelector("#results"),
   pagination: document.querySelector("#pagination"),
+  sortButtons: document.querySelectorAll(".sort-button"),
   template: document.querySelector("#resultTemplate")
 };
 
@@ -43,6 +50,14 @@ function toNumber(value) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function normalizeName(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
 function rememberItem(item) {
   if (!item?.ApiId) return;
   if (!state.items.has(item.ApiId)) {
@@ -52,6 +67,17 @@ function rememberItem(item) {
       icon: item.IconUrl,
       category: item.CategoryApiId
     });
+  }
+}
+
+function hydrateGoldCosts() {
+  state.goldCostsByItem.clear();
+
+  for (const item of state.items.values()) {
+    const goldCost = state.goldCostsByName.get(normalizeName(item.name));
+    if (Number.isFinite(goldCost)) {
+      state.goldCostsByItem.set(item.id, goldCost);
+    }
   }
 }
 
@@ -147,6 +173,7 @@ function getSettings() {
     length: els.pathLength.value,
     minVolume: Math.max(toNumber(els.minVolume.value), 0),
     minStock: Math.max(toNumber(els.minStock.value), 0),
+    maxGoldCost: Math.max(toNumber(els.maxGoldCost.value), 0),
     pageSize: Math.min(Math.max(Math.round(toNumber(els.pageSize.value)), 1), 100),
     excludedItems: state.excludedItems
   };
@@ -187,21 +214,56 @@ function findCycles(settings) {
   return cycles
     .filter((cycle) => cycle.route.every((itemId) => !settings.excludedItems.has(itemId)))
     .filter((cycle) => cycle.multiplier > 1)
-    .sort((a, b) => b.multiplier - a.multiplier);
+    .filter((cycle) => settings.maxGoldCost === 0 || cycle.goldCost <= settings.maxGoldCost)
+    .sort(compareCycles);
 }
 
 function scorePath(edges, amount) {
   const multiplier = edges.reduce((total, edge) => total * edge.rate, 1);
   const route = [edges[0].from, ...edges.map((edge) => edge.to)];
+  let runningAmount = amount;
+  let goldCost = 0;
+  const stepAmounts = [];
+
+  for (const edge of edges) {
+    const outputAmount = runningAmount * edge.rate;
+    const unitGoldCost = state.goldCostsByItem.get(edge.to) || 0;
+    const stepGoldCost = outputAmount * unitGoldCost;
+
+    goldCost += stepGoldCost;
+    stepAmounts.push({
+      input: runningAmount,
+      output: outputAmount,
+      unitGoldCost,
+      goldCost: stepGoldCost
+    });
+    runningAmount = outputAmount;
+  }
 
   return {
     edges,
+    stepAmounts,
     multiplier,
     input: amount,
     output: amount * multiplier,
     profit: amount * (multiplier - 1),
+    goldCost,
+    profitPerGold: goldCost > 0 ? (amount * (multiplier - 1)) / goldCost : 0,
+    profitPerMillionGold: goldCost > 0 ? ((amount * (multiplier - 1)) / goldCost) * 1000000 : 0,
     route
   };
+}
+
+function compareCycles(a, b) {
+  const direction = state.sortDirection === "asc" ? 1 : -1;
+  const valueA = state.sortBy === "profit" ? a.profitPerMillionGold : a.multiplier - 1;
+  const valueB = state.sortBy === "profit" ? b.profitPerMillionGold : b.multiplier - 1;
+
+  if (valueA === valueB) {
+    return b.multiplier - a.multiplier;
+  }
+
+  return (valueA - valueB) * direction;
 }
 
 function itemLabel(id) {
@@ -303,6 +365,7 @@ function renderResults() {
 
   els.results.replaceChildren();
   els.pagination.replaceChildren();
+  updateSortButtons();
 
   if (!settings.start) {
     renderEmpty("No currencies are available yet.");
@@ -322,17 +385,19 @@ function renderResults() {
     const title = node.querySelector("h2");
     const path = node.querySelector(".path-text");
     const gain = node.querySelector(".gain");
+    const profitScore = node.querySelector(".profit-score");
     const steps = node.querySelector(".steps");
 
     rank.textContent = `#${startIndex + index + 1}`;
     title.textContent = `${numberFormat.format(cycle.input)} ${itemLabel(settings.start)} -> ${numberFormat.format(cycle.output)} ${itemLabel(settings.start)}`;
-    path.textContent = cycle.route.map(itemLabel).join(" > ");
+    path.textContent = `${cycle.route.map(itemLabel).join(" > ")} | gold ${numberFormat.format(Math.ceil(cycle.goldCost))}`;
     gain.textContent = `+${percentFormat.format(cycle.multiplier - 1)}`;
+    profitScore.textContent = `${numberFormat.format(cycle.profitPerMillionGold)} ${itemLabel(settings.start)}`;
     card.style.setProperty("--accent", cycle.multiplier > 1.1 ? "#d7a84f" : "#5bbf98");
 
     cycle.edges.forEach((edge, stepIndex) => {
       const li = document.createElement("li");
-      li.append(makeStepItems(edge), makeStepMeta(edge, stepIndex));
+      li.append(makeStepItems(edge), makeStepMeta(edge, stepIndex, cycle.stepAmounts[stepIndex]));
       steps.append(li);
     });
 
@@ -340,6 +405,15 @@ function renderResults() {
   });
 
   renderPagination(cycles.length, totalPages, settings.pageSize);
+}
+
+function updateSortButtons() {
+  for (const button of els.sortButtons) {
+    const isActive = button.dataset.sort === state.sortBy;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+    button.textContent = `${button.dataset.sort === "profit" ? "Profit / 1M gold" : "Gain %"}${isActive ? (state.sortDirection === "desc" ? " ↓" : " ↑") : ""}`;
+  }
 }
 
 function renderEmpty(message) {
@@ -443,13 +517,14 @@ function makeStepItems(edge) {
   return wrap;
 }
 
-function makeStepMeta(edge, stepIndex) {
+function makeStepMeta(edge, stepIndex, stepAmount) {
   const wrap = document.createElement("div");
   const values = [
     `Trade ${stepIndex + 1}`,
     `${numberFormat.format(edge.rate)}x`,
     `vol ${numberFormat.format(edge.volume)}`,
-    `stock ${numberFormat.format(edge.stock)}`
+    `stock ${numberFormat.format(edge.stock)}`,
+    `gold ${numberFormat.format(Math.ceil(stepAmount?.goldCost || 0))}`
   ];
 
   wrap.className = "step-meta";
@@ -468,17 +543,24 @@ async function loadData() {
   els.snapshotMeta.textContent = "";
 
   try {
-    const loaded = await fetchSnapshot();
+    const [loaded, goldCosts] = await Promise.all([
+      fetchSnapshot(),
+      fetchGoldCosts()
+    ]);
+
     state.rawPairs = loaded.pairs;
+    state.goldCostsByName = goldCosts.costsByName;
     state.lastLoadedAt = new Date();
     buildGraph(state.rawPairs);
+    hydrateGoldCosts();
     populateCurrencies();
     renderResults();
 
     els.status.textContent = `${state.rawPairs.length.toLocaleString()} exchange pairs loaded`;
+    const matchedGoldCosts = `${state.goldCostsByItem.size.toLocaleString()} gold costs matched`;
     els.snapshotMeta.textContent = loaded.updatedAt
-      ? `Snapshot ${new Date(loaded.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`
-      : `Loaded ${state.lastLoadedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+      ? `Snapshot ${new Date(loaded.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} | ${matchedGoldCosts}`
+      : `Loaded ${state.lastLoadedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} | ${matchedGoldCosts}`;
   } catch (error) {
     els.status.textContent = "Could not load poe2scout data.";
     els.snapshotMeta.textContent = error.message;
@@ -486,6 +568,28 @@ async function loadData() {
   } finally {
     els.refreshButton.disabled = false;
   }
+}
+
+async function fetchGoldCosts() {
+  const response = await fetch(GOLD_COSTS_URL, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`gold costs HTTP ${response.status}`);
+  }
+
+  const payload = await response.json();
+  const costsByName = new Map();
+
+  for (const entry of payload.costs || []) {
+    const gold = Number(entry.gold);
+    if (entry.name && Number.isFinite(gold)) {
+      costsByName.set(normalizeName(entry.name), gold);
+    }
+  }
+
+  return {
+    costsByName,
+    updatedAt: payload.updatedAt || null
+  };
 }
 
 async function fetchSnapshot() {
@@ -535,10 +639,28 @@ function handleExcludeChange() {
   addExcludedItem(els.excludeSearch.value);
 }
 
+function handleSortClick(event) {
+  const sortBy = event.currentTarget.dataset.sort;
+  if (!sortBy) return;
+
+  if (state.sortBy === sortBy) {
+    state.sortDirection = state.sortDirection === "desc" ? "asc" : "desc";
+  } else {
+    state.sortBy = sortBy;
+    state.sortDirection = "desc";
+  }
+
+  state.currentPage = 1;
+  renderResults();
+}
+
 document.querySelector("#controls").addEventListener("input", handleControlsInput);
 document.querySelector("#controls").addEventListener("change", handleControlsInput);
 els.excludeSearch.addEventListener("keydown", handleExcludeKeydown);
 els.excludeSearch.addEventListener("change", handleExcludeChange);
+for (const button of els.sortButtons) {
+  button.addEventListener("click", handleSortClick);
+}
 els.refreshButton.addEventListener("click", loadData);
 
 loadExcludedItems();
