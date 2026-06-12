@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PoE 2 Exchange Path Finder</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Path of Exile 2</p>
+            <h1>Exchange Path Finder</h1>
+          </div>
+          <button id="refreshButton" class="icon-button" type="button" title="Refresh prices" aria-label="Refresh prices">
+            <span aria-hidden="true">R</span>
+          </button>
+        </header>
+
+        <form class="controls" id="controls">
+          <label>
+            Start currency
+            <select id="startCurrency"></select>
+          </label>
+
+          <label>
+            Starting amount
+            <input id="startAmount" type="number" min="0" step="0.01" value="1">
+          </label>
+
+          <label>
+            Path length
+            <select id="pathLength">
+              <option value="both">2 and 3 trades</option>
+              <option value="2">2 trades</option>
+              <option value="3">3 trades</option>
+            </select>
+          </label>
+
+          <label>
+            Minimum volume
+            <input id="minVolume" type="number" min="0" step="1" value="10">
+          </label>
+
+          <label>
+            Minimum stock
+            <input id="minStock" type="number" min="0" step="1" value="1">
+          </label>
+
+          <label>
+            Per page
+            <input id="pageSize" type="number" min="1" max="100" step="1" value="25">
+          </label>
+
+          <label class="exclude-field" for="excludeSearch">
+            Exclude items
+            <div class="exclude-picker">
+              <div id="excludedChips" class="excluded-chips" aria-live="polite"></div>
+              <input id="excludeSearch" list="excludeOptions" type="search" placeholder="Search item to exclude">
+              <datalist id="excludeOptions"></datalist>
+            </div>
+          </label>
+        </form>
+
+        <section class="status-line" aria-live="polite">
+          <span id="status">Loading exchange data...</span>
+          <span id="snapshotMeta"></span>
+        </section>
+
+        <section id="results" class="results"></section>
+        <nav id="pagination" class="pagination" aria-label="Result pages"></nav>
+      </section>
+    </main>
+
+    <template id="resultTemplate">
+      <article class="result-card">
+        <div class="result-rank"></div>
+        <div class="result-main">
+          <div class="result-summary">
+            <div>
+              <h2></h2>
+              <p class="path-text"></p>
+            </div>
+            <div class="gain"></div>
+          </div>
+          <ol class="steps"></ol>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>

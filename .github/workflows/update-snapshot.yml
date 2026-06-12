@@ -1,0 +1,42 @@
+name: Update poe2scout snapshot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download latest snapshot
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path data | Out-Null
+          $headers = @{
+            accept = "application/json"
+            origin = "https://poe2scout.com"
+            referer = "https://poe2scout.com/"
+          }
+          $source = "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs"
+          $pairsJson = (Invoke-WebRequest -Uri $source -Headers $headers).Content
+          $updatedAt = (Get-Date).ToUniversalTime().ToString("o")
+          @"
+          {
+            "updatedAt": "$updatedAt",
+            "source": "$source",
+            "pairs": $pairsJson
+          }
+          "@ | Set-Content -Path data/snapshot.json -Encoding utf8NoBOM
+
+      - name: Commit snapshot
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update poe2scout snapshot
+          file_pattern: data/snapshot.json
