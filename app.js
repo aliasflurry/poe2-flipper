@@ -6,6 +6,7 @@ const EXCLUDED_STORAGE_KEY = "poe2-exchange-excluded-items";
 const state = {
   rawPairs: [],
   items: new Map(),
+  itemPricesById: new Map(),
   goldCostsByName: new Map(),
   goldCostsByItem: new Map(),
   edgesByFrom: new Map(),
@@ -70,6 +71,13 @@ function rememberItem(item) {
   }
 }
 
+function rememberItemPrice(item, data) {
+  const price = toNumber(data?.RelativePrice);
+  if (item?.ApiId && price > 0) {
+    state.itemPricesById.set(item.ApiId, price);
+  }
+}
+
 function hydrateGoldCosts() {
   state.goldCostsByItem.clear();
 
@@ -108,6 +116,7 @@ function makeEdge(pair, fromItem, toItem, fromData, toData) {
 
 function buildGraph(pairs) {
   state.items.clear();
+  state.itemPricesById.clear();
   state.edgesByFrom.clear();
 
   for (const pair of pairs) {
@@ -115,6 +124,8 @@ function buildGraph(pairs) {
     const two = pair.CurrencyTwo;
     rememberItem(one);
     rememberItem(two);
+    rememberItemPrice(one, pair.CurrencyOneData);
+    rememberItemPrice(two, pair.CurrencyTwoData);
 
     const edges = [
       makeEdge(pair, one, two, pair.CurrencyOneData, pair.CurrencyTwoData),
@@ -250,14 +261,15 @@ function scorePath(edges, amount) {
     goldCost,
     profitPerGold: goldCost > 0 ? (amount * (multiplier - 1)) / goldCost : 0,
     profitPerMillionGold: goldCost > 0 ? ((amount * (multiplier - 1)) / goldCost) * 1000000 : 0,
+    profitPerMillionGoldExalted: goldCost > 0 ? ((amount * (multiplier - 1)) / goldCost) * 1000000 * exaltedValueFor(edges[0].from) : 0,
     route
   };
 }
 
 function compareCycles(a, b) {
   const direction = state.sortDirection === "asc" ? 1 : -1;
-  const valueA = state.sortBy === "profit" ? a.profitPerMillionGold : a.multiplier - 1;
-  const valueB = state.sortBy === "profit" ? b.profitPerMillionGold : b.multiplier - 1;
+  const valueA = state.sortBy === "profit" ? a.profitPerMillionGoldExalted : a.multiplier - 1;
+  const valueB = state.sortBy === "profit" ? b.profitPerMillionGoldExalted : b.multiplier - 1;
 
   if (valueA === valueB) {
     return b.multiplier - a.multiplier;
@@ -272,6 +284,27 @@ function itemLabel(id) {
 
 function itemIcon(id) {
   return state.items.get(id)?.icon || "";
+}
+
+function exaltedValueFor(itemId) {
+  if (itemId === "exalted") return 1;
+  return state.itemPricesById.get(itemId) || 0;
+}
+
+function formatDivineExalted(exaltedValue) {
+  const divinePrice = exaltedValueFor("divine");
+  if (!divinePrice) {
+    return `${numberFormat.format(exaltedValue)} Exalted Orb`;
+  }
+
+  const divines = Math.floor(exaltedValue / divinePrice);
+  const exalted = exaltedValue - (divines * divinePrice);
+
+  if (divines <= 0) {
+    return `${numberFormat.format(exalted)} Exalted Orb`;
+  }
+
+  return `${numberFormat.format(divines)} Divine + ${numberFormat.format(exalted)} Exalted`;
 }
 
 function loadExcludedItems() {
@@ -392,7 +425,7 @@ function renderResults() {
     title.textContent = `${numberFormat.format(cycle.input)} ${itemLabel(settings.start)} -> ${numberFormat.format(cycle.output)} ${itemLabel(settings.start)}`;
     path.textContent = `${cycle.route.map(itemLabel).join(" > ")} | gold ${numberFormat.format(Math.ceil(cycle.goldCost))}`;
     gain.textContent = `+${percentFormat.format(cycle.multiplier - 1)}`;
-    profitScore.textContent = `${numberFormat.format(cycle.profitPerMillionGold)} ${itemLabel(settings.start)}`;
+    profitScore.textContent = formatDivineExalted(cycle.profitPerMillionGoldExalted);
     card.style.setProperty("--accent", cycle.multiplier > 1.1 ? "#d7a84f" : "#5bbf98");
 
     cycle.edges.forEach((edge, stepIndex) => {
