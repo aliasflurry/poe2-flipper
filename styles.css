@@ -84,13 +84,38 @@ h1 {
   cursor: pointer;
 }
 
-.icon-button:hover {
-  border-color: var(--gold);
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
 }
 
-.icon-button:disabled {
+.text-button {
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel-strong);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 800;
+  padding: 0 12px;
+}
+
+.text-button:hover,
+.icon-button:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.icon-button:disabled,
+.text-button:disabled {
   cursor: wait;
   opacity: 0.5;
+}
+
+.text-button:disabled {
+  cursor: not-allowed;
 }
 
 .controls {
@@ -433,6 +458,48 @@ h2 {
   padding: 3px 7px;
 }
 
+.rate-editor {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-size: inherit;
+  padding: 0 7px;
+}
+
+.rate-editor:focus-within,
+.rate-editor:hover,
+.rate-editor.overridden {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.rate-input {
+  width: 8ch;
+  height: 24px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  font-weight: 800;
+}
+
+.rate-input:focus {
+  outline: 0;
+}
+
+.rate-suffix {
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font-weight: 800;
+}
+
 .empty {
   border: 1px dashed var(--line);
   border-radius: 8px;
@@ -489,5 +556,10 @@ h2 {
   .result-rank {
     width: fit-content;
     padding: 0 12px;
+  }
+
+  .topbar-actions {
+    align-self: stretch;
+    justify-content: space-between;
   }
 }

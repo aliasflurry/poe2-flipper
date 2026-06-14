@@ -2,6 +2,7 @@ const SNAPSHOT_URL = "data/snapshot.json";
 const GOLD_COSTS_URL = "data/gold-costs.json";
 const LIVE_API_URL = "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs";
 const EXCLUDED_STORAGE_KEY = "poe2-exchange-excluded-items";
+const RATE_OVERRIDES_STORAGE_KEY = "poe2-exchange-rate-overrides";
 
 const state = {
   rawPairs: [],
@@ -14,11 +15,13 @@ const state = {
   currentPage: 1,
   sortBy: "gain",
   sortDirection: "desc",
-  excludedItems: new Set()
+  excludedItems: new Set(),
+  rateOverrides: new Map()
 };
 
 const els = {
   refreshButton: document.querySelector("#refreshButton"),
+  resetOverridesButton: document.querySelector("#resetOverridesButton"),
   startCurrency: document.querySelector("#startCurrency"),
   startAmount: document.querySelector("#startAmount"),
   pathLength: document.querySelector("#pathLength"),
@@ -99,14 +102,20 @@ function makeEdge(pair, fromItem, toItem, fromData, toData) {
     return null;
   }
 
+  const id = `${pair.CurrencyExchangeSnapshotPairId}:${fromItem.ApiId}>${toItem.ApiId}`;
+  const originalRate = fromPrice / toPrice;
+  const overrideRate = state.rateOverrides.get(id);
+
   return {
-    id: `${pair.CurrencyExchangeSnapshotPairId}:${fromItem.ApiId}>${toItem.ApiId}`,
+    id,
     pairId: pair.CurrencyExchangeSnapshotPairId,
     from: fromItem.ApiId,
     to: toItem.ApiId,
     fromName: fromItem.Text,
     toName: toItem.Text,
-    rate: fromPrice / toPrice,
+    rate: Number.isFinite(overrideRate) && overrideRate > 0 ? overrideRate : originalRate,
+    originalRate,
+    isRateOverridden: Number.isFinite(overrideRate) && overrideRate > 0,
     fromPrice,
     toPrice,
     volume,
@@ -322,6 +331,53 @@ function saveExcludedItems() {
   } catch {
     // The filter still works for the current session if storage is unavailable.
   }
+}
+
+function loadRateOverrides() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(RATE_OVERRIDES_STORAGE_KEY) || "{}");
+    state.rateOverrides = new Map(
+      Object.entries(stored).filter(([, rate]) => Number.isFinite(rate) && rate > 0)
+    );
+  } catch {
+    state.rateOverrides = new Map();
+  }
+}
+
+function saveRateOverrides() {
+  try {
+    if (state.rateOverrides.size) {
+      localStorage.setItem(RATE_OVERRIDES_STORAGE_KEY, JSON.stringify(Object.fromEntries(state.rateOverrides)));
+    } else {
+      localStorage.removeItem(RATE_OVERRIDES_STORAGE_KEY);
+    }
+  } catch {
+    // Overrides still apply for the current session if storage is unavailable.
+  }
+}
+
+function updateResetOverridesButton() {
+  els.resetOverridesButton.disabled = state.rateOverrides.size === 0;
+}
+
+function setRateOverride(edge, rate) {
+  state.rateOverrides.set(edge.id, rate);
+  saveRateOverrides();
+  updateResetOverridesButton();
+  buildGraph(state.rawPairs);
+  state.currentPage = 1;
+  renderResults();
+}
+
+function resetRateOverrides() {
+  if (!state.rateOverrides.size) return;
+
+  state.rateOverrides.clear();
+  saveRateOverrides();
+  updateResetOverridesButton();
+  buildGraph(state.rawPairs);
+  state.currentPage = 1;
+  renderResults();
 }
 
 function findItemBySearch(value) {
@@ -554,13 +610,14 @@ function makeStepMeta(edge, stepIndex, stepAmount) {
   const wrap = document.createElement("div");
   const values = [
     `Trade ${stepIndex + 1}`,
-    `${numberFormat.format(edge.rate)}x`,
     `vol ${numberFormat.format(edge.volume)}`,
     `stock ${numberFormat.format(edge.stock)}`,
     `gold ${numberFormat.format(Math.ceil(stepAmount?.goldCost || 0))}`
   ];
 
   wrap.className = "step-meta";
+  wrap.append(makeRateEditor(edge));
+
   for (const value of values) {
     const span = document.createElement("span");
     span.textContent = value;
@@ -568,6 +625,56 @@ function makeStepMeta(edge, stepIndex, stepAmount) {
   }
 
   return wrap;
+}
+
+function makeRateEditor(edge) {
+  const wrap = document.createElement("label");
+  const input = document.createElement("input");
+  const suffix = document.createElement("span");
+  const value = String(edge.rate);
+
+  wrap.className = "rate-editor";
+  wrap.classList.toggle("overridden", edge.isRateOverridden);
+  wrap.title = edge.isRateOverridden
+    ? `Override rate. Original: ${numberFormat.format(edge.originalRate)}x`
+    : "Edit this exchange rate";
+
+  input.className = "rate-input";
+  input.type = "number";
+  input.min = "0";
+  input.step = "any";
+  input.value = value;
+  input.setAttribute("aria-label", `Rate for ${edge.fromName} to ${edge.toName}`);
+
+  suffix.className = "rate-suffix";
+  suffix.textContent = "x";
+
+  input.addEventListener("change", () => commitRateInput(edge, input));
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      input.blur();
+    }
+
+    if (event.key === "Escape") {
+      input.value = value;
+      input.blur();
+    }
+  });
+
+  wrap.append(input, suffix);
+  return wrap;
+}
+
+function commitRateInput(edge, input) {
+  const rate = Number(input.value);
+  if (!Number.isFinite(rate) || rate <= 0) {
+    input.value = String(edge.rate);
+    return;
+  }
+
+  if (rate === edge.rate) return;
+  setRateOverride(edge, rate);
 }
 
 async function loadData() {
@@ -695,6 +802,9 @@ for (const button of els.sortButtons) {
   button.addEventListener("click", handleSortClick);
 }
 els.refreshButton.addEventListener("click", loadData);
+els.resetOverridesButton.addEventListener("click", resetRateOverrides);
 
 loadExcludedItems();
+loadRateOverrides();
+updateResetOverridesButton();
 loadData();
