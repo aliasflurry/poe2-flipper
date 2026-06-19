@@ -435,6 +435,29 @@ h2 {
   white-space: nowrap;
 }
 
+.copy-item-name {
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: copy;
+  font: inherit;
+  font-weight: inherit;
+  overflow: hidden;
+  padding: 0;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copy-item-name:hover,
+.copy-item-name:focus-visible,
+.copy-item-name.copied {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .step-items img {
   width: 24px;
   height: 24px;
