@@ -3,6 +3,7 @@ const GOLD_COSTS_URL = "data/gold-costs.json";
 const LIVE_API_URL = "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs";
 const EXCLUDED_STORAGE_KEY = "poe2-exchange-excluded-items";
 const RATE_OVERRIDES_STORAGE_KEY = "poe2-exchange-rate-overrides";
+const FILTER_SETTINGS_STORAGE_KEY = "poe2-exchange-filter-settings";
 
 const state = {
   rawPairs: [],
@@ -16,7 +17,8 @@ const state = {
   sortBy: "gain",
   sortDirection: "desc",
   excludedItems: new Set(),
-  rateOverrides: new Map()
+  rateOverrides: new Map(),
+  filterSettings: null
 };
 
 const els = {
@@ -52,6 +54,27 @@ const percentFormat = new Intl.NumberFormat("en-US", {
 function toNumber(value) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function parsePositiveRate(value) {
+  const text = String(value).trim();
+  if (!text) return null;
+
+  const parts = text.split("/");
+  if (parts.length === 1) {
+    const rate = Number(parts[0].trim());
+    return Number.isFinite(rate) && rate > 0 ? rate : null;
+  }
+
+  if (parts.length !== 2) return null;
+
+  const numerator = Number(parts[0].trim());
+  const denominator = Number(parts[1].trim());
+  if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || numerator <= 0 || denominator <= 0) {
+    return null;
+  }
+
+  return numerator / denominator;
 }
 
 function normalizeName(value) {
@@ -151,7 +174,7 @@ function buildGraph(pairs) {
 }
 
 function populateCurrencies() {
-  const current = els.startCurrency.value || "exalted";
+  const current = state.filterSettings?.startCurrency || els.startCurrency.value || "exalted";
   let removedMissingExclusions = false;
   for (const itemId of state.excludedItems) {
     if (!state.items.has(itemId)) {
@@ -295,6 +318,17 @@ function itemIcon(id) {
   return state.items.get(id)?.icon || "";
 }
 
+async function copyItemName(name) {
+  if (!navigator.clipboard?.writeText) return false;
+
+  try {
+    await navigator.clipboard.writeText(name);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function exaltedValueFor(itemId) {
   if (itemId === "exalted") return 1;
   return state.itemPricesById.get(itemId) || 0;
@@ -353,6 +387,71 @@ function saveRateOverrides() {
     }
   } catch {
     // Overrides still apply for the current session if storage is unavailable.
+  }
+}
+
+function loadFilterSettings() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(FILTER_SETTINGS_STORAGE_KEY) || "null");
+    state.filterSettings = stored && typeof stored === "object" ? stored : null;
+    applyFilterSettings();
+  } catch {
+    state.filterSettings = null;
+  }
+}
+
+function saveFilterSettings() {
+  const settings = {
+    startCurrency: els.startCurrency.value,
+    startAmount: els.startAmount.value,
+    pathLength: els.pathLength.value,
+    minVolume: els.minVolume.value,
+    minStock: els.minStock.value,
+    maxGoldCost: els.maxGoldCost.value,
+    pageSize: els.pageSize.value,
+    sortBy: state.sortBy,
+    sortDirection: state.sortDirection
+  };
+
+  state.filterSettings = settings;
+
+  try {
+    localStorage.setItem(FILTER_SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+  } catch {
+    // Filters still apply for the current session if storage is unavailable.
+  }
+}
+
+function applyFilterSettings() {
+  const settings = state.filterSettings;
+  if (!settings) return;
+
+  setInputValue(els.startAmount, settings.startAmount);
+  setInputValue(els.minVolume, settings.minVolume);
+  setInputValue(els.minStock, settings.minStock);
+  setInputValue(els.maxGoldCost, settings.maxGoldCost);
+  setInputValue(els.pageSize, settings.pageSize);
+
+  if (["both", "2", "3"].includes(settings.pathLength)) {
+    els.pathLength.value = settings.pathLength;
+  }
+
+  if (typeof settings.startCurrency === "string" && (!state.items.size || state.items.has(settings.startCurrency))) {
+    els.startCurrency.value = settings.startCurrency;
+  }
+
+  if (["gain", "profit"].includes(settings.sortBy)) {
+    state.sortBy = settings.sortBy;
+  }
+
+  if (["asc", "desc"].includes(settings.sortDirection)) {
+    state.sortDirection = settings.sortDirection;
+  }
+}
+
+function setInputValue(input, value) {
+  if (typeof value === "string" && value.trim() !== "") {
+    input.value = value;
   }
 }
 
@@ -587,23 +686,38 @@ function getVisiblePages(totalPages, currentPage) {
 function makeStepItems(edge) {
   const wrap = document.createElement("div");
   const fromIcon = document.createElement("img");
-  const fromName = document.createElement("span");
   const arrow = document.createElement("span");
   const toIcon = document.createElement("img");
-  const toName = document.createElement("span");
 
   wrap.className = "step-items";
   fromIcon.src = itemIcon(edge.from);
   fromIcon.alt = "";
-  fromName.textContent = edge.fromName;
   arrow.className = "arrow";
   arrow.textContent = "->";
   toIcon.src = itemIcon(edge.to);
   toIcon.alt = "";
-  toName.textContent = edge.toName;
 
-  wrap.append(fromIcon, fromName, arrow, toIcon, toName);
+  wrap.append(fromIcon, makeCopyableItemName(edge.fromName), arrow, toIcon, makeCopyableItemName(edge.toName));
   return wrap;
+}
+
+function makeCopyableItemName(name) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "copy-item-name";
+  button.textContent = name;
+  button.title = `Copy ${name}`;
+  button.setAttribute("aria-label", `Copy ${name}`);
+  button.addEventListener("click", async () => {
+    const copied = await copyItemName(name);
+    button.classList.toggle("copied", copied);
+    button.title = copied ? `Copied ${name}` : `Could not copy ${name}`;
+    window.setTimeout(() => {
+      button.classList.remove("copied");
+      button.title = `Copy ${name}`;
+    }, 1200);
+  });
+  return button;
 }
 
 function makeStepMeta(edge, stepIndex, stepAmount) {
@@ -640,9 +754,9 @@ function makeRateEditor(edge) {
     : "Edit this exchange rate";
 
   input.className = "rate-input";
-  input.type = "number";
-  input.min = "0";
-  input.step = "any";
+  input.type = "text";
+  input.inputMode = "decimal";
+  input.pattern = "\\s*\\d*\\.?\\d+(\\s*/\\s*\\d*\\.?\\d+)?\\s*";
   input.value = value;
   input.setAttribute("aria-label", `Rate for ${edge.fromName} to ${edge.toName}`);
 
@@ -667,8 +781,8 @@ function makeRateEditor(edge) {
 }
 
 function commitRateInput(edge, input) {
-  const rate = Number(input.value);
-  if (!Number.isFinite(rate) || rate <= 0) {
+  const rate = parsePositiveRate(input.value);
+  if (!rate) {
     input.value = String(edge.rate);
     return;
   }
@@ -760,6 +874,7 @@ async function fetchSnapshot() {
 
 function handleFilterChange() {
   state.currentPage = 1;
+  saveFilterSettings();
   renderResults();
 }
 
@@ -791,6 +906,7 @@ function handleSortClick(event) {
   }
 
   state.currentPage = 1;
+  saveFilterSettings();
   renderResults();
 }
 
@@ -806,5 +922,6 @@ els.resetOverridesButton.addEventListener("click", resetRateOverrides);
 
 loadExcludedItems();
 loadRateOverrides();
+loadFilterSettings();
 updateResetOverridesButton();
 loadData();
