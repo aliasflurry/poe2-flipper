@@ -1,14 +1,39 @@
-const SNAPSHOT_URL = "data/snapshot.json";
-const GOLD_COSTS_URL = "data/gold-costs.json";
-const LIVE_API_URL = "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs";
-const EXCLUDED_STORAGE_KEY = "poe2-exchange-excluded-items";
-const RATE_OVERRIDES_STORAGE_KEY = "poe2-exchange-rate-overrides";
-const FILTER_SETTINGS_STORAGE_KEY = "poe2-exchange-filter-settings";
+const GAME_CONFIGS = {
+  poe2: {
+    label: "Path of Exile 2",
+    storagePrefix: "poe2",
+    defaultStartCurrency: "exalted",
+    localSnapshotUrl: "data/poe2_data/snapshot.json",
+    historyUrl: "data/poe2_data/price-history.json",
+    goldCostsUrl: "data/poe2_data/gold-costs.json",
+    liveSnapshotUrl: "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs"
+  },
+  poe: {
+    label: "Path of Exile",
+    storagePrefix: "poe",
+    defaultStartCurrency: "chaos",
+    localSnapshotUrl: "data/poe_data/snapshot.json",
+    historyUrl: "data/poe_data/price-history.json",
+    goldCostsUrl: "data/poe_data/gold-costs.json",
+    liveSnapshotUrl: "https://api.poe2scout.com/pc/Leagues/mirage/SnapshotPairs"
+  }
+};
+const DEFAULT_GAME_ID = "poe2";
+const EXCLUDED_STORAGE_KEY = "exchange-excluded-items";
+const RATE_OVERRIDES_STORAGE_KEY = "exchange-rate-overrides";
+const FILTER_SETTINGS_STORAGE_KEY = "exchange-filter-settings";
+const STASH_SETTINGS_STORAGE_KEY = "poe2-exchange-stash-settings";
+const TRADE_API_BASE = "https://www.pathofexile.com/api/trade2";
+const TRADE_PROXY_BASE = "/api/trade2";
+const TRADE_FETCH_BATCH_SIZE = 10;
+const TRADE_RESULT_LIMIT = 120;
 
 const state = {
+  gameId: DEFAULT_GAME_ID,
   rawPairs: [],
   items: new Map(),
   itemPricesById: new Map(),
+  priceHistory: [],
   goldCostsByName: new Map(),
   goldCostsByItem: new Map(),
   edgesByFrom: new Map(),
@@ -39,7 +64,21 @@ const els = {
   results: document.querySelector("#results"),
   pagination: document.querySelector("#pagination"),
   sortButtons: document.querySelectorAll(".sort-button"),
-  template: document.querySelector("#resultTemplate")
+  template: document.querySelector("#resultTemplate"),
+  gameButtons: document.querySelectorAll(".game-tab-button"),
+  gameEyebrow: document.querySelector("#gameEyebrow"),
+  tabButtons: document.querySelectorAll(".tab-button"),
+  exchangeView: document.querySelector("#exchangeView"),
+  stashView: document.querySelector("#stashView"),
+  stashControls: document.querySelector("#stashControls"),
+  stashAccount: document.querySelector("#stashAccount"),
+  stashLeague: document.querySelector("#stashLeague"),
+  stashTabNames: document.querySelector("#stashTabNames"),
+  stashLookupButton: document.querySelector("#stashLookupButton"),
+  stashStatus: document.querySelector("#stashStatus"),
+  stashMeta: document.querySelector("#stashMeta"),
+  stashSummary: document.querySelector("#stashSummary"),
+  stashResults: document.querySelector("#stashResults")
 };
 
 const numberFormat = new Intl.NumberFormat("en-US", {
@@ -50,6 +89,18 @@ const percentFormat = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
   style: "percent"
 });
+
+function currentGame() {
+  return GAME_CONFIGS[state.gameId] || GAME_CONFIGS[DEFAULT_GAME_ID];
+}
+
+function gameStorageKey(key) {
+  return `${currentGame().storagePrefix}-${key}`;
+}
+
+function defaultStartCurrency() {
+  return currentGame().defaultStartCurrency || "exalted";
+}
 
 function toNumber(value) {
   const parsed = Number(value);
@@ -174,7 +225,8 @@ function buildGraph(pairs) {
 }
 
 function populateCurrencies() {
-  const current = state.filterSettings?.startCurrency || els.startCurrency.value || "exalted";
+  const fallback = defaultStartCurrency();
+  const current = state.filterSettings?.startCurrency || els.startCurrency.value || fallback;
   let removedMissingExclusions = false;
   for (const itemId of state.excludedItems) {
     if (!state.items.has(itemId)) {
@@ -204,7 +256,7 @@ function populateCurrencies() {
     });
 
   els.startCurrency.replaceChildren(...options);
-  els.startCurrency.value = state.items.has(current) ? current : "exalted";
+  els.startCurrency.value = state.items.has(current) ? current : fallback;
   els.excludeOptions.replaceChildren(...searchOptions);
   renderExcludedChips();
 }
@@ -334,6 +386,10 @@ function exaltedValueFor(itemId) {
   return state.itemPricesById.get(itemId) || 0;
 }
 
+function formatDivineAmount(divineValue) {
+  return `${numberFormat.format(divineValue)} Divine Orb${divineValue === 1 ? "" : "s"}`;
+}
+
 function formatDivineExalted(exaltedValue) {
   const divinePrice = exaltedValueFor("divine");
   if (!divinePrice) {
@@ -352,7 +408,7 @@ function formatDivineExalted(exaltedValue) {
 
 function loadExcludedItems() {
   try {
-    const stored = JSON.parse(localStorage.getItem(EXCLUDED_STORAGE_KEY) || "[]");
+    const stored = JSON.parse(localStorage.getItem(gameStorageKey(EXCLUDED_STORAGE_KEY)) || "[]");
     state.excludedItems = new Set(Array.isArray(stored) ? stored.filter((itemId) => typeof itemId === "string") : []);
   } catch {
     state.excludedItems = new Set();
@@ -361,7 +417,7 @@ function loadExcludedItems() {
 
 function saveExcludedItems() {
   try {
-    localStorage.setItem(EXCLUDED_STORAGE_KEY, JSON.stringify([...state.excludedItems]));
+    localStorage.setItem(gameStorageKey(EXCLUDED_STORAGE_KEY), JSON.stringify([...state.excludedItems]));
   } catch {
     // The filter still works for the current session if storage is unavailable.
   }
@@ -369,7 +425,7 @@ function saveExcludedItems() {
 
 function loadRateOverrides() {
   try {
-    const stored = JSON.parse(localStorage.getItem(RATE_OVERRIDES_STORAGE_KEY) || "{}");
+    const stored = JSON.parse(localStorage.getItem(gameStorageKey(RATE_OVERRIDES_STORAGE_KEY)) || "{}");
     state.rateOverrides = new Map(
       Object.entries(stored).filter(([, rate]) => Number.isFinite(rate) && rate > 0)
     );
@@ -381,9 +437,9 @@ function loadRateOverrides() {
 function saveRateOverrides() {
   try {
     if (state.rateOverrides.size) {
-      localStorage.setItem(RATE_OVERRIDES_STORAGE_KEY, JSON.stringify(Object.fromEntries(state.rateOverrides)));
+      localStorage.setItem(gameStorageKey(RATE_OVERRIDES_STORAGE_KEY), JSON.stringify(Object.fromEntries(state.rateOverrides)));
     } else {
-      localStorage.removeItem(RATE_OVERRIDES_STORAGE_KEY);
+      localStorage.removeItem(gameStorageKey(RATE_OVERRIDES_STORAGE_KEY));
     }
   } catch {
     // Overrides still apply for the current session if storage is unavailable.
@@ -392,7 +448,7 @@ function saveRateOverrides() {
 
 function loadFilterSettings() {
   try {
-    const stored = JSON.parse(localStorage.getItem(FILTER_SETTINGS_STORAGE_KEY) || "null");
+    const stored = JSON.parse(localStorage.getItem(gameStorageKey(FILTER_SETTINGS_STORAGE_KEY)) || "null");
     state.filterSettings = stored && typeof stored === "object" ? stored : null;
     applyFilterSettings();
   } catch {
@@ -416,7 +472,7 @@ function saveFilterSettings() {
   state.filterSettings = settings;
 
   try {
-    localStorage.setItem(FILTER_SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+    localStorage.setItem(gameStorageKey(FILTER_SETTINGS_STORAGE_KEY), JSON.stringify(settings));
   } catch {
     // Filters still apply for the current session if storage is unavailable.
   }
@@ -544,7 +600,22 @@ function renderExcludedChips() {
 
 function renderResults() {
   const settings = getSettings();
-  const cycles = findCycles(settings);
+  let cycles = findCycles(settings);
+
+  if (!cycles.length && settings.start !== defaultStartCurrency() && state.items.has(defaultStartCurrency())) {
+    const defaultSettings = {
+      ...settings,
+      start: defaultStartCurrency()
+    };
+    const defaultCycles = findCycles(defaultSettings);
+    if (defaultCycles.length) {
+      els.startCurrency.value = defaultSettings.start;
+      settings.start = defaultSettings.start;
+      cycles = defaultCycles;
+      saveFilterSettings();
+    }
+  }
+
   const totalPages = Math.max(Math.ceil(cycles.length / settings.pageSize), 1);
 
   state.currentPage = Math.min(Math.max(state.currentPage, 1), totalPages);
@@ -589,10 +660,432 @@ function renderResults() {
       steps.append(li);
     });
 
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-expanded", "false");
+    card.title = "Show 7 day price history";
+    card.addEventListener("click", (event) => toggleHistoryCard(card, cycle, event));
+    card.addEventListener("keydown", (event) => {
+      if (event.target?.closest("button, input, select, a, label")) return;
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      toggleHistoryCard(card, cycle, event);
+    });
+
     els.results.append(node);
   });
 
   renderPagination(cycles.length, totalPages, settings.pageSize);
+}
+
+function toggleHistoryCard(card, cycle, event) {
+  if (event?.target?.closest("button, input, select, a, label")) return;
+
+  const existing = card.querySelector(".history-panel");
+  if (existing) {
+    existing.remove();
+    card.classList.remove("expanded");
+    card.setAttribute("aria-expanded", "false");
+    return;
+  }
+
+  card.append(renderHistoryPanel(cycle));
+  card.classList.add("expanded");
+  card.setAttribute("aria-expanded", "true");
+}
+
+function renderHistoryPanel(cycle) {
+  const panel = document.createElement("section");
+  const header = document.createElement("div");
+  const title = document.createElement("h3");
+  const meta = document.createElement("span");
+  const chart = document.createElement("div");
+  const legend = document.createElement("div");
+  const seenPairs = new Set();
+  const series = cycle.edges
+    .filter((edge) => {
+      const key = `${edge.from}>${edge.to}`;
+      if (seenPairs.has(key)) return false;
+      seenPairs.add(key);
+      return true;
+    })
+    .map((edge) => ({
+      name: `${itemLabel(edge.from)} > ${itemLabel(edge.to)}`,
+      points: pairRatePointsFor(edge.from, edge.to)
+    }))
+    .filter((entry) => entry.points.length);
+
+  panel.className = "history-panel";
+  header.className = "history-header";
+  title.textContent = "7 day price history";
+  meta.textContent = state.priceHistory.length
+    ? `${state.priceHistory.length} snapshots`
+    : "No snapshots";
+  chart.className = "history-chart";
+  legend.className = "history-legend";
+  header.append(title, meta);
+
+  if (!series.length) {
+    const empty = document.createElement("p");
+    empty.className = "history-empty";
+    empty.textContent = "Historical prices will appear here after the snapshot workflow runs.";
+    panel.append(header, empty);
+    return panel;
+  }
+
+  const chartApi = renderHistoryChart(chart, series);
+  for (const [index, entry] of series.entries()) {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "history-legend-chip";
+    chip.style.setProperty("--series-color", historyColor(index));
+    chip.setAttribute("aria-pressed", "true");
+    chip.title = "Toggle this line";
+    chip.textContent = `${entry.name} ${formatHistoryChange(entry.points)}`;
+    chip.addEventListener("click", () => {
+      const next = chip.getAttribute("aria-pressed") === "false";
+      chip.setAttribute("aria-pressed", String(next));
+      chip.classList.toggle("legend-hidden", !next);
+      chartApi.setSeriesVisible(index, next);
+    });
+    legend.append(chip);
+  }
+
+  panel.append(header, chart, legend);
+  return panel;
+}
+
+function pairRatePointsFor(fromId, toId) {
+  return state.priceHistory
+    .map((snapshot) => {
+      const rate = pairRateAt(snapshot, fromId, toId);
+      const date = new Date(snapshot.updatedAt);
+      if (!Number.isFinite(rate) || rate <= 0 || Number.isNaN(date.getTime())) return null;
+      return { date, price: rate };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.date - b.date);
+}
+
+function pairRateAt(snapshot, fromId, toId) {
+  const pairs = snapshot?.pairs;
+  if (pairs) {
+    const direct = pairs[`${fromId}>${toId}`];
+    if (direct) {
+      const rate = Number(direct.onePrice) / Number(direct.twoPrice);
+      if (Number.isFinite(rate) && rate > 0) return rate;
+    }
+    const reverse = pairs[`${toId}>${fromId}`];
+    if (reverse) {
+      const rate = Number(reverse.twoPrice) / Number(reverse.onePrice);
+      if (Number.isFinite(rate) && rate > 0) return rate;
+    }
+  }
+
+  const fromPrice = Number(snapshot?.prices?.[fromId]);
+  const toPrice = Number(snapshot?.prices?.[toId]);
+  if (fromPrice > 0 && toPrice > 0) return fromPrice / toPrice;
+  return NaN;
+}
+
+function renderHistoryChart(container, series) {
+  const namespace = "http://www.w3.org/2000/svg";
+  const width = 720;
+  const height = 260;
+  const padding = { top: 18, right: 18, bottom: 34, left: 54 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const visibility = series.map(() => true);
+
+  // Scales recompute from the currently visible series so the plot rescales on legend toggles.
+  const scale = { minTime: 0, maxTime: 0, timeRange: 1, yMin: 0, priceRange: 1 };
+  const xFor = (time) => padding.left + ((time - scale.minTime) / scale.timeRange) * plotWidth;
+  const yFor = (price) => padding.top + (1 - (price - scale.yMin) / scale.priceRange) * plotHeight;
+
+  const svg = document.createElementNS(namespace, "svg");
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", "Seven day price history chart");
+
+  const gridLayer = document.createElementNS(namespace, "g");
+  const seriesLayer = document.createElementNS(namespace, "g");
+  const crosshair = document.createElementNS(namespace, "line");
+  crosshair.setAttribute("class", "history-crosshair");
+  crosshair.setAttribute("y1", String(padding.top));
+  crosshair.setAttribute("y2", String(padding.top + plotHeight));
+  crosshair.style.opacity = "0";
+
+  const focusLayer = document.createElementNS(namespace, "g");
+  const focusDots = series.map((_, index) => {
+    const focus = document.createElementNS(namespace, "circle");
+    focus.setAttribute("class", "history-focus");
+    focus.setAttribute("r", "4.5");
+    focus.setAttribute("fill", historyColor(index));
+    focus.style.opacity = "0";
+    focusLayer.append(focus);
+    return focus;
+  });
+
+  svg.append(gridLayer, seriesLayer, crosshair, focusLayer);
+
+  const tooltip = document.createElement("div");
+  tooltip.className = "history-tooltip";
+  tooltip.hidden = true;
+
+  function visiblePoints() {
+    const points = [];
+    for (const [index, entry] of series.entries()) {
+      if (visibility[index]) points.push(...entry.points);
+    }
+    return points.length ? points : series.flatMap((entry) => entry.points);
+  }
+
+  function computeScale() {
+    const points = visiblePoints();
+    const times = points.map((point) => point.date.getTime());
+    const prices = points.map((point) => point.price);
+    scale.minTime = Math.min(...times);
+    scale.maxTime = Math.max(...times);
+    scale.timeRange = Math.max(scale.maxTime - scale.minTime, 1);
+    const yScale = niceAxisTicks(Math.min(...prices), Math.max(...prices), 4);
+    scale.yMin = yScale.min;
+    scale.priceRange = Math.max(yScale.max - yScale.min, 1e-9);
+    scale.yScale = yScale;
+  }
+
+  function drawGrid() {
+    gridLayer.replaceChildren();
+
+    for (const tick of scale.yScale.ticks) {
+      const y = yFor(tick);
+      if (y < padding.top - 0.5 || y > padding.top + plotHeight + 0.5) continue;
+      const line = document.createElementNS(namespace, "line");
+      line.setAttribute("x1", String(padding.left));
+      line.setAttribute("x2", String(width - padding.right));
+      line.setAttribute("y1", y.toFixed(2));
+      line.setAttribute("y2", y.toFixed(2));
+      line.setAttribute("class", "history-grid-line");
+      gridLayer.append(line);
+      appendHistoryAxisText(gridLayer, padding.left - 6, y + 4, formatAxisNumber(tick, scale.yScale.step), "end");
+    }
+
+    const xTicks = niceTimeTicks(scale.minTime, scale.maxTime, 4);
+    for (const tick of xTicks.ticks) {
+      const x = xFor(tick);
+      if (x < padding.left - 0.5 || x > width - padding.right + 0.5) continue;
+      const line = document.createElementNS(namespace, "line");
+      line.setAttribute("x1", x.toFixed(2));
+      line.setAttribute("x2", x.toFixed(2));
+      line.setAttribute("y1", String(padding.top));
+      line.setAttribute("y2", String(padding.top + plotHeight));
+      line.setAttribute("class", "history-grid-line");
+      gridLayer.append(line);
+      appendHistoryAxisText(gridLayer, x, height - 12, formatAxisTime(tick, xTicks.stepMs), "middle");
+    }
+  }
+
+  function drawSeries() {
+    seriesLayer.replaceChildren();
+
+    for (const [index, entry] of series.entries()) {
+      if (!visibility[index]) continue;
+      const color = historyColor(index);
+      const group = document.createElementNS(namespace, "g");
+      group.setAttribute("class", "history-series");
+      const path = document.createElementNS(namespace, "path");
+      const d = entry.points
+        .map((point, pointIndex) => `${pointIndex === 0 ? "M" : "L"} ${xFor(point.date.getTime()).toFixed(2)} ${yFor(point.price).toFixed(2)}`)
+        .join(" ");
+
+      path.setAttribute("d", d);
+      path.setAttribute("fill", "none");
+      path.setAttribute("stroke", color);
+      path.setAttribute("stroke-width", "3");
+      path.setAttribute("stroke-linecap", "round");
+      path.setAttribute("stroke-linejoin", "round");
+      group.append(path);
+
+      for (const point of entry.points) {
+        const dot = document.createElementNS(namespace, "circle");
+        dot.setAttribute("class", "history-point");
+        dot.setAttribute("cx", xFor(point.date.getTime()).toFixed(2));
+        dot.setAttribute("cy", yFor(point.price).toFixed(2));
+        dot.setAttribute("r", "2.5");
+        dot.setAttribute("fill", color);
+        group.append(dot);
+      }
+
+      seriesLayer.append(group);
+    }
+  }
+
+  function redraw() {
+    computeScale();
+    drawGrid();
+    drawSeries();
+  }
+
+  redraw();
+  container.append(svg, tooltip);
+  attachHistoryInteractions({ svg, tooltip, container, series, crosshair, focusDots, visibility, scale, xFor, yFor, plotWidth, padding, width });
+
+  return {
+    setSeriesVisible(index, visible) {
+      if (index < 0 || index >= series.length) return;
+      visibility[index] = visible;
+      if (!visible) focusDots[index].style.opacity = "0";
+      redraw();
+    }
+  };
+}
+
+function attachHistoryInteractions(ctx) {
+  const { svg, tooltip, container, series, crosshair, focusDots, visibility, scale, xFor, yFor } = ctx;
+  const priceByTime = series.map((entry) => {
+    const map = new Map();
+    for (const point of entry.points) map.set(point.date.getTime(), point.price);
+    return map;
+  });
+
+  const hide = () => {
+    tooltip.hidden = true;
+    crosshair.style.opacity = "0";
+    for (const dot of focusDots) dot.style.opacity = "0";
+  };
+
+  const move = (event) => {
+    const rect = svg.getBoundingClientRect();
+    if (!rect.width) return;
+
+    const visibleTimes = [...new Set(
+      series.flatMap((entry, index) => (visibility[index] ? entry.points.map((point) => point.date.getTime()) : []))
+    )].sort((a, b) => a - b);
+    if (!visibleTimes.length) {
+      hide();
+      return;
+    }
+
+    const viewX = ((event.clientX - rect.left) / rect.width) * ctx.width;
+    const targetTime = scale.minTime + ((viewX - ctx.padding.left) / ctx.plotWidth) * scale.timeRange;
+    const nearest = visibleTimes.reduce((best, time) => (Math.abs(time - targetTime) < Math.abs(best - targetTime) ? time : best), visibleTimes[0]);
+    const snapX = xFor(nearest);
+
+    crosshair.setAttribute("x1", snapX.toFixed(2));
+    crosshair.setAttribute("x2", snapX.toFixed(2));
+    crosshair.style.opacity = "1";
+
+    const rows = [];
+    for (const [index, entry] of series.entries()) {
+      const focus = focusDots[index];
+      const price = priceByTime[index].get(nearest);
+      if (!visibility[index] || price === undefined) {
+        focus.style.opacity = "0";
+        continue;
+      }
+      focus.setAttribute("cx", snapX.toFixed(2));
+      focus.setAttribute("cy", yFor(price).toFixed(2));
+      focus.style.opacity = "1";
+      rows.push(`<div class="history-tooltip-row"><span class="history-tooltip-dot" style="background:${historyColor(index)}"></span>${entry.name}<strong>${numberFormat.format(price)}</strong></div>`);
+    }
+
+    if (!rows.length) {
+      hide();
+      return;
+    }
+
+    tooltip.innerHTML = `<div class="history-tooltip-time">${new Date(nearest).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>${rows.join("")}`;
+    tooltip.hidden = false;
+
+    const containerRect = container.getBoundingClientRect();
+    const pixelX = (snapX / ctx.width) * rect.width;
+    const tooltipWidth = tooltip.offsetWidth;
+    const left = Math.min(Math.max(pixelX + 14, 4), containerRect.width - tooltipWidth - 4);
+    const top = Math.min(Math.max(event.clientY - containerRect.top - tooltip.offsetHeight - 12, 4), containerRect.height - tooltip.offsetHeight - 4);
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+  };
+
+  svg.addEventListener("pointermove", move);
+  svg.addEventListener("pointerdown", move);
+  svg.addEventListener("pointerleave", hide);
+}
+
+function niceStep(range, targetCount) {
+  const rough = Math.abs(range) / Math.max(targetCount, 1) || 1;
+  const power = Math.pow(10, Math.floor(Math.log10(rough)));
+  const fraction = rough / power;
+  let niceFraction;
+  if (fraction < 1.5) niceFraction = 1;
+  else if (fraction < 3) niceFraction = 2;
+  else if (fraction < 7) niceFraction = 5;
+  else niceFraction = 10;
+  return niceFraction * power;
+}
+
+function niceAxisTicks(min, max, targetCount) {
+  if (!(max > min)) {
+    const step = niceStep(Math.abs(min) || 1, targetCount);
+    return { min: min - step, max: min + step, step, ticks: [min - step, min, min + step] };
+  }
+
+  const step = niceStep(max - min, targetCount);
+  const niceMin = Math.floor(min / step) * step;
+  const niceMax = Math.ceil(max / step) * step;
+  const ticks = [];
+  for (let value = niceMin; value <= niceMax + step * 1e-9; value += step) {
+    ticks.push(Number(value.toFixed(12)));
+  }
+  return { min: niceMin, max: niceMax, step, ticks };
+}
+
+function niceTimeTicks(minTime, maxTime, targetCount) {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const stepDays = Math.max(niceStep((maxTime - minTime) / dayMs, targetCount), 0.5);
+  const stepMs = stepDays * dayMs;
+  const start = Math.ceil(minTime / stepMs) * stepMs;
+  const ticks = [];
+  for (let time = start; time <= maxTime + 1; time += stepMs) {
+    ticks.push(time);
+  }
+  if (!ticks.length) ticks.push(minTime, maxTime);
+  return { ticks, stepMs };
+}
+
+function formatAxisNumber(value, step) {
+  const decimals = Math.min(6, Math.max(0, -Math.floor(Math.log10(step))));
+  return value.toFixed(decimals);
+}
+
+function formatAxisTime(time, stepMs) {
+  const date = new Date(time);
+  if (stepMs < 24 * 60 * 60 * 1000) {
+    return date.toLocaleString([], { month: "short", day: "numeric", hour: "2-digit" });
+  }
+  return date.toLocaleDateString([], { month: "short", day: "numeric" });
+}
+
+function appendHistoryAxisText(svg, x, y, value, anchor = "start") {
+  const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  text.setAttribute("x", String(x));
+  text.setAttribute("y", String(y));
+  text.setAttribute("class", "history-axis-text");
+  text.setAttribute("text-anchor", anchor);
+  text.textContent = value;
+  svg.append(text);
+}
+
+function formatHistoryChange(points) {
+  if (points.length < 2) return "";
+  const first = points[0].price;
+  const last = points[points.length - 1].price;
+  if (!first) return "";
+  const change = (last - first) / first;
+  const sign = change >= 0 ? "+" : "";
+  return `${sign}${percentFormat.format(change)}`;
+}
+
+function historyColor(index) {
+  return ["#d7a84f", "#5bbf98", "#7aa7ff", "#d66d5f"][index % 4];
 }
 
 function updateSortButtons() {
@@ -600,7 +1093,7 @@ function updateSortButtons() {
     const isActive = button.dataset.sort === state.sortBy;
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
-    button.textContent = `${button.dataset.sort === "profit" ? "Profit / 1M gold" : "Gain %"}${isActive ? (state.sortDirection === "desc" ? " ↓" : " ↑") : ""}`;
+    button.textContent = `${button.dataset.sort === "profit" ? "Profit / 1M gold" : "Gain %"}${isActive ? (state.sortDirection === "desc" ? " v" : " ^") : ""}`;
   }
 }
 
@@ -791,18 +1284,385 @@ function commitRateInput(edge, input) {
   setRateOverride(edge, rate);
 }
 
+function switchTab(tabName) {
+  const isStash = tabName === "stash";
+
+  els.exchangeView.classList.toggle("active", !isStash);
+  els.stashView.classList.toggle("active", isStash);
+
+  for (const button of els.tabButtons) {
+    const isActive = button.dataset.tab === tabName;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  }
+}
+
+function updateGameControls() {
+  const game = currentGame();
+  els.gameEyebrow.textContent = game.label;
+
+  for (const button of els.gameButtons) {
+    const isActive = button.dataset.game === state.gameId;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  }
+}
+
+function resetControlsToDefaults() {
+  document.querySelector("#controls").reset();
+  state.currentPage = 1;
+  state.sortBy = "gain";
+  state.sortDirection = "desc";
+  state.filterSettings = null;
+  updateSortButtons();
+}
+
+function resetExchangeState() {
+  state.rawPairs = [];
+  state.items.clear();
+  state.itemPricesById.clear();
+  state.priceHistory = [];
+  state.goldCostsByName.clear();
+  state.goldCostsByItem.clear();
+  state.edgesByFrom.clear();
+  state.excludedItems.clear();
+  state.rateOverrides.clear();
+  els.startCurrency.replaceChildren();
+  els.excludeOptions.replaceChildren();
+  els.excludedChips.replaceChildren();
+  els.results.replaceChildren();
+  els.pagination.replaceChildren();
+  els.snapshotMeta.textContent = "";
+}
+
+function switchGame(gameId) {
+  if (!GAME_CONFIGS[gameId] || gameId === state.gameId) return;
+
+  saveFilterSettings();
+  state.gameId = gameId;
+  updateGameControls();
+  resetExchangeState();
+  resetControlsToDefaults();
+  loadExcludedItems();
+  loadRateOverrides();
+  loadFilterSettings();
+  updateResetOverridesButton();
+  loadData();
+}
+
+function loadStashSettings() {
+  try {
+    const settings = JSON.parse(localStorage.getItem(STASH_SETTINGS_STORAGE_KEY) || "null");
+    if (!settings || typeof settings !== "object") return;
+
+    setInputValue(els.stashAccount, settings.account);
+    setInputValue(els.stashLeague, settings.league);
+    setInputValue(els.stashTabNames, settings.tabNames);
+  } catch {
+    // Stash settings are optional convenience state.
+  }
+}
+
+function saveStashSettings() {
+  try {
+    localStorage.setItem(STASH_SETTINGS_STORAGE_KEY, JSON.stringify({
+      account: els.stashAccount.value,
+      league: els.stashLeague.value,
+      tabNames: els.stashTabNames.value
+    }));
+  } catch {
+    // The lookup still works for the current submission if storage is unavailable.
+  }
+}
+
+function parseStashTabNames(value) {
+  return String(value || "")
+    .split(",")
+    .map((name) => name.trim())
+    .filter(Boolean);
+}
+
+function stashTabMatches(stashName, tabNames) {
+  const normalized = normalizeName(stashName);
+  return tabNames.some((tabName) => normalized.includes(normalizeName(tabName)));
+}
+
+function itemExaltedValueByName(name) {
+  const normalized = normalizeName(name);
+  for (const item of state.items.values()) {
+    if (normalizeName(item.name) === normalized) {
+      return exaltedValueFor(item.id);
+    }
+  }
+  return 0;
+}
+
+function listingItemName(item) {
+  return item?.currencyTypeName || item?.typeLine || item?.baseType || item?.name || "Unknown item";
+}
+
+function listingStackSize(item) {
+  const stackSize = Number(item?.stackSize);
+  if (Number.isFinite(stackSize) && stackSize > 0) return stackSize;
+
+  const property = (item?.properties || []).find((entry) => normalizeName(entry.name) === "stack size");
+  const text = property?.values?.[0]?.[0];
+  const parsed = Number(String(text || "").split("/")[0]);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+}
+
+function buildTradeSearchPayload(accountName) {
+  return {
+    query: {
+      status: { option: "any" },
+      stats: [{ type: "and", filters: [], disabled: false }],
+      filters: {
+        trade_filters: {
+          filters: {
+            account: { input: accountName }
+          }
+        }
+      }
+    },
+    sort: { price: "desc" }
+  };
+}
+
+async function searchTradeListings(accountName, league) {
+  const response = await fetchTradeApi(`/search/poe2/${encodeURIComponent(league)}`, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json"
+    },
+    body: JSON.stringify(buildTradeSearchPayload(accountName))
+  });
+
+  if (!response.ok) {
+    throw new Error(`trade search HTTP ${response.status}`);
+  }
+
+  const payload = await response.json();
+  return {
+    queryId: payload.id,
+    ids: Array.isArray(payload.result) ? payload.result.slice(0, TRADE_RESULT_LIMIT) : [],
+    total: payload.total || payload.result?.length || 0
+  };
+}
+
+async function fetchTradeListings(ids, queryId) {
+  const listings = [];
+
+  for (let index = 0; index < ids.length; index += TRADE_FETCH_BATCH_SIZE) {
+    const batch = ids.slice(index, index + TRADE_FETCH_BATCH_SIZE);
+    const response = await fetchTradeApi(`/fetch/${batch.join(",")}?query=${encodeURIComponent(queryId)}&realm=poe2`, {
+      headers: { accept: "application/json" }
+    });
+
+    if (!response.ok) {
+      throw new Error(`trade fetch HTTP ${response.status}`);
+    }
+
+    const payload = await response.json();
+    listings.push(...(payload.result || []));
+  }
+
+  return listings;
+}
+
+async function fetchTradeApi(path, options = {}) {
+  const proxyResponse = await fetch(`${TRADE_PROXY_BASE}${path}`, options).catch(() => null);
+  if (proxyResponse?.ok) return proxyResponse;
+  if (proxyResponse && proxyResponse.status !== 404) return proxyResponse;
+
+  return fetch(`${TRADE_API_BASE}${path}`, options);
+}
+
+function valueStashListings(listings, tabNames) {
+  const divinePrice = exaltedValueFor("divine");
+  const rows = [];
+  const unknown = [];
+  const tabs = new Map();
+  let totalDivines = 0;
+  let matchedListings = 0;
+
+  if (!divinePrice) {
+    throw new Error("Divine Orb price is not available in the exchange snapshot yet.");
+  }
+
+  for (const listing of listings) {
+    const stashName = listing?.listing?.stash?.name || "";
+    if (!stashTabMatches(stashName, tabNames)) continue;
+    matchedListings += 1;
+
+    const name = listingItemName(listing.item);
+    const amount = listingStackSize(listing.item);
+    const exaltedValue = itemExaltedValueByName(name);
+    if (!exaltedValue) {
+      unknown.push({ name, amount, stashName });
+      continue;
+    }
+
+    const divines = (amount * exaltedValue) / divinePrice;
+    totalDivines += divines;
+
+    const normalizedTab = stashName || "Matched stash";
+    const tab = tabs.get(normalizedTab) || { name: normalizedTab, divines: 0, listings: 0 };
+    tab.divines += divines;
+    tab.listings += 1;
+    tabs.set(normalizedTab, tab);
+
+    rows.push({ name, amount, stashName: normalizedTab, divines, exaltedValue });
+  }
+
+  rows.sort((a, b) => b.divines - a.divines);
+  return {
+    totalDivines,
+    matchedListings,
+    pricedListings: rows.length,
+    unknown,
+    tabs: [...tabs.values()].sort((a, b) => b.divines - a.divines),
+    rows
+  };
+}
+
+function renderStashValuation(valuation, searchedCount, totalAvailable) {
+  els.stashSummary.replaceChildren();
+  els.stashResults.replaceChildren();
+
+  const cards = [
+    ["Total", formatDivineAmount(valuation.totalDivines)],
+    ["Priced listings", numberFormat.format(valuation.pricedListings)],
+    ["Matched listings", numberFormat.format(valuation.matchedListings)],
+    ["Searched", `${numberFormat.format(searchedCount)} of ${numberFormat.format(totalAvailable)}`]
+  ].map(([label, value]) => {
+    const card = document.createElement("article");
+    const span = document.createElement("span");
+    const strong = document.createElement("strong");
+    card.className = "stash-metric";
+    span.textContent = label;
+    strong.textContent = value;
+    card.append(span, strong);
+    return card;
+  });
+
+  els.stashSummary.append(...cards);
+
+  if (!valuation.rows.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "No priced public listings were found in the matching stash tabs.";
+    els.stashResults.append(empty);
+    return;
+  }
+
+  const tabList = document.createElement("section");
+  tabList.className = "stash-tab-breakdown";
+  for (const tab of valuation.tabs) {
+    const row = document.createElement("div");
+    const name = document.createElement("span");
+    const value = document.createElement("strong");
+    name.textContent = tab.name;
+    value.textContent = formatDivineAmount(tab.divines);
+    row.append(name, value);
+    tabList.append(row);
+  }
+
+  const table = document.createElement("table");
+  table.className = "stash-table";
+  table.innerHTML = "<thead><tr><th>Item</th><th>Tab</th><th>Amount</th><th>Value</th></tr></thead>";
+  const body = document.createElement("tbody");
+
+  for (const row of valuation.rows) {
+    const tr = document.createElement("tr");
+    const item = document.createElement("td");
+    const tab = document.createElement("td");
+    const amount = document.createElement("td");
+    const value = document.createElement("td");
+
+    item.textContent = row.name;
+    tab.textContent = row.stashName;
+    amount.textContent = numberFormat.format(row.amount);
+    value.textContent = formatDivineAmount(row.divines);
+    tr.append(item, tab, amount, value);
+    body.append(tr);
+  }
+
+  table.append(body);
+  els.stashResults.append(tabList, table);
+
+  if (valuation.unknown.length) {
+    const note = document.createElement("p");
+    note.className = "stash-note";
+    note.textContent = `${numberFormat.format(valuation.unknown.length)} matched listing${valuation.unknown.length === 1 ? "" : "s"} could not be priced from the exchange snapshot.`;
+    els.stashResults.append(note);
+  }
+}
+
+async function handleStashLookup(event) {
+  event.preventDefault();
+
+  const accountName = els.stashAccount.value.trim();
+  const league = els.stashLeague.value.trim();
+  const tabNames = parseStashTabNames(els.stashTabNames.value);
+
+  if (!accountName || !league || !tabNames.length) {
+    els.stashStatus.textContent = "Account name, league, and at least one stash tab name are required.";
+    return;
+  }
+
+  saveStashSettings();
+  els.stashLookupButton.disabled = true;
+  els.stashSummary.replaceChildren();
+  els.stashResults.replaceChildren();
+  els.stashStatus.textContent = "Searching public trade listings...";
+  els.stashMeta.textContent = "";
+
+  try {
+    const search = await searchTradeListings(accountName, league);
+    if (!search.ids.length) {
+      els.stashStatus.textContent = "No public trade listings were found for that account and league.";
+      els.stashMeta.textContent = "";
+      return;
+    }
+
+    els.stashStatus.textContent = `Fetching ${numberFormat.format(search.ids.length)} trade listings...`;
+    const listings = await fetchTradeListings(search.ids, search.queryId);
+    const valuation = valueStashListings(listings, tabNames);
+
+    renderStashValuation(valuation, search.ids.length, search.total);
+    els.stashStatus.textContent = `Estimated ${formatDivineAmount(valuation.totalDivines)} in matching public stash listings.`;
+    els.stashMeta.textContent = "Trade only exposes public listings, not private stash contents.";
+  } catch (error) {
+    els.stashStatus.textContent = "Could not read trade listings from this browser.";
+    els.stashMeta.textContent = error.message;
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "The stash valuation needs the trade API proxy when the browser blocks direct trade API requests.";
+    els.stashResults.replaceChildren(empty);
+  } finally {
+    els.stashLookupButton.disabled = false;
+  }
+}
+
 async function loadData() {
+  const requestedGameId = state.gameId;
+  const game = currentGame();
   els.refreshButton.disabled = true;
-  els.status.textContent = "Loading exchange data...";
+  els.status.textContent = `Loading ${game.label} exchange data...`;
   els.snapshotMeta.textContent = "";
 
   try {
-    const [loaded, goldCosts] = await Promise.all([
+    const [loaded, goldCosts, history] = await Promise.all([
       fetchSnapshot(),
-      fetchGoldCosts()
+      fetchGoldCosts(),
+      fetchPriceHistory()
     ]);
 
+    if (requestedGameId !== state.gameId) return;
+
     state.rawPairs = loaded.pairs;
+    state.priceHistory = history;
     state.goldCostsByName = goldCosts.costsByName;
     state.lastLoadedAt = new Date();
     buildGraph(state.rawPairs);
@@ -810,22 +1670,26 @@ async function loadData() {
     populateCurrencies();
     renderResults();
 
-    els.status.textContent = `${state.rawPairs.length.toLocaleString()} exchange pairs loaded`;
+    els.status.textContent = `${state.rawPairs.length.toLocaleString()} ${game.label} exchange pairs loaded`;
     const matchedGoldCosts = `${state.goldCostsByItem.size.toLocaleString()} gold costs matched`;
     els.snapshotMeta.textContent = loaded.updatedAt
       ? `Snapshot ${new Date(loaded.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} | ${matchedGoldCosts}`
       : `Loaded ${state.lastLoadedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} | ${matchedGoldCosts}`;
   } catch (error) {
-    els.status.textContent = "Could not load poe2scout data.";
+    if (requestedGameId !== state.gameId) return;
+
+    els.status.textContent = `Could not load ${game.label} poe2scout data.`;
     els.snapshotMeta.textContent = error.message;
-    renderEmpty("The local snapshot is missing and the live API could not be reached from this browser. Run the GitHub Action or add data/snapshot.json, then refresh.");
+    renderEmpty("The exchange snapshot could not be reached from this browser. Refresh again or try the other game tab.");
   } finally {
-    els.refreshButton.disabled = false;
+    if (requestedGameId === state.gameId) {
+      els.refreshButton.disabled = false;
+    }
   }
 }
 
 async function fetchGoldCosts() {
-  const response = await fetch(GOLD_COSTS_URL, { cache: "no-store" });
+  const response = await fetch(currentGame().goldCostsUrl, { cache: "no-store" });
   if (!response.ok) {
     throw new Error(`gold costs HTTP ${response.status}`);
   }
@@ -846,28 +1710,57 @@ async function fetchGoldCosts() {
   };
 }
 
+async function fetchPriceHistory() {
+  const game = currentGame();
+  if (!game.historyUrl) return [];
+
+  const response = await fetch(game.historyUrl, { cache: "no-store" }).catch(() => null);
+  if (!response?.ok) return [];
+
+  const payload = await response.json();
+  const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const snapshots = Array.isArray(payload?.snapshots) ? payload.snapshots : [];
+
+  return snapshots
+    .filter((snapshot) => {
+      const time = new Date(snapshot?.updatedAt).getTime();
+      const hasPrices = snapshot?.prices && typeof snapshot.prices === "object";
+      const hasPairs = snapshot?.pairs && typeof snapshot.pairs === "object";
+      return Number.isFinite(time) && time >= cutoff && (hasPrices || hasPairs);
+    })
+    .sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt));
+}
+
+function normalizeSnapshotPayload(payload) {
+  const pairs = payload?.pairs?.value || payload?.pairs || payload?.value || payload;
+  return {
+    pairs: Array.isArray(pairs) ? pairs : [],
+    updatedAt: Array.isArray(payload) ? null : payload?.updatedAt || null
+  };
+}
+
 async function fetchSnapshot() {
-  const localResponse = await fetch(SNAPSHOT_URL, { cache: "no-store" });
-  if (localResponse.ok) {
-    const snapshot = await localResponse.json();
-    const pairs = snapshot.pairs?.value || snapshot.pairs || [];
-    return Array.isArray(snapshot)
-      ? { pairs: snapshot, updatedAt: null }
-      : { pairs, updatedAt: snapshot.updatedAt };
+  const game = currentGame();
+
+  if (game.localSnapshotUrl) {
+    const localResponse = await fetch(game.localSnapshotUrl, { cache: "no-store" });
+    if (localResponse.ok) {
+      return normalizeSnapshotPayload(await localResponse.json());
+    }
   }
 
-  const liveResponse = await fetch(LIVE_API_URL, {
+  const liveResponse = await fetch(game.liveSnapshotUrl, {
     headers: {
       accept: "application/json"
     }
   });
 
   if (!liveResponse.ok) {
-    throw new Error(`snapshot HTTP ${localResponse.status}; live API HTTP ${liveResponse.status}`);
+    throw new Error(`live API HTTP ${liveResponse.status}`);
   }
 
   return {
-    pairs: await liveResponse.json(),
+    ...normalizeSnapshotPayload(await liveResponse.json()),
     updatedAt: null
   };
 }
@@ -910,6 +1803,14 @@ function handleSortClick(event) {
   renderResults();
 }
 
+for (const button of els.tabButtons) {
+  button.addEventListener("click", () => switchTab(button.dataset.tab));
+}
+for (const button of els.gameButtons) {
+  button.addEventListener("click", () => switchGame(button.dataset.game));
+}
+els.stashControls.addEventListener("submit", handleStashLookup);
+
 document.querySelector("#controls").addEventListener("input", handleControlsInput);
 document.querySelector("#controls").addEventListener("change", handleControlsInput);
 els.excludeSearch.addEventListener("keydown", handleExcludeKeydown);
@@ -923,5 +1824,6 @@ els.resetOverridesButton.addEventListener("click", resetRateOverrides);
 loadExcludedItems();
 loadRateOverrides();
 loadFilterSettings();
+updateGameControls();
 updateResetOverridesButton();
 loadData();
