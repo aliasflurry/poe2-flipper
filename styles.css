@@ -583,6 +583,7 @@ h2 {
 }
 
 .history-chart {
+  position: relative;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -593,6 +594,75 @@ h2 {
   display: block;
   width: 100%;
   min-height: 180px;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.history-crosshair {
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+  transition: opacity 0.08s ease;
+  pointer-events: none;
+}
+
+.history-point {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.history-focus {
+  stroke: var(--bg, #12131a);
+  stroke-width: 2;
+  transition: opacity 0.08s ease;
+  pointer-events: none;
+}
+
+.history-tooltip {
+  position: absolute;
+  z-index: 3;
+  min-width: 140px;
+  max-width: 260px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(10, 11, 16, 0.94);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  color: var(--text);
+  font-size: 0.8rem;
+  pointer-events: none;
+}
+
+.history-tooltip[hidden] {
+  display: none;
+}
+
+.history-tooltip-time {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.history-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  white-space: nowrap;
+}
+
+.history-tooltip-row strong {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.history-tooltip-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex: 0 0 auto;
 }
 
 .history-grid-line {
@@ -613,16 +683,24 @@ h2 {
   margin-top: 10px;
 }
 
-.history-legend span {
+.history-legend .history-legend-chip {
   border: 1px solid color-mix(in srgb, var(--series-color) 50%, var(--line));
   border-radius: 999px;
+  background: transparent;
   color: var(--text);
   font-size: 0.82rem;
   font-weight: 800;
+  font-family: inherit;
   padding: 4px 8px;
+  cursor: pointer;
+  transition: opacity 0.12s ease, background 0.12s ease;
 }
 
-.history-legend span::before {
+.history-legend .history-legend-chip:hover {
+  background: color-mix(in srgb, var(--series-color) 14%, transparent);
+}
+
+.history-legend .history-legend-chip::before {
   display: inline-block;
   width: 8px;
   height: 8px;
@@ -630,6 +708,17 @@ h2 {
   background: var(--series-color);
   content: "";
   margin-right: 6px;
+}
+
+.history-legend .history-legend-chip.legend-hidden {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.history-legend .history-legend-chip.legend-hidden::before {
+  background: transparent;
+  border: 1px solid var(--series-color);
+  box-sizing: border-box;
 }
 
 .empty {

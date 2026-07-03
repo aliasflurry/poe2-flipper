@@ -3,7 +3,7 @@ name: Update poe2scout snapshots
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0,12 * * *"
+    - cron: "*/30 * * * *"
 
 permissions:
   contents: write
@@ -57,6 +57,35 @@ jobs:
             return $prices
           }
 
+          function Get-PairMap($pairs) {
+            $result = [ordered]@{}
+            foreach ($pair in $pairs) {
+              $oneId = $pair.CurrencyOne.ApiId
+              $twoId = $pair.CurrencyTwo.ApiId
+              if (-not $oneId -or -not $twoId) {
+                continue
+              }
+
+              $onePrice = [double]$pair.CurrencyOneData.RelativePrice
+              $twoPrice = [double]$pair.CurrencyTwoData.RelativePrice
+              $volume = [double]$pair.Volume
+              $isValid = -not [double]::IsNaN($onePrice) -and -not [double]::IsInfinity($onePrice) -and $onePrice -gt 0 `
+                -and -not [double]::IsNaN($twoPrice) -and -not [double]::IsInfinity($twoPrice) -and $twoPrice -gt 0
+              if (-not $isValid) {
+                continue
+              }
+
+              $result["$oneId>$twoId"] = [pscustomobject]@{
+                one = $oneId
+                two = $twoId
+                onePrice = $onePrice
+                twoPrice = $twoPrice
+                volume = $volume
+              }
+            }
+            return $result
+          }
+
           function Get-SnapshotPairs($payload) {
             if ($payload -is [array]) {
               return @($payload)
@@ -82,8 +111,12 @@ jobs:
           }
 
           function Update-PriceHistory($path, $source, $updatedAt, $pairs) {
-            $cutoff = ([datetime]$updatedAt).AddDays(-7)
+            $now = [datetime]$updatedAt
+            $cutoff = $now.AddDays(-7)
+            # Snapshots run every 30 minutes, but price history is only appended four times a day.
+            $minGapHours = 5.5
             $snapshots = @()
+            $lastAppendedAt = $null
 
             if (Test-Path -Path $path) {
               $existing = Get-Content -Path $path -Raw | ConvertFrom-Json
@@ -91,12 +124,21 @@ jobs:
                 $snapshots = @($existing.snapshots | Where-Object {
                   $_.updatedAt -and ([datetime]$_.updatedAt) -ge $cutoff
                 })
+                $lastAppendedAt = @(
+                  $snapshots | ForEach-Object { [datetime]$_.updatedAt } | Sort-Object
+                ) | Select-Object -Last 1
               }
+            }
+
+            if ($lastAppendedAt -and $lastAppendedAt -gt $now.AddHours(-$minGapHours)) {
+              Write-Host "Skipping price-history append for $path; last entry $lastAppendedAt is within $minGapHours hours."
+              return
             }
 
             $snapshots += [pscustomobject]@{
               updatedAt = $updatedAt
               prices = Get-PriceMap $pairs
+              pairs = Get-PairMap $pairs
             }
 
             [pscustomobject]@{

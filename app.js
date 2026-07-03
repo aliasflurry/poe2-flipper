@@ -701,12 +701,17 @@ function renderHistoryPanel(cycle) {
   const meta = document.createElement("span");
   const chart = document.createElement("div");
   const legend = document.createElement("div");
-  const routeIds = [...new Set(cycle.route)];
-  const series = routeIds
-    .map((itemId) => ({
-      itemId,
-      name: itemLabel(itemId),
-      points: historyPointsFor(itemId)
+  const seenPairs = new Set();
+  const series = cycle.edges
+    .filter((edge) => {
+      const key = `${edge.from}>${edge.to}`;
+      if (seenPairs.has(key)) return false;
+      seenPairs.add(key);
+      return true;
+    })
+    .map((edge) => ({
+      name: `${itemLabel(edge.from)} > ${itemLabel(edge.to)}`,
+      points: pairRatePointsFor(edge.from, edge.to)
     }))
     .filter((entry) => entry.points.length);
 
@@ -728,11 +733,21 @@ function renderHistoryPanel(cycle) {
     return panel;
   }
 
-  chart.append(renderHistorySvg(series));
+  const chartApi = renderHistoryChart(chart, series);
   for (const [index, entry] of series.entries()) {
-    const chip = document.createElement("span");
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "history-legend-chip";
     chip.style.setProperty("--series-color", historyColor(index));
+    chip.setAttribute("aria-pressed", "true");
+    chip.title = "Toggle this line";
     chip.textContent = `${entry.name} ${formatHistoryChange(entry.points)}`;
+    chip.addEventListener("click", () => {
+      const next = chip.getAttribute("aria-pressed") === "false";
+      chip.setAttribute("aria-pressed", String(next));
+      chip.classList.toggle("legend-hidden", !next);
+      chartApi.setSeriesVisible(index, next);
+    });
     legend.append(chip);
   }
 
@@ -740,81 +755,321 @@ function renderHistoryPanel(cycle) {
   return panel;
 }
 
-function historyPointsFor(itemId) {
+function pairRatePointsFor(fromId, toId) {
   return state.priceHistory
     .map((snapshot) => {
-      const price = Number(snapshot.prices?.[itemId]);
+      const rate = pairRateAt(snapshot, fromId, toId);
       const date = new Date(snapshot.updatedAt);
-      if (!Number.isFinite(price) || price <= 0 || Number.isNaN(date.getTime())) return null;
-      return { date, price };
+      if (!Number.isFinite(rate) || rate <= 0 || Number.isNaN(date.getTime())) return null;
+      return { date, price: rate };
     })
     .filter(Boolean)
     .sort((a, b) => a.date - b.date);
 }
 
-function renderHistorySvg(series) {
+function pairRateAt(snapshot, fromId, toId) {
+  const pairs = snapshot?.pairs;
+  if (pairs) {
+    const direct = pairs[`${fromId}>${toId}`];
+    if (direct) {
+      const rate = Number(direct.onePrice) / Number(direct.twoPrice);
+      if (Number.isFinite(rate) && rate > 0) return rate;
+    }
+    const reverse = pairs[`${toId}>${fromId}`];
+    if (reverse) {
+      const rate = Number(reverse.twoPrice) / Number(reverse.onePrice);
+      if (Number.isFinite(rate) && rate > 0) return rate;
+    }
+  }
+
+  const fromPrice = Number(snapshot?.prices?.[fromId]);
+  const toPrice = Number(snapshot?.prices?.[toId]);
+  if (fromPrice > 0 && toPrice > 0) return fromPrice / toPrice;
+  return NaN;
+}
+
+function renderHistoryChart(container, series) {
   const namespace = "http://www.w3.org/2000/svg";
   const width = 720;
   const height = 260;
   const padding = { top: 18, right: 18, bottom: 34, left: 54 };
   const plotWidth = width - padding.left - padding.right;
   const plotHeight = height - padding.top - padding.bottom;
-  const allPoints = series.flatMap((entry) => entry.points);
-  const minTime = Math.min(...allPoints.map((point) => point.date.getTime()));
-  const maxTime = Math.max(...allPoints.map((point) => point.date.getTime()));
-  const minPrice = Math.min(...allPoints.map((point) => point.price));
-  const maxPrice = Math.max(...allPoints.map((point) => point.price));
-  const timeRange = Math.max(maxTime - minTime, 1);
-  const priceRange = Math.max(maxPrice - minPrice, 1);
-  const svg = document.createElementNS(namespace, "svg");
+  const visibility = series.map(() => true);
 
+  // Scales recompute from the currently visible series so the plot rescales on legend toggles.
+  const scale = { minTime: 0, maxTime: 0, timeRange: 1, yMin: 0, priceRange: 1 };
+  const xFor = (time) => padding.left + ((time - scale.minTime) / scale.timeRange) * plotWidth;
+  const yFor = (price) => padding.top + (1 - (price - scale.yMin) / scale.priceRange) * plotHeight;
+
+  const svg = document.createElementNS(namespace, "svg");
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
   svg.setAttribute("role", "img");
   svg.setAttribute("aria-label", "Seven day price history chart");
 
-  for (let index = 0; index <= 4; index += 1) {
-    const y = padding.top + (plotHeight / 4) * index;
-    const line = document.createElementNS(namespace, "line");
-    line.setAttribute("x1", String(padding.left));
-    line.setAttribute("x2", String(width - padding.right));
-    line.setAttribute("y1", String(y));
-    line.setAttribute("y2", String(y));
-    line.setAttribute("class", "history-grid-line");
-    svg.append(line);
+  const gridLayer = document.createElementNS(namespace, "g");
+  const seriesLayer = document.createElementNS(namespace, "g");
+  const crosshair = document.createElementNS(namespace, "line");
+  crosshair.setAttribute("class", "history-crosshair");
+  crosshair.setAttribute("y1", String(padding.top));
+  crosshair.setAttribute("y2", String(padding.top + plotHeight));
+  crosshair.style.opacity = "0";
+
+  const focusLayer = document.createElementNS(namespace, "g");
+  const focusDots = series.map((_, index) => {
+    const focus = document.createElementNS(namespace, "circle");
+    focus.setAttribute("class", "history-focus");
+    focus.setAttribute("r", "4.5");
+    focus.setAttribute("fill", historyColor(index));
+    focus.style.opacity = "0";
+    focusLayer.append(focus);
+    return focus;
+  });
+
+  svg.append(gridLayer, seriesLayer, crosshair, focusLayer);
+
+  const tooltip = document.createElement("div");
+  tooltip.className = "history-tooltip";
+  tooltip.hidden = true;
+
+  function visiblePoints() {
+    const points = [];
+    for (const [index, entry] of series.entries()) {
+      if (visibility[index]) points.push(...entry.points);
+    }
+    return points.length ? points : series.flatMap((entry) => entry.points);
   }
 
-  for (const [index, entry] of series.entries()) {
-    const path = document.createElementNS(namespace, "path");
-    const d = entry.points
-      .map((point, pointIndex) => {
-        const x = padding.left + ((point.date.getTime() - minTime) / timeRange) * plotWidth;
-        const y = padding.top + (1 - ((point.price - minPrice) / priceRange)) * plotHeight;
-        return `${pointIndex === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
-      })
-      .join(" ");
-
-    path.setAttribute("d", d);
-    path.setAttribute("fill", "none");
-    path.setAttribute("stroke", historyColor(index));
-    path.setAttribute("stroke-width", "3");
-    path.setAttribute("stroke-linecap", "round");
-    path.setAttribute("stroke-linejoin", "round");
-    svg.append(path);
+  function computeScale() {
+    const points = visiblePoints();
+    const times = points.map((point) => point.date.getTime());
+    const prices = points.map((point) => point.price);
+    scale.minTime = Math.min(...times);
+    scale.maxTime = Math.max(...times);
+    scale.timeRange = Math.max(scale.maxTime - scale.minTime, 1);
+    const yScale = niceAxisTicks(Math.min(...prices), Math.max(...prices), 4);
+    scale.yMin = yScale.min;
+    scale.priceRange = Math.max(yScale.max - yScale.min, 1e-9);
+    scale.yScale = yScale;
   }
 
-  appendHistoryAxisText(svg, padding.left, height - 10, new Date(minTime).toLocaleDateString([], { month: "short", day: "numeric" }));
-  appendHistoryAxisText(svg, width - padding.right - 54, height - 10, new Date(maxTime).toLocaleDateString([], { month: "short", day: "numeric" }));
-  appendHistoryAxisText(svg, 8, padding.top + 5, numberFormat.format(maxPrice));
-  appendHistoryAxisText(svg, 8, height - padding.bottom, numberFormat.format(minPrice));
+  function drawGrid() {
+    gridLayer.replaceChildren();
 
-  return svg;
+    for (const tick of scale.yScale.ticks) {
+      const y = yFor(tick);
+      if (y < padding.top - 0.5 || y > padding.top + plotHeight + 0.5) continue;
+      const line = document.createElementNS(namespace, "line");
+      line.setAttribute("x1", String(padding.left));
+      line.setAttribute("x2", String(width - padding.right));
+      line.setAttribute("y1", y.toFixed(2));
+      line.setAttribute("y2", y.toFixed(2));
+      line.setAttribute("class", "history-grid-line");
+      gridLayer.append(line);
+      appendHistoryAxisText(gridLayer, padding.left - 6, y + 4, formatAxisNumber(tick, scale.yScale.step), "end");
+    }
+
+    const xTicks = niceTimeTicks(scale.minTime, scale.maxTime, 4);
+    for (const tick of xTicks.ticks) {
+      const x = xFor(tick);
+      if (x < padding.left - 0.5 || x > width - padding.right + 0.5) continue;
+      const line = document.createElementNS(namespace, "line");
+      line.setAttribute("x1", x.toFixed(2));
+      line.setAttribute("x2", x.toFixed(2));
+      line.setAttribute("y1", String(padding.top));
+      line.setAttribute("y2", String(padding.top + plotHeight));
+      line.setAttribute("class", "history-grid-line");
+      gridLayer.append(line);
+      appendHistoryAxisText(gridLayer, x, height - 12, formatAxisTime(tick, xTicks.stepMs), "middle");
+    }
+  }
+
+  function drawSeries() {
+    seriesLayer.replaceChildren();
+
+    for (const [index, entry] of series.entries()) {
+      if (!visibility[index]) continue;
+      const color = historyColor(index);
+      const group = document.createElementNS(namespace, "g");
+      group.setAttribute("class", "history-series");
+      const path = document.createElementNS(namespace, "path");
+      const d = entry.points
+        .map((point, pointIndex) => `${pointIndex === 0 ? "M" : "L"} ${xFor(point.date.getTime()).toFixed(2)} ${yFor(point.price).toFixed(2)}`)
+        .join(" ");
+
+      path.setAttribute("d", d);
+      path.setAttribute("fill", "none");
+      path.setAttribute("stroke", color);
+      path.setAttribute("stroke-width", "3");
+      path.setAttribute("stroke-linecap", "round");
+      path.setAttribute("stroke-linejoin", "round");
+      group.append(path);
+
+      for (const point of entry.points) {
+        const dot = document.createElementNS(namespace, "circle");
+        dot.setAttribute("class", "history-point");
+        dot.setAttribute("cx", xFor(point.date.getTime()).toFixed(2));
+        dot.setAttribute("cy", yFor(point.price).toFixed(2));
+        dot.setAttribute("r", "2.5");
+        dot.setAttribute("fill", color);
+        group.append(dot);
+      }
+
+      seriesLayer.append(group);
+    }
+  }
+
+  function redraw() {
+    computeScale();
+    drawGrid();
+    drawSeries();
+  }
+
+  redraw();
+  container.append(svg, tooltip);
+  attachHistoryInteractions({ svg, tooltip, container, series, crosshair, focusDots, visibility, scale, xFor, yFor, plotWidth, padding, width });
+
+  return {
+    setSeriesVisible(index, visible) {
+      if (index < 0 || index >= series.length) return;
+      visibility[index] = visible;
+      if (!visible) focusDots[index].style.opacity = "0";
+      redraw();
+    }
+  };
 }
 
-function appendHistoryAxisText(svg, x, y, value) {
+function attachHistoryInteractions(ctx) {
+  const { svg, tooltip, container, series, crosshair, focusDots, visibility, scale, xFor, yFor } = ctx;
+  const priceByTime = series.map((entry) => {
+    const map = new Map();
+    for (const point of entry.points) map.set(point.date.getTime(), point.price);
+    return map;
+  });
+
+  const hide = () => {
+    tooltip.hidden = true;
+    crosshair.style.opacity = "0";
+    for (const dot of focusDots) dot.style.opacity = "0";
+  };
+
+  const move = (event) => {
+    const rect = svg.getBoundingClientRect();
+    if (!rect.width) return;
+
+    const visibleTimes = [...new Set(
+      series.flatMap((entry, index) => (visibility[index] ? entry.points.map((point) => point.date.getTime()) : []))
+    )].sort((a, b) => a - b);
+    if (!visibleTimes.length) {
+      hide();
+      return;
+    }
+
+    const viewX = ((event.clientX - rect.left) / rect.width) * ctx.width;
+    const targetTime = scale.minTime + ((viewX - ctx.padding.left) / ctx.plotWidth) * scale.timeRange;
+    const nearest = visibleTimes.reduce((best, time) => (Math.abs(time - targetTime) < Math.abs(best - targetTime) ? time : best), visibleTimes[0]);
+    const snapX = xFor(nearest);
+
+    crosshair.setAttribute("x1", snapX.toFixed(2));
+    crosshair.setAttribute("x2", snapX.toFixed(2));
+    crosshair.style.opacity = "1";
+
+    const rows = [];
+    for (const [index, entry] of series.entries()) {
+      const focus = focusDots[index];
+      const price = priceByTime[index].get(nearest);
+      if (!visibility[index] || price === undefined) {
+        focus.style.opacity = "0";
+        continue;
+      }
+      focus.setAttribute("cx", snapX.toFixed(2));
+      focus.setAttribute("cy", yFor(price).toFixed(2));
+      focus.style.opacity = "1";
+      rows.push(`<div class="history-tooltip-row"><span class="history-tooltip-dot" style="background:${historyColor(index)}"></span>${entry.name}<strong>${numberFormat.format(price)}</strong></div>`);
+    }
+
+    if (!rows.length) {
+      hide();
+      return;
+    }
+
+    tooltip.innerHTML = `<div class="history-tooltip-time">${new Date(nearest).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>${rows.join("")}`;
+    tooltip.hidden = false;
+
+    const containerRect = container.getBoundingClientRect();
+    const pixelX = (snapX / ctx.width) * rect.width;
+    const tooltipWidth = tooltip.offsetWidth;
+    const left = Math.min(Math.max(pixelX + 14, 4), containerRect.width - tooltipWidth - 4);
+    const top = Math.min(Math.max(event.clientY - containerRect.top - tooltip.offsetHeight - 12, 4), containerRect.height - tooltip.offsetHeight - 4);
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+  };
+
+  svg.addEventListener("pointermove", move);
+  svg.addEventListener("pointerdown", move);
+  svg.addEventListener("pointerleave", hide);
+}
+
+function niceStep(range, targetCount) {
+  const rough = Math.abs(range) / Math.max(targetCount, 1) || 1;
+  const power = Math.pow(10, Math.floor(Math.log10(rough)));
+  const fraction = rough / power;
+  let niceFraction;
+  if (fraction < 1.5) niceFraction = 1;
+  else if (fraction < 3) niceFraction = 2;
+  else if (fraction < 7) niceFraction = 5;
+  else niceFraction = 10;
+  return niceFraction * power;
+}
+
+function niceAxisTicks(min, max, targetCount) {
+  if (!(max > min)) {
+    const step = niceStep(Math.abs(min) || 1, targetCount);
+    return { min: min - step, max: min + step, step, ticks: [min - step, min, min + step] };
+  }
+
+  const step = niceStep(max - min, targetCount);
+  const niceMin = Math.floor(min / step) * step;
+  const niceMax = Math.ceil(max / step) * step;
+  const ticks = [];
+  for (let value = niceMin; value <= niceMax + step * 1e-9; value += step) {
+    ticks.push(Number(value.toFixed(12)));
+  }
+  return { min: niceMin, max: niceMax, step, ticks };
+}
+
+function niceTimeTicks(minTime, maxTime, targetCount) {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const stepDays = Math.max(niceStep((maxTime - minTime) / dayMs, targetCount), 0.5);
+  const stepMs = stepDays * dayMs;
+  const start = Math.ceil(minTime / stepMs) * stepMs;
+  const ticks = [];
+  for (let time = start; time <= maxTime + 1; time += stepMs) {
+    ticks.push(time);
+  }
+  if (!ticks.length) ticks.push(minTime, maxTime);
+  return { ticks, stepMs };
+}
+
+function formatAxisNumber(value, step) {
+  const decimals = Math.min(6, Math.max(0, -Math.floor(Math.log10(step))));
+  return value.toFixed(decimals);
+}
+
+function formatAxisTime(time, stepMs) {
+  const date = new Date(time);
+  if (stepMs < 24 * 60 * 60 * 1000) {
+    return date.toLocaleString([], { month: "short", day: "numeric", hour: "2-digit" });
+  }
+  return date.toLocaleDateString([], { month: "short", day: "numeric" });
+}
+
+function appendHistoryAxisText(svg, x, y, value, anchor = "start") {
   const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
   text.setAttribute("x", String(x));
   text.setAttribute("y", String(y));
   text.setAttribute("class", "history-axis-text");
+  text.setAttribute("text-anchor", anchor);
   text.textContent = value;
   svg.append(text);
 }
@@ -1469,7 +1724,9 @@ async function fetchPriceHistory() {
   return snapshots
     .filter((snapshot) => {
       const time = new Date(snapshot?.updatedAt).getTime();
-      return Number.isFinite(time) && time >= cutoff && snapshot?.prices && typeof snapshot.prices === "object";
+      const hasPrices = snapshot?.prices && typeof snapshot.prices === "object";
+      const hasPairs = snapshot?.pairs && typeof snapshot.pairs === "object";
+      return Number.isFinite(time) && time >= cutoff && (hasPrices || hasPairs);
     })
     .sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt));
 }
