@@ -1,14 +1,39 @@
-const SNAPSHOT_URL = "data/snapshot.json";
-const GOLD_COSTS_URL = "data/gold-costs.json";
-const LIVE_API_URL = "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs";
-const EXCLUDED_STORAGE_KEY = "poe2-exchange-excluded-items";
-const RATE_OVERRIDES_STORAGE_KEY = "poe2-exchange-rate-overrides";
-const FILTER_SETTINGS_STORAGE_KEY = "poe2-exchange-filter-settings";
+const GAME_CONFIGS = {
+  poe2: {
+    label: "Path of Exile 2",
+    storagePrefix: "poe2",
+    defaultStartCurrency: "exalted",
+    localSnapshotUrl: "data/poe2_data/snapshot.json",
+    historyUrl: "data/poe2_data/price-history.json",
+    goldCostsUrl: "data/poe2_data/gold-costs.json",
+    liveSnapshotUrl: "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs"
+  },
+  poe: {
+    label: "Path of Exile",
+    storagePrefix: "poe",
+    defaultStartCurrency: "chaos",
+    localSnapshotUrl: "data/poe_data/snapshot.json",
+    historyUrl: "data/poe_data/price-history.json",
+    goldCostsUrl: "data/poe_data/gold-costs.json",
+    liveSnapshotUrl: "https://api.poe2scout.com/pc/Leagues/mirage/SnapshotPairs"
+  }
+};
+const DEFAULT_GAME_ID = "poe2";
+const EXCLUDED_STORAGE_KEY = "exchange-excluded-items";
+const RATE_OVERRIDES_STORAGE_KEY = "exchange-rate-overrides";
+const FILTER_SETTINGS_STORAGE_KEY = "exchange-filter-settings";
+const STASH_SETTINGS_STORAGE_KEY = "poe2-exchange-stash-settings";
+const TRADE_API_BASE = "https://www.pathofexile.com/api/trade2";
+const TRADE_PROXY_BASE = "/api/trade2";
+const TRADE_FETCH_BATCH_SIZE = 10;
+const TRADE_RESULT_LIMIT = 120;
 
 const state = {
+  gameId: DEFAULT_GAME_ID,
   rawPairs: [],
   items: new Map(),
   itemPricesById: new Map(),
+  priceHistory: [],
   goldCostsByName: new Map(),
   goldCostsByItem: new Map(),
   edgesByFrom: new Map(),
@@ -39,7 +64,21 @@ const els = {
   results: document.querySelector("#results"),
   pagination: document.querySelector("#pagination"),
   sortButtons: document.querySelectorAll(".sort-button"),
-  template: document.querySelector("#resultTemplate")
+  template: document.querySelector("#resultTemplate"),
+  gameButtons: document.querySelectorAll(".game-tab-button"),
+  gameEyebrow: document.querySelector("#gameEyebrow"),
+  tabButtons: document.querySelectorAll(".tab-button"),
+  exchangeView: document.querySelector("#exchangeView"),
+  stashView: document.querySelector("#stashView"),
+  stashControls: document.querySelector("#stashControls"),
+  stashAccount: document.querySelector("#stashAccount"),
+  stashLeague: document.querySelector("#stashLeague"),
+  stashTabNames: document.querySelector("#stashTabNames"),
+  stashLookupButton: document.querySelector("#stashLookupButton"),
+  stashStatus: document.querySelector("#stashStatus"),
+  stashMeta: document.querySelector("#stashMeta"),
+  stashSummary: document.querySelector("#stashSummary"),
+  stashResults: document.querySelector("#stashResults")
 };
 
 const numberFormat = new Intl.NumberFormat("en-US", {
@@ -50,6 +89,18 @@ const percentFormat = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
   style: "percent"
 });
+
+function currentGame() {
+  return GAME_CONFIGS[state.gameId] || GAME_CONFIGS[DEFAULT_GAME_ID];
+}
+
+function gameStorageKey(key) {
+  return `${currentGame().storagePrefix}-${key}`;
+}
+
+function defaultStartCurrency() {
+  return currentGame().defaultStartCurrency || "exalted";
+}
 
 function toNumber(value) {
   const parsed = Number(value);
@@ -174,7 +225,8 @@ function buildGraph(pairs) {
 }
 
 function populateCurrencies() {
-  const current = state.filterSettings?.startCurrency || els.startCurrency.value || "exalted";
+  const fallback = defaultStartCurrency();
+  const current = state.filterSettings?.startCurrency || els.startCurrency.value || fallback;
   let removedMissingExclusions = false;
   for (const itemId of state.excludedItems) {
     if (!state.items.has(itemId)) {
@@ -204,7 +256,7 @@ function populateCurrencies() {
     });
 
   els.startCurrency.replaceChildren(...options);
-  els.startCurrency.value = state.items.has(current) ? current : "exalted";
+  els.startCurrency.value = state.items.has(current) ? current : fallback;
   els.excludeOptions.replaceChildren(...searchOptions);
   renderExcludedChips();
 }
@@ -334,6 +386,10 @@ function exaltedValueFor(itemId) {
   return state.itemPricesById.get(itemId) || 0;
 }
 
+function formatDivineAmount(divineValue) {
+  return `${numberFormat.format(divineValue)} Divine Orb${divineValue === 1 ? "" : "s"}`;
+}
+
 function formatDivineExalted(exaltedValue) {
   const divinePrice = exaltedValueFor("divine");
   if (!divinePrice) {
@@ -352,7 +408,7 @@ function formatDivineExalted(exaltedValue) {
 
 function loadExcludedItems() {
   try {
-    const stored = JSON.parse(localStorage.getItem(EXCLUDED_STORAGE_KEY) || "[]");
+    const stored = JSON.parse(localStorage.getItem(gameStorageKey(EXCLUDED_STORAGE_KEY)) || "[]");
     state.excludedItems = new Set(Array.isArray(stored) ? stored.filter((itemId) => typeof itemId === "string") : []);
   } catch {
     state.excludedItems = new Set();
@@ -361,7 +417,7 @@ function loadExcludedItems() {
 
 function saveExcludedItems() {
   try {
-    localStorage.setItem(EXCLUDED_STORAGE_KEY, JSON.stringify([...state.excludedItems]));
+    localStorage.setItem(gameStorageKey(EXCLUDED_STORAGE_KEY), JSON.stringify([...state.excludedItems]));
   } catch {
     // The filter still works for the current session if storage is unavailable.
   }
@@ -369,7 +425,7 @@ function saveExcludedItems() {
 
 function loadRateOverrides() {
   try {
-    const stored = JSON.parse(localStorage.getItem(RATE_OVERRIDES_STORAGE_KEY) || "{}");
+    const stored = JSON.parse(localStorage.getItem(gameStorageKey(RATE_OVERRIDES_STORAGE_KEY)) || "{}");
     state.rateOverrides = new Map(
       Object.entries(stored).filter(([, rate]) => Number.isFinite(rate) && rate > 0)
     );
@@ -381,9 +437,9 @@ function loadRateOverrides() {
 function saveRateOverrides() {
   try {
     if (state.rateOverrides.size) {
-      localStorage.setItem(RATE_OVERRIDES_STORAGE_KEY, JSON.stringify(Object.fromEntries(state.rateOverrides)));
+      localStorage.setItem(gameStorageKey(RATE_OVERRIDES_STORAGE_KEY), JSON.stringify(Object.fromEntries(state.rateOverrides)));
     } else {
-      localStorage.removeItem(RATE_OVERRIDES_STORAGE_KEY);
+      localStorage.removeItem(gameStorageKey(RATE_OVERRIDES_STORAGE_KEY));
     }
   } catch {
     // Overrides still apply for the current session if storage is unavailable.
@@ -392,7 +448,7 @@ function saveRateOverrides() {
 
 function loadFilterSettings() {
   try {
-    const stored = JSON.parse(localStorage.getItem(FILTER_SETTINGS_STORAGE_KEY) || "null");
+    const stored = JSON.parse(localStorage.getItem(gameStorageKey(FILTER_SETTINGS_STORAGE_KEY)) || "null");
     state.filterSettings = stored && typeof stored === "object" ? stored : null;
     applyFilterSettings();
   } catch {
@@ -416,7 +472,7 @@ function saveFilterSettings() {
   state.filterSettings = settings;
 
   try {
-    localStorage.setItem(FILTER_SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+    localStorage.setItem(gameStorageKey(FILTER_SETTINGS_STORAGE_KEY), JSON.stringify(settings));
   } catch {
     // Filters still apply for the current session if storage is unavailable.
   }
@@ -544,7 +600,22 @@ function renderExcludedChips() {
 
 function renderResults() {
   const settings = getSettings();
-  const cycles = findCycles(settings);
+  let cycles = findCycles(settings);
+
+  if (!cycles.length && settings.start !== defaultStartCurrency() && state.items.has(defaultStartCurrency())) {
+    const defaultSettings = {
+      ...settings,
+      start: defaultStartCurrency()
+    };
+    const defaultCycles = findCycles(defaultSettings);
+    if (defaultCycles.length) {
+      els.startCurrency.value = defaultSettings.start;
+      settings.start = defaultSettings.start;
+      cycles = defaultCycles;
+      saveFilterSettings();
+    }
+  }
+
   const totalPages = Math.max(Math.ceil(cycles.length / settings.pageSize), 1);
 
   state.currentPage = Math.min(Math.max(state.currentPage, 1), totalPages);
@@ -589,10 +660,177 @@ function renderResults() {
       steps.append(li);
     });
 
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-expanded", "false");
+    card.title = "Show 7 day price history";
+    card.addEventListener("click", (event) => toggleHistoryCard(card, cycle, event));
+    card.addEventListener("keydown", (event) => {
+      if (event.target?.closest("button, input, select, a, label")) return;
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      toggleHistoryCard(card, cycle, event);
+    });
+
     els.results.append(node);
   });
 
   renderPagination(cycles.length, totalPages, settings.pageSize);
+}
+
+function toggleHistoryCard(card, cycle, event) {
+  if (event?.target?.closest("button, input, select, a, label")) return;
+
+  const existing = card.querySelector(".history-panel");
+  if (existing) {
+    existing.remove();
+    card.classList.remove("expanded");
+    card.setAttribute("aria-expanded", "false");
+    return;
+  }
+
+  card.append(renderHistoryPanel(cycle));
+  card.classList.add("expanded");
+  card.setAttribute("aria-expanded", "true");
+}
+
+function renderHistoryPanel(cycle) {
+  const panel = document.createElement("section");
+  const header = document.createElement("div");
+  const title = document.createElement("h3");
+  const meta = document.createElement("span");
+  const chart = document.createElement("div");
+  const legend = document.createElement("div");
+  const routeIds = [...new Set(cycle.route)];
+  const series = routeIds
+    .map((itemId) => ({
+      itemId,
+      name: itemLabel(itemId),
+      points: historyPointsFor(itemId)
+    }))
+    .filter((entry) => entry.points.length);
+
+  panel.className = "history-panel";
+  header.className = "history-header";
+  title.textContent = "7 day price history";
+  meta.textContent = state.priceHistory.length
+    ? `${state.priceHistory.length} snapshots`
+    : "No snapshots";
+  chart.className = "history-chart";
+  legend.className = "history-legend";
+  header.append(title, meta);
+
+  if (!series.length) {
+    const empty = document.createElement("p");
+    empty.className = "history-empty";
+    empty.textContent = "Historical prices will appear here after the snapshot workflow runs.";
+    panel.append(header, empty);
+    return panel;
+  }
+
+  chart.append(renderHistorySvg(series));
+  for (const [index, entry] of series.entries()) {
+    const chip = document.createElement("span");
+    chip.style.setProperty("--series-color", historyColor(index));
+    chip.textContent = `${entry.name} ${formatHistoryChange(entry.points)}`;
+    legend.append(chip);
+  }
+
+  panel.append(header, chart, legend);
+  return panel;
+}
+
+function historyPointsFor(itemId) {
+  return state.priceHistory
+    .map((snapshot) => {
+      const price = Number(snapshot.prices?.[itemId]);
+      const date = new Date(snapshot.updatedAt);
+      if (!Number.isFinite(price) || price <= 0 || Number.isNaN(date.getTime())) return null;
+      return { date, price };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.date - b.date);
+}
+
+function renderHistorySvg(series) {
+  const namespace = "http://www.w3.org/2000/svg";
+  const width = 720;
+  const height = 260;
+  const padding = { top: 18, right: 18, bottom: 34, left: 54 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const allPoints = series.flatMap((entry) => entry.points);
+  const minTime = Math.min(...allPoints.map((point) => point.date.getTime()));
+  const maxTime = Math.max(...allPoints.map((point) => point.date.getTime()));
+  const minPrice = Math.min(...allPoints.map((point) => point.price));
+  const maxPrice = Math.max(...allPoints.map((point) => point.price));
+  const timeRange = Math.max(maxTime - minTime, 1);
+  const priceRange = Math.max(maxPrice - minPrice, 1);
+  const svg = document.createElementNS(namespace, "svg");
+
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", "Seven day price history chart");
+
+  for (let index = 0; index <= 4; index += 1) {
+    const y = padding.top + (plotHeight / 4) * index;
+    const line = document.createElementNS(namespace, "line");
+    line.setAttribute("x1", String(padding.left));
+    line.setAttribute("x2", String(width - padding.right));
+    line.setAttribute("y1", String(y));
+    line.setAttribute("y2", String(y));
+    line.setAttribute("class", "history-grid-line");
+    svg.append(line);
+  }
+
+  for (const [index, entry] of series.entries()) {
+    const path = document.createElementNS(namespace, "path");
+    const d = entry.points
+      .map((point, pointIndex) => {
+        const x = padding.left + ((point.date.getTime() - minTime) / timeRange) * plotWidth;
+        const y = padding.top + (1 - ((point.price - minPrice) / priceRange)) * plotHeight;
+        return `${pointIndex === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
+      })
+      .join(" ");
+
+    path.setAttribute("d", d);
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", historyColor(index));
+    path.setAttribute("stroke-width", "3");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+    svg.append(path);
+  }
+
+  appendHistoryAxisText(svg, padding.left, height - 10, new Date(minTime).toLocaleDateString([], { month: "short", day: "numeric" }));
+  appendHistoryAxisText(svg, width - padding.right - 54, height - 10, new Date(maxTime).toLocaleDateString([], { month: "short", day: "numeric" }));
+  appendHistoryAxisText(svg, 8, padding.top + 5, numberFormat.format(maxPrice));
+  appendHistoryAxisText(svg, 8, height - padding.bottom, numberFormat.format(minPrice));
+
+  return svg;
+}
+
+function appendHistoryAxisText(svg, x, y, value) {
+  const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  text.setAttribute("x", String(x));
+  text.setAttribute("y", String(y));
+  text.setAttribute("class", "history-axis-text");
+  text.textContent = value;
+  svg.append(text);
+}
+
+function formatHistoryChange(points) {
+  if (points.length < 2) return "";
+  const first = points[0].price;
+  const last = points[points.length - 1].price;
+  if (!first) return "";
+  const change = (last - first) / first;
+  const sign = change >= 0 ? "+" : "";
+  return `${sign}${percentFormat.format(change)}`;
+}
+
+function historyColor(index) {
+  return ["#d7a84f", "#5bbf98", "#7aa7ff", "#d66d5f"][index % 4];
 }
 
 function updateSortButtons() {
@@ -600,7 +838,7 @@ function updateSortButtons() {
     const isActive = button.dataset.sort === state.sortBy;
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
-    button.textContent = `${button.dataset.sort === "profit" ? "Profit / 1M gold" : "Gain %"}${isActive ? (state.sortDirection === "desc" ? " ↓" : " ↑") : ""}`;
+    button.textContent = `${button.dataset.sort === "profit" ? "Profit / 1M gold" : "Gain %"}${isActive ? (state.sortDirection === "desc" ? " v" : " ^") : ""}`;
   }
 }
 
@@ -791,18 +1029,385 @@ function commitRateInput(edge, input) {
   setRateOverride(edge, rate);
 }
 
+function switchTab(tabName) {
+  const isStash = tabName === "stash";
+
+  els.exchangeView.classList.toggle("active", !isStash);
+  els.stashView.classList.toggle("active", isStash);
+
+  for (const button of els.tabButtons) {
+    const isActive = button.dataset.tab === tabName;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  }
+}
+
+function updateGameControls() {
+  const game = currentGame();
+  els.gameEyebrow.textContent = game.label;
+
+  for (const button of els.gameButtons) {
+    const isActive = button.dataset.game === state.gameId;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  }
+}
+
+function resetControlsToDefaults() {
+  document.querySelector("#controls").reset();
+  state.currentPage = 1;
+  state.sortBy = "gain";
+  state.sortDirection = "desc";
+  state.filterSettings = null;
+  updateSortButtons();
+}
+
+function resetExchangeState() {
+  state.rawPairs = [];
+  state.items.clear();
+  state.itemPricesById.clear();
+  state.priceHistory = [];
+  state.goldCostsByName.clear();
+  state.goldCostsByItem.clear();
+  state.edgesByFrom.clear();
+  state.excludedItems.clear();
+  state.rateOverrides.clear();
+  els.startCurrency.replaceChildren();
+  els.excludeOptions.replaceChildren();
+  els.excludedChips.replaceChildren();
+  els.results.replaceChildren();
+  els.pagination.replaceChildren();
+  els.snapshotMeta.textContent = "";
+}
+
+function switchGame(gameId) {
+  if (!GAME_CONFIGS[gameId] || gameId === state.gameId) return;
+
+  saveFilterSettings();
+  state.gameId = gameId;
+  updateGameControls();
+  resetExchangeState();
+  resetControlsToDefaults();
+  loadExcludedItems();
+  loadRateOverrides();
+  loadFilterSettings();
+  updateResetOverridesButton();
+  loadData();
+}
+
+function loadStashSettings() {
+  try {
+    const settings = JSON.parse(localStorage.getItem(STASH_SETTINGS_STORAGE_KEY) || "null");
+    if (!settings || typeof settings !== "object") return;
+
+    setInputValue(els.stashAccount, settings.account);
+    setInputValue(els.stashLeague, settings.league);
+    setInputValue(els.stashTabNames, settings.tabNames);
+  } catch {
+    // Stash settings are optional convenience state.
+  }
+}
+
+function saveStashSettings() {
+  try {
+    localStorage.setItem(STASH_SETTINGS_STORAGE_KEY, JSON.stringify({
+      account: els.stashAccount.value,
+      league: els.stashLeague.value,
+      tabNames: els.stashTabNames.value
+    }));
+  } catch {
+    // The lookup still works for the current submission if storage is unavailable.
+  }
+}
+
+function parseStashTabNames(value) {
+  return String(value || "")
+    .split(",")
+    .map((name) => name.trim())
+    .filter(Boolean);
+}
+
+function stashTabMatches(stashName, tabNames) {
+  const normalized = normalizeName(stashName);
+  return tabNames.some((tabName) => normalized.includes(normalizeName(tabName)));
+}
+
+function itemExaltedValueByName(name) {
+  const normalized = normalizeName(name);
+  for (const item of state.items.values()) {
+    if (normalizeName(item.name) === normalized) {
+      return exaltedValueFor(item.id);
+    }
+  }
+  return 0;
+}
+
+function listingItemName(item) {
+  return item?.currencyTypeName || item?.typeLine || item?.baseType || item?.name || "Unknown item";
+}
+
+function listingStackSize(item) {
+  const stackSize = Number(item?.stackSize);
+  if (Number.isFinite(stackSize) && stackSize > 0) return stackSize;
+
+  const property = (item?.properties || []).find((entry) => normalizeName(entry.name) === "stack size");
+  const text = property?.values?.[0]?.[0];
+  const parsed = Number(String(text || "").split("/")[0]);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+}
+
+function buildTradeSearchPayload(accountName) {
+  return {
+    query: {
+      status: { option: "any" },
+      stats: [{ type: "and", filters: [], disabled: false }],
+      filters: {
+        trade_filters: {
+          filters: {
+            account: { input: accountName }
+          }
+        }
+      }
+    },
+    sort: { price: "desc" }
+  };
+}
+
+async function searchTradeListings(accountName, league) {
+  const response = await fetchTradeApi(`/search/poe2/${encodeURIComponent(league)}`, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json"
+    },
+    body: JSON.stringify(buildTradeSearchPayload(accountName))
+  });
+
+  if (!response.ok) {
+    throw new Error(`trade search HTTP ${response.status}`);
+  }
+
+  const payload = await response.json();
+  return {
+    queryId: payload.id,
+    ids: Array.isArray(payload.result) ? payload.result.slice(0, TRADE_RESULT_LIMIT) : [],
+    total: payload.total || payload.result?.length || 0
+  };
+}
+
+async function fetchTradeListings(ids, queryId) {
+  const listings = [];
+
+  for (let index = 0; index < ids.length; index += TRADE_FETCH_BATCH_SIZE) {
+    const batch = ids.slice(index, index + TRADE_FETCH_BATCH_SIZE);
+    const response = await fetchTradeApi(`/fetch/${batch.join(",")}?query=${encodeURIComponent(queryId)}&realm=poe2`, {
+      headers: { accept: "application/json" }
+    });
+
+    if (!response.ok) {
+      throw new Error(`trade fetch HTTP ${response.status}`);
+    }
+
+    const payload = await response.json();
+    listings.push(...(payload.result || []));
+  }
+
+  return listings;
+}
+
+async function fetchTradeApi(path, options = {}) {
+  const proxyResponse = await fetch(`${TRADE_PROXY_BASE}${path}`, options).catch(() => null);
+  if (proxyResponse?.ok) return proxyResponse;
+  if (proxyResponse && proxyResponse.status !== 404) return proxyResponse;
+
+  return fetch(`${TRADE_API_BASE}${path}`, options);
+}
+
+function valueStashListings(listings, tabNames) {
+  const divinePrice = exaltedValueFor("divine");
+  const rows = [];
+  const unknown = [];
+  const tabs = new Map();
+  let totalDivines = 0;
+  let matchedListings = 0;
+
+  if (!divinePrice) {
+    throw new Error("Divine Orb price is not available in the exchange snapshot yet.");
+  }
+
+  for (const listing of listings) {
+    const stashName = listing?.listing?.stash?.name || "";
+    if (!stashTabMatches(stashName, tabNames)) continue;
+    matchedListings += 1;
+
+    const name = listingItemName(listing.item);
+    const amount = listingStackSize(listing.item);
+    const exaltedValue = itemExaltedValueByName(name);
+    if (!exaltedValue) {
+      unknown.push({ name, amount, stashName });
+      continue;
+    }
+
+    const divines = (amount * exaltedValue) / divinePrice;
+    totalDivines += divines;
+
+    const normalizedTab = stashName || "Matched stash";
+    const tab = tabs.get(normalizedTab) || { name: normalizedTab, divines: 0, listings: 0 };
+    tab.divines += divines;
+    tab.listings += 1;
+    tabs.set(normalizedTab, tab);
+
+    rows.push({ name, amount, stashName: normalizedTab, divines, exaltedValue });
+  }
+
+  rows.sort((a, b) => b.divines - a.divines);
+  return {
+    totalDivines,
+    matchedListings,
+    pricedListings: rows.length,
+    unknown,
+    tabs: [...tabs.values()].sort((a, b) => b.divines - a.divines),
+    rows
+  };
+}
+
+function renderStashValuation(valuation, searchedCount, totalAvailable) {
+  els.stashSummary.replaceChildren();
+  els.stashResults.replaceChildren();
+
+  const cards = [
+    ["Total", formatDivineAmount(valuation.totalDivines)],
+    ["Priced listings", numberFormat.format(valuation.pricedListings)],
+    ["Matched listings", numberFormat.format(valuation.matchedListings)],
+    ["Searched", `${numberFormat.format(searchedCount)} of ${numberFormat.format(totalAvailable)}`]
+  ].map(([label, value]) => {
+    const card = document.createElement("article");
+    const span = document.createElement("span");
+    const strong = document.createElement("strong");
+    card.className = "stash-metric";
+    span.textContent = label;
+    strong.textContent = value;
+    card.append(span, strong);
+    return card;
+  });
+
+  els.stashSummary.append(...cards);
+
+  if (!valuation.rows.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "No priced public listings were found in the matching stash tabs.";
+    els.stashResults.append(empty);
+    return;
+  }
+
+  const tabList = document.createElement("section");
+  tabList.className = "stash-tab-breakdown";
+  for (const tab of valuation.tabs) {
+    const row = document.createElement("div");
+    const name = document.createElement("span");
+    const value = document.createElement("strong");
+    name.textContent = tab.name;
+    value.textContent = formatDivineAmount(tab.divines);
+    row.append(name, value);
+    tabList.append(row);
+  }
+
+  const table = document.createElement("table");
+  table.className = "stash-table";
+  table.innerHTML = "<thead><tr><th>Item</th><th>Tab</th><th>Amount</th><th>Value</th></tr></thead>";
+  const body = document.createElement("tbody");
+
+  for (const row of valuation.rows) {
+    const tr = document.createElement("tr");
+    const item = document.createElement("td");
+    const tab = document.createElement("td");
+    const amount = document.createElement("td");
+    const value = document.createElement("td");
+
+    item.textContent = row.name;
+    tab.textContent = row.stashName;
+    amount.textContent = numberFormat.format(row.amount);
+    value.textContent = formatDivineAmount(row.divines);
+    tr.append(item, tab, amount, value);
+    body.append(tr);
+  }
+
+  table.append(body);
+  els.stashResults.append(tabList, table);
+
+  if (valuation.unknown.length) {
+    const note = document.createElement("p");
+    note.className = "stash-note";
+    note.textContent = `${numberFormat.format(valuation.unknown.length)} matched listing${valuation.unknown.length === 1 ? "" : "s"} could not be priced from the exchange snapshot.`;
+    els.stashResults.append(note);
+  }
+}
+
+async function handleStashLookup(event) {
+  event.preventDefault();
+
+  const accountName = els.stashAccount.value.trim();
+  const league = els.stashLeague.value.trim();
+  const tabNames = parseStashTabNames(els.stashTabNames.value);
+
+  if (!accountName || !league || !tabNames.length) {
+    els.stashStatus.textContent = "Account name, league, and at least one stash tab name are required.";
+    return;
+  }
+
+  saveStashSettings();
+  els.stashLookupButton.disabled = true;
+  els.stashSummary.replaceChildren();
+  els.stashResults.replaceChildren();
+  els.stashStatus.textContent = "Searching public trade listings...";
+  els.stashMeta.textContent = "";
+
+  try {
+    const search = await searchTradeListings(accountName, league);
+    if (!search.ids.length) {
+      els.stashStatus.textContent = "No public trade listings were found for that account and league.";
+      els.stashMeta.textContent = "";
+      return;
+    }
+
+    els.stashStatus.textContent = `Fetching ${numberFormat.format(search.ids.length)} trade listings...`;
+    const listings = await fetchTradeListings(search.ids, search.queryId);
+    const valuation = valueStashListings(listings, tabNames);
+
+    renderStashValuation(valuation, search.ids.length, search.total);
+    els.stashStatus.textContent = `Estimated ${formatDivineAmount(valuation.totalDivines)} in matching public stash listings.`;
+    els.stashMeta.textContent = "Trade only exposes public listings, not private stash contents.";
+  } catch (error) {
+    els.stashStatus.textContent = "Could not read trade listings from this browser.";
+    els.stashMeta.textContent = error.message;
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "The stash valuation needs the trade API proxy when the browser blocks direct trade API requests.";
+    els.stashResults.replaceChildren(empty);
+  } finally {
+    els.stashLookupButton.disabled = false;
+  }
+}
+
 async function loadData() {
+  const requestedGameId = state.gameId;
+  const game = currentGame();
   els.refreshButton.disabled = true;
-  els.status.textContent = "Loading exchange data...";
+  els.status.textContent = `Loading ${game.label} exchange data...`;
   els.snapshotMeta.textContent = "";
 
   try {
-    const [loaded, goldCosts] = await Promise.all([
+    const [loaded, goldCosts, history] = await Promise.all([
       fetchSnapshot(),
-      fetchGoldCosts()
+      fetchGoldCosts(),
+      fetchPriceHistory()
     ]);
 
+    if (requestedGameId !== state.gameId) return;
+
     state.rawPairs = loaded.pairs;
+    state.priceHistory = history;
     state.goldCostsByName = goldCosts.costsByName;
     state.lastLoadedAt = new Date();
     buildGraph(state.rawPairs);
@@ -810,22 +1415,26 @@ async function loadData() {
     populateCurrencies();
     renderResults();
 
-    els.status.textContent = `${state.rawPairs.length.toLocaleString()} exchange pairs loaded`;
+    els.status.textContent = `${state.rawPairs.length.toLocaleString()} ${game.label} exchange pairs loaded`;
     const matchedGoldCosts = `${state.goldCostsByItem.size.toLocaleString()} gold costs matched`;
     els.snapshotMeta.textContent = loaded.updatedAt
       ? `Snapshot ${new Date(loaded.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} | ${matchedGoldCosts}`
       : `Loaded ${state.lastLoadedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} | ${matchedGoldCosts}`;
   } catch (error) {
-    els.status.textContent = "Could not load poe2scout data.";
+    if (requestedGameId !== state.gameId) return;
+
+    els.status.textContent = `Could not load ${game.label} poe2scout data.`;
     els.snapshotMeta.textContent = error.message;
-    renderEmpty("The local snapshot is missing and the live API could not be reached from this browser. Run the GitHub Action or add data/snapshot.json, then refresh.");
+    renderEmpty("The exchange snapshot could not be reached from this browser. Refresh again or try the other game tab.");
   } finally {
-    els.refreshButton.disabled = false;
+    if (requestedGameId === state.gameId) {
+      els.refreshButton.disabled = false;
+    }
   }
 }
 
 async function fetchGoldCosts() {
-  const response = await fetch(GOLD_COSTS_URL, { cache: "no-store" });
+  const response = await fetch(currentGame().goldCostsUrl, { cache: "no-store" });
   if (!response.ok) {
     throw new Error(`gold costs HTTP ${response.status}`);
   }
@@ -846,28 +1455,55 @@ async function fetchGoldCosts() {
   };
 }
 
+async function fetchPriceHistory() {
+  const game = currentGame();
+  if (!game.historyUrl) return [];
+
+  const response = await fetch(game.historyUrl, { cache: "no-store" }).catch(() => null);
+  if (!response?.ok) return [];
+
+  const payload = await response.json();
+  const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const snapshots = Array.isArray(payload?.snapshots) ? payload.snapshots : [];
+
+  return snapshots
+    .filter((snapshot) => {
+      const time = new Date(snapshot?.updatedAt).getTime();
+      return Number.isFinite(time) && time >= cutoff && snapshot?.prices && typeof snapshot.prices === "object";
+    })
+    .sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt));
+}
+
+function normalizeSnapshotPayload(payload) {
+  const pairs = payload?.pairs?.value || payload?.pairs || payload?.value || payload;
+  return {
+    pairs: Array.isArray(pairs) ? pairs : [],
+    updatedAt: Array.isArray(payload) ? null : payload?.updatedAt || null
+  };
+}
+
 async function fetchSnapshot() {
-  const localResponse = await fetch(SNAPSHOT_URL, { cache: "no-store" });
-  if (localResponse.ok) {
-    const snapshot = await localResponse.json();
-    const pairs = snapshot.pairs?.value || snapshot.pairs || [];
-    return Array.isArray(snapshot)
-      ? { pairs: snapshot, updatedAt: null }
-      : { pairs, updatedAt: snapshot.updatedAt };
+  const game = currentGame();
+
+  if (game.localSnapshotUrl) {
+    const localResponse = await fetch(game.localSnapshotUrl, { cache: "no-store" });
+    if (localResponse.ok) {
+      return normalizeSnapshotPayload(await localResponse.json());
+    }
   }
 
-  const liveResponse = await fetch(LIVE_API_URL, {
+  const liveResponse = await fetch(game.liveSnapshotUrl, {
     headers: {
       accept: "application/json"
     }
   });
 
   if (!liveResponse.ok) {
-    throw new Error(`snapshot HTTP ${localResponse.status}; live API HTTP ${liveResponse.status}`);
+    throw new Error(`live API HTTP ${liveResponse.status}`);
   }
 
   return {
-    pairs: await liveResponse.json(),
+    ...normalizeSnapshotPayload(await liveResponse.json()),
     updatedAt: null
   };
 }
@@ -910,6 +1546,14 @@ function handleSortClick(event) {
   renderResults();
 }
 
+for (const button of els.tabButtons) {
+  button.addEventListener("click", () => switchTab(button.dataset.tab));
+}
+for (const button of els.gameButtons) {
+  button.addEventListener("click", () => switchGame(button.dataset.game));
+}
+els.stashControls.addEventListener("submit", handleStashLookup);
+
 document.querySelector("#controls").addEventListener("input", handleControlsInput);
 document.querySelector("#controls").addEventListener("change", handleControlsInput);
 els.excludeSearch.addEventListener("keydown", handleExcludeKeydown);
@@ -923,5 +1567,6 @@ els.resetOverridesButton.addEventListener("click", resetRateOverrides);
 loadExcludedItems();
 loadRateOverrides();
 loadFilterSettings();
+updateGameControls();
 updateResetOverridesButton();
 loadData();

@@ -1,9 +1,9 @@
-name: Update poe2scout snapshot
+name: Update poe2scout snapshots
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "0 0,12 * * *"
 
 permissions:
   contents: write
@@ -15,28 +15,115 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Download latest snapshot
+      - name: Download latest snapshots
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force -Path data | Out-Null
+          New-Item -ItemType Directory -Force -Path data/poe2_data, data/poe_data | Out-Null
           $headers = @{
             accept = "application/json"
             origin = "https://poe2scout.com"
             referer = "https://poe2scout.com/"
           }
-          $source = "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs"
-          $pairsJson = (Invoke-WebRequest -Uri $source -Headers $headers).Content
-          $updatedAt = (Get-Date).ToUniversalTime().ToString("o")
-          @"
+
+          $snapshots = @(
+            @{
+              source = "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs"
+              path = "data/poe2_data/snapshot.json"
+              historyPath = "data/poe2_data/price-history.json"
+            },
+            @{
+              source = "https://api.poe2scout.com/pc/Leagues/mirage/SnapshotPairs"
+              path = "data/poe_data/snapshot.json"
+              historyPath = "data/poe_data/price-history.json"
+            }
+          )
+
+          function Get-PriceMap($pairs) {
+            $prices = [ordered]@{}
+            foreach ($pair in $pairs) {
+              $entries = @(
+                @{ item = $pair.CurrencyOne; data = $pair.CurrencyOneData },
+                @{ item = $pair.CurrencyTwo; data = $pair.CurrencyTwoData }
+              )
+
+              foreach ($entry in $entries) {
+                $apiId = $entry.item.ApiId
+                $price = [double]$entry.data.RelativePrice
+                if ($apiId -and -not [double]::IsNaN($price) -and -not [double]::IsInfinity($price) -and $price -gt 0) {
+                  $prices[$apiId] = $price
+                }
+              }
+            }
+            return $prices
+          }
+
+          function Get-SnapshotPairs($payload) {
+            if ($payload -is [array]) {
+              return @($payload)
+            }
+
+            if ($payload.pairs) {
+              if ($payload.pairs -is [array]) {
+                return @($payload.pairs)
+              }
+
+              if ($payload.pairs.value) {
+                return @($payload.pairs.value)
+              }
+
+              return @($payload.pairs)
+            }
+
+            if ($payload.value) {
+              return @($payload.value)
+            }
+
+            return @($payload)
+          }
+
+          function Update-PriceHistory($path, $source, $updatedAt, $pairs) {
+            $cutoff = ([datetime]$updatedAt).AddDays(-7)
+            $snapshots = @()
+
+            if (Test-Path -Path $path) {
+              $existing = Get-Content -Path $path -Raw | ConvertFrom-Json
+              if ($existing.snapshots) {
+                $snapshots = @($existing.snapshots | Where-Object {
+                  $_.updatedAt -and ([datetime]$_.updatedAt) -ge $cutoff
+                })
+              }
+            }
+
+            $snapshots += [pscustomobject]@{
+              updatedAt = $updatedAt
+              prices = Get-PriceMap $pairs
+            }
+
+            [pscustomobject]@{
+              updatedAt = $updatedAt
+              source = $source
+              snapshots = $snapshots
+            } | ConvertTo-Json -Depth 100 -Compress | Set-Content -Path $path -Encoding utf8NoBOM
+          }
+
+          foreach ($snapshot in $snapshots) {
+            $source = $snapshot.source
+            $pairsJson = (Invoke-WebRequest -Uri $source -Headers $headers).Content
+            $payload = $pairsJson | ConvertFrom-Json
+            $pairs = Get-SnapshotPairs $payload
+            $updatedAt = (Get-Date).ToUniversalTime().ToString("o")
+            @"
           {
             "updatedAt": "$updatedAt",
             "source": "$source",
             "pairs": $pairsJson
           }
-          "@ | Set-Content -Path data/snapshot.json -Encoding utf8NoBOM
+"@ | Set-Content -Path $snapshot.path -Encoding utf8NoBOM
+            Update-PriceHistory $snapshot.historyPath $source $updatedAt $pairs
+          }
 
-      - name: Commit snapshot
+      - name: Commit snapshots
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Update poe2scout snapshot
-          file_pattern: data/snapshot.json
+          commit_message: Update poe2scout snapshots
+          file_pattern: data/poe2_data/snapshot.json data/poe_data/snapshot.json data/poe2_data/price-history.json data/poe_data/price-history.json

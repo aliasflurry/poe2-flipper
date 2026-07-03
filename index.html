@@ -3,15 +3,20 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PoE 2 Exchange Path Finder</title>
+    <title>PoE Exchange Path Finder</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="shell">
       <section class="workspace">
+        <nav class="game-tabs" aria-label="Game">
+          <button class="game-tab-button active" type="button" data-game="poe2" aria-pressed="true">Path of Exile 2</button>
+          <button class="game-tab-button" type="button" data-game="poe" aria-pressed="false">Path of Exile</button>
+        </nav>
+
         <header class="topbar">
           <div>
-            <p class="eyebrow">Path of Exile 2</p>
+            <p id="gameEyebrow" class="eyebrow">Path of Exile 2</p>
             <h1>Exchange Path Finder</h1>
           </div>
           <div class="topbar-actions">
@@ -22,69 +27,105 @@
           </div>
         </header>
 
-        <form class="controls" id="controls">
-          <label>
-            Start currency
-            <select id="startCurrency"></select>
-          </label>
+        <nav class="tabs" aria-label="Tools">
+          <button class="tab-button active" type="button" data-tab="exchange" aria-pressed="true">Exchange</button>
+          <button class="tab-button" type="button" data-tab="stash" aria-pressed="false">Stash</button>
+        </nav>
 
-          <label>
-            Starting amount
-            <input id="startAmount" type="number" min="0" step="0.01" value="1">
-          </label>
+        <section id="exchangeView" class="tab-view active">
+          <form class="controls" id="controls">
+            <label>
+              Start currency
+              <select id="startCurrency"></select>
+            </label>
 
-          <label>
-            Path length
-            <select id="pathLength">
-              <option value="both">2 and 3 trades</option>
-              <option value="2">2 trades</option>
-              <option value="3">3 trades</option>
-            </select>
-          </label>
+            <label>
+              Starting amount
+              <input id="startAmount" type="number" min="0" step="0.01" value="1">
+            </label>
 
-          <label>
-            Minimum volume
-            <input id="minVolume" type="number" min="0" step="1" value="10">
-          </label>
+            <label>
+              Path length
+              <select id="pathLength">
+                <option value="both">2 and 3 trades</option>
+                <option value="2">2 trades</option>
+                <option value="3">3 trades</option>
+              </select>
+            </label>
 
-          <label>
-            Minimum stock
-            <input id="minStock" type="number" min="0" step="1" value="1">
-          </label>
+            <label>
+              Minimum volume
+              <input id="minVolume" type="number" min="0" step="1" value="10">
+            </label>
 
-          <label>
-            Max gold cost
-            <input id="maxGoldCost" type="number" min="0" step="1" value="0">
-          </label>
+            <label>
+              Minimum stock
+              <input id="minStock" type="number" min="0" step="1" value="1">
+            </label>
 
-          <label>
-            Per page
-            <input id="pageSize" type="number" min="1" max="100" step="1" value="25">
-          </label>
+            <label>
+              Max gold cost
+              <input id="maxGoldCost" type="number" min="0" step="1" value="0">
+            </label>
 
-          <label class="exclude-field" for="excludeSearch">
-            Exclude items
-            <div class="exclude-picker">
-              <div id="excludedChips" class="excluded-chips" aria-live="polite"></div>
-              <input id="excludeSearch" list="excludeOptions" type="search" placeholder="Search item to exclude">
-              <datalist id="excludeOptions"></datalist>
-            </div>
-          </label>
-        </form>
+            <label>
+              Per page
+              <input id="pageSize" type="number" min="1" max="100" step="1" value="25">
+            </label>
 
-        <section class="status-line" aria-live="polite">
-          <span id="status">Loading exchange data...</span>
-          <span id="snapshotMeta"></span>
+            <label class="exclude-field" for="excludeSearch">
+              Exclude items
+              <div class="exclude-picker">
+                <div id="excludedChips" class="excluded-chips" aria-live="polite"></div>
+                <input id="excludeSearch" list="excludeOptions" type="search" placeholder="Search item to exclude">
+                <datalist id="excludeOptions"></datalist>
+              </div>
+            </label>
+          </form>
+
+          <section class="status-line" aria-live="polite">
+            <span id="status">Loading exchange data...</span>
+            <span id="snapshotMeta"></span>
+          </section>
+
+          <section class="sort-bar" aria-label="Sort results">
+            <span>Sort by</span>
+            <button class="sort-button active" type="button" data-sort="gain">Gain %</button>
+            <button class="sort-button" type="button" data-sort="profit">Profit</button>
+          </section>
+
+          <section id="results" class="results"></section>
+          <nav id="pagination" class="pagination" aria-label="Result pages"></nav>
         </section>
 
-        <section class="sort-bar" aria-label="Sort results">
-          <span>Sort by</span>
-          <button class="sort-button active" type="button" data-sort="gain">Gain %</button>
-          <button class="sort-button" type="button" data-sort="profit">Profit</button>
-        </section>
+        <section id="stashView" class="tab-view">
+          <form class="stash-controls" id="stashControls">
+            <label>
+              Account name
+              <input id="stashAccount" type="text" autocomplete="username" placeholder="PoE account name">
+            </label>
 
-        <section id="results" class="results"></section>
-        <nav id="pagination" class="pagination" aria-label="Result pages"></nav>
+            <label>
+              League
+              <input id="stashLeague" type="text" value="Standard" placeholder="League name">
+            </label>
+
+            <label>
+              Stash tab names
+              <input id="stashTabNames" type="text" value="Currency, Essence, Delirium, Expedition, Breach, Ritual, Runes, Maps">
+            </label>
+
+            <button id="stashLookupButton" class="text-button primary-action" type="submit">Calculate stash</button>
+          </form>
+
+          <section class="status-line" aria-live="polite">
+            <span id="stashStatus">Enter an account name to value public listings from matching stash tabs.</span>
+            <span id="stashMeta"></span>
+          </section>
+
+          <section id="stashSummary" class="stash-summary"></section>
+          <section id="stashResults" class="stash-results"></section>
+        </section>
       </section>
     </main>
 
