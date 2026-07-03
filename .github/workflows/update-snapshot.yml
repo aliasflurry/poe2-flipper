@@ -112,13 +112,11 @@ jobs:
             $payload = $pairsJson | ConvertFrom-Json
             $pairs = Get-SnapshotPairs $payload
             $updatedAt = (Get-Date).ToUniversalTime().ToString("o")
-            @"
-          {
-            "updatedAt": "$updatedAt",
-            "source": "$source",
-            "pairs": $pairsJson
-          }
-"@ | Set-Content -Path $snapshot.path -Encoding utf8NoBOM
+            [pscustomobject]@{
+              updatedAt = $updatedAt
+              source = $source
+              pairs = ($pairsJson | ConvertFrom-Json)
+            } | ConvertTo-Json -Depth 100 -Compress | Set-Content -Path $snapshot.path -Encoding utf8NoBOM
             Update-PriceHistory $snapshot.historyPath $source $updatedAt $pairs
           }
 
