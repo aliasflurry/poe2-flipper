@@ -1,0 +1,512 @@
+{
+  "version": 2,
+  "updatedAt": "2026-07-07",
+  "acts": [
+    {
+      "id": "act-1",
+      "num": 1,
+      "title": "Act I",
+      "quests": [
+        {
+          "id": "mercy-for-the-miller",
+          "title": "Mercy for the Miller",
+          "type": "main",
+          "reward": "Uncut Skill Gem",
+          "rewardType": "item",
+          "steps": [
+            { "id": "talk-wounded-man", "text": "Talk to the Wounded Man on the Riverbank" },
+            { "id": "reach-clearfell", "text": "Travel through the Riverbank to Clearfell" },
+            { "id": "slay-bloated-miller", "text": "Slay The Bloated Miller" },
+            { "id": "enter-encampment", "text": "Enter Clearfell Encampment and talk to Renly" }
+          ]
+        },
+        {
+          "id": "secrets-in-the-dark",
+          "title": "Secrets in the Dark",
+          "type": "main",
+          "reward": "Runed Spikes (quest item)",
+          "rewardType": "item",
+          "steps": [
+            { "id": "engrave-skill-gem", "text": "Engrave your Uncut Skill Gem to unlock the Clearfell gate" },
+            { "id": "travel-clearfell", "text": "Travel through Clearfell toward The Grelwood" },
+            { "id": "enter-grelwood", "text": "Enter The Grelwood" },
+            { "id": "collect-runes", "text": "Collect all Runes of Power from Obelisks of Rust in The Red Vale" },
+            { "id": "defeat-rust-king", "text": "Defeat the Rust King for the final Rune of Power" },
+            { "id": "forge-rune-spikes", "text": "Bring the Runes to Renly to forge into Rune Spikes" },
+            { "id": "free-hooded-one", "text": "Stab the Rune Spikes into the Tree of Souls to free The Hooded One" },
+            { "id": "speak-una", "text": "Return to Clearfell Encampment and speak to Una" }
+          ]
+        },
+        {
+          "id": "the-mysterious-shade",
+          "title": "The Mysterious Shade",
+          "type": "main",
+          "steps": [
+            { "id": "enter-grim-tangle", "text": "Travel through The Grim Tangle" },
+            { "id": "reach-cemetery", "text": "Reach Cemetery of the Eternals" },
+            { "id": "enter-mausoleum", "text": "Enter Mausoleum of the Praetor" },
+            { "id": "enter-tomb", "text": "Enter Tomb of the Consort" },
+            { "id": "defeat-shade", "text": "Defeat the Mysterious Shade" }
+          ]
+        },
+        {
+          "id": "sorrow-among-stones",
+          "title": "Sorrow Among Stones",
+          "type": "main",
+          "reward": "Count Lachlann's Ring + Uncut Support Gem",
+          "rewardType": "item",
+          "steps": [
+            { "id": "explore-cemetery", "text": "Explore Cemetery of the Eternals for Count Lachlann's ring" },
+            { "id": "defeat-lachlann", "text": "Defeat Count Lachlann and claim his ring" },
+            { "id": "return-ring", "text": "Return to Clearfell Encampment with the ring" }
+          ]
+        },
+        {
+          "id": "trail-of-corruption-1",
+          "title": "The Trail of Corruption",
+          "type": "main",
+          "reward": "Uncut Skill Gem (Lv. 5)",
+          "rewardType": "item",
+          "steps": [
+            { "id": "enter-hunting-grounds", "text": "Enter the Hunting Grounds" },
+            { "id": "reach-farmlands", "text": "Travel to Ogham Farmlands" },
+            { "id": "enter-village", "text": "Enter Ogham Village and defeat The Executioner" },
+            { "id": "free-leitis", "text": "Free Leitis from the execution platform" },
+            { "id": "talk-leitis", "text": "Return to Clearfell Encampment and talk to Leitis" }
+          ]
+        },
+        {
+          "id": "mad-wolf-of-ogham",
+          "title": "The Mad Wolf of Ogham",
+          "type": "main",
+          "reward": "Unlocks Act II",
+          "rewardType": "unlocks",
+          "steps": [
+            { "id": "reach-manor-ramparts", "text": "Travel to The Manor Ramparts" },
+            { "id": "enter-ogham-manor", "text": "Enter The Ogham Manor" },
+            { "id": "defeat-geonor", "text": "Defeat Count Geonor in the arena" },
+            { "id": "talk-hooded-one", "text": "Return to Clearfell Encampment and talk to The Hooded One" }
+          ]
+        },
+        {
+          "id": "treacherous-ground",
+          "title": "Treacherous Ground",
+          "type": "side",
+          "reward": "Uncut Support Gem + 100 Gold",
+          "rewardType": "item",
+          "steps": [
+            { "id": "find-mud-burrow", "text": "Find the Mud Burrow in Clearfell" },
+            { "id": "defeat-devourer", "text": "Defeat the Devourer" },
+            { "id": "talk-renly-reward", "text": "Talk to Renly to collect your reward" }
+          ]
+        },
+        {
+          "id": "finding-the-forge",
+          "title": "Finding the Forge",
+          "type": "side",
+          "reward": "Salvage Bench",
+          "rewardType": "unlocks",
+          "steps": [
+            { "id": "find-forge", "text": "Complete Finding the Forge in Ogham Village" },
+            { "id": "unlock-salvage", "text": "Unlock the Salvage Bench in Clearfell Encampment" }
+          ]
+        },
+        {
+          "id": "ominous-altars",
+          "title": "Ominous Altars",
+          "type": "side",
+          "reward": "+30 Spirit",
+          "rewardType": "permanent",
+          "steps": [
+            { "id": "enter-freythorn", "text": "Enter Freythorn" },
+            { "id": "defeat-king-mists", "text": "Defeat The King in the Mists" },
+            { "id": "talk-finn", "text": "Talk to Finn to receive the Spirit reward" }
+          ]
+        },
+        {
+          "id": "lost-lute",
+          "title": "The Lost Lute",
+          "type": "side",
+          "reward": "+2 Weapon Set Passive Points",
+          "rewardType": "points",
+          "steps": [
+            { "id": "find-lute", "text": "Find Una's Lute in Ogham Farmlands" },
+            { "id": "deliver-lute", "text": "Deliver the lute to Una" }
+          ]
+        },
+        {
+          "id": "act1-optional-bosses",
+          "title": "Optional Bosses & Secrets",
+          "type": "optional",
+          "steps": [
+            { "id": "defeat-beira", "text": "Defeat Beira of the Rotten Pack (Clearfell)", "reward": "+10% Cold Resistance", "rewardType": "permanent" },
+            { "id": "defeat-crowbell", "text": "Defeat The Crowbell (Hunting Grounds)", "reward": "+2 Weapon Set Passive Points", "rewardType": "points" },
+            { "id": "defeat-candlemass", "text": "Defeat Candlemass, the Living Rite (Ogham Manor)", "reward": "+20 Maximum Life", "rewardType": "permanent" },
+            { "id": "mysterious-campsite", "text": "Find the Mysterious Campsite stash in Clearfell", "reward": "Uncut Skill Gem", "rewardType": "item" },
+            { "id": "defeat-brambleghast", "text": "Defeat The Brambleghast in The Grelwood", "reward": "Uncut Skill Gem", "rewardType": "item" },
+            { "id": "dryadic-ritual", "text": "Disrupt the Dryadic Ritual", "reward": "Uncut Skill Gem", "rewardType": "item" },
+            { "id": "defeat-vargir", "text": "Defeat Vargir the Feral Mutt in the Crop Circle", "reward": "Uncut Skill Gem", "rewardType": "item" },
+            { "id": "gallows-rope", "text": "Cut the rope at The Gallows (The Manor Ramparts)", "reward": "Uncut Support Gem", "rewardType": "item" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act-2",
+      "num": 2,
+      "title": "Act II",
+      "quests": [
+        {
+          "id": "earning-passage",
+          "title": "Earning Passage",
+          "type": "main",
+          "reward": "Uncut Skill Gem (Lv. 5) + 200 Gold",
+          "rewardType": "item",
+          "steps": [
+            { "id": "travel-vastiri", "text": "Travel to Vastiri Outskirts" },
+            { "id": "reach-caravan", "text": "Reach The Ardura Caravan" },
+            { "id": "talk-asala", "text": "Speak with Sekhema Asala" }
+          ]
+        },
+        {
+          "id": "trail-of-corruption-2",
+          "title": "The Trail of Corruption (Part 2)",
+          "type": "main",
+          "reward": "Uncut Skill Gem (Lv. 7)",
+          "rewardType": "item",
+          "steps": [
+            { "id": "continue-corruption", "text": "Continue The Trail of Corruption at the caravan" },
+            { "id": "learn-horn", "text": "Speak with Zarka about reassembling the Horn of Orbala" }
+          ]
+        },
+        {
+          "id": "theft-of-ivory",
+          "title": "A Theft of Ivory",
+          "type": "main",
+          "reward": "The Horn of the Vastiri + 400 Gold",
+          "rewardType": "item",
+          "steps": [
+            { "id": "travel-mastodon", "text": "Travel to Mastodon Badlands" },
+            { "id": "enter-bone-pits", "text": "Enter The Bone Pits" },
+            { "id": "retrieve-tusk", "text": "Retrieve the Tusk of Ekbab" },
+            { "id": "return-tusk", "text": "Return the Tusk to the caravan" }
+          ]
+        },
+        {
+          "id": "city-of-seven-waters",
+          "title": "The City of Seven Waters",
+          "type": "main",
+          "reward": "Uncut Support Gem (Lv. 1) + 400 Gold",
+          "rewardType": "item",
+          "steps": [
+            { "id": "travel-keth", "text": "Journey to The Lost City of Keth" },
+            { "id": "enter-buried-shrines", "text": "Explore Buried Shrines beneath Keth" },
+            { "id": "obtain-essence", "text": "Obtain the Essence of Water" },
+            { "id": "return-essence", "text": "Return the Essence to the caravan" }
+          ]
+        },
+        {
+          "id": "crown-of-stone",
+          "title": "A Crown of Stone",
+          "type": "main",
+          "reward": "Uncut Support Gem (Lv. 1) + 400 Gold",
+          "rewardType": "item",
+          "steps": [
+            { "id": "travel-valley", "text": "Travel to Valley of Titans" },
+            { "id": "obtain-fire", "text": "Obtain the Primordial Fire" },
+            { "id": "assemble-horn", "text": "Reassemble the Horn of Orbala at the caravan" },
+            { "id": "defeat-king", "text": "Use the Horn to defeat the King" },
+            { "id": "finish-corruption-2", "text": "Complete The Trail of Corruption (Part 2)" }
+          ]
+        },
+        {
+          "id": "ancient-vows",
+          "title": "Ancient Vows",
+          "type": "side",
+          "reward": "+1 Charm Slot + Choice: +30% Charm Charges or +15% Mana Recovery",
+          "rewardType": "choice",
+          "steps": [
+            { "id": "collect-kabala-relic", "text": "Obtain the Kabala Clan Relic (from A Theft of Ivory)" },
+            { "id": "collect-sun-relic", "text": "Obtain the Sun Clan Relic (from City of Seven Waters)" },
+            { "id": "deliver-relics", "text": "Deliver both relics to the altar in Valley of Titans" }
+          ]
+        },
+        {
+          "id": "ascent-to-power",
+          "title": "Ascent to Power",
+          "type": "side",
+          "reward": "First Ascendancy",
+          "rewardType": "ascendancy",
+          "steps": [
+            { "id": "find-trial", "text": "Locate Traitor's Passage" },
+            { "id": "defeat-balbala", "text": "Defeat Balbala, the Traitor" },
+            { "id": "choose-ascendancy", "text": "Choose your Ascendancy class" }
+          ]
+        },
+        {
+          "id": "act2-optional-bosses",
+          "title": "Optional Bosses & Rewards",
+          "type": "optional",
+          "steps": [
+            { "id": "defeat-kabala", "text": "Defeat Kabala, Constrictor Queen (Keth)", "reward": "+2 Weapon Set Passive Points", "rewardType": "points" },
+            { "id": "sisters-garukhan", "text": "Interact with the Sisters of Garukhan monument (The Spires of Deshar)", "reward": "+10% Lightning Resistance", "rewardType": "permanent" },
+            { "id": "traditions-toll", "text": "Find the Final Letter and deliver it to Shambrin (Deshar)", "reward": "+2 Weapon Set Passive Points", "rewardType": "points" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act-3",
+      "num": 3,
+      "title": "Act III",
+      "quests": [
+        {
+          "id": "legacy-of-the-vaal",
+          "title": "Legacy of the Vaal",
+          "type": "main",
+          "reward": "Unlocks Act IV / Cruel Mode",
+          "rewardType": "unlocks",
+          "steps": [
+            { "id": "enter-sandswept", "text": "Enter Sandswept Marsh" },
+            { "id": "reach-ziggurat", "text": "Reach the Ziggurat Encampment" },
+            { "id": "explore-utzaal", "text": "Explore the Vaal ruins and progress the main storyline" },
+            { "id": "defeat-act3-boss", "text": "Defeat the Act III boss" },
+            { "id": "use-time-portal", "text": "Step through the Time Portal to continue" }
+          ]
+        },
+        {
+          "id": "treasures-of-utzaal",
+          "title": "Treasures of Utzaal",
+          "type": "side",
+          "reward": "Uncut Skill Gem + Artificer's Orb + 1000 Gold",
+          "rewardType": "item",
+          "steps": [
+            { "id": "find-molten-vault", "text": "Find The Molten Vault in The Drowned City (look for monkey statues)" },
+            { "id": "clear-molten-vault", "text": "Clear out The Molten Vault" },
+            { "id": "defeat-mektul", "text": "Defeat Mektul, the Forgemaster" },
+            { "id": "deliver-hammer", "text": "Deliver The Hammer of Kamasa to Oswald in Ziggurat Encampment" }
+          ]
+        },
+        {
+          "id": "slithering-dead",
+          "title": "The Slithering Dead",
+          "type": "side",
+          "reward": "Choice: +25% Stun Threshold or +30% Elemental Ailment Threshold or +25% Mana Regen Rate",
+          "rewardType": "choice",
+          "steps": [
+            { "id": "enter-venom-crypts", "text": "Enter The Venom Crypts" },
+            { "id": "find-venom", "text": "Find the Corpse-snake Venom" },
+            { "id": "deliver-venom", "text": "Deliver the Venom to Servi and choose your reward" }
+          ]
+        },
+        {
+          "id": "tribal-vengeance",
+          "title": "Tribal Vengeance",
+          "type": "side",
+          "reward": "Choice of Charm (Thawing / Staunching / Antidote / Dousing / Grounding)",
+          "rewardType": "choice",
+          "steps": [
+            { "id": "find-azak-village", "text": "Find the Azak Village beyond The Matlan Waterways" },
+            { "id": "defeat-ignagduk-tv", "text": "Enter the Azak Bog and slay Ignagduk, the Bog Witch" },
+            { "id": "collect-spear", "text": "Pick up Ignagduk's Ghastly Spear as proof" },
+            { "id": "talk-servi", "text": "Talk to Servi in Ziggurat Encampment to collect your Charm" }
+          ]
+        },
+        {
+          "id": "trials-of-chaos",
+          "title": "The Trials of Chaos",
+          "type": "side",
+          "reward": "Second Ascendancy",
+          "rewardType": "ascendancy",
+          "steps": [
+            { "id": "find-chimeral-wetlands", "text": "Find Chimeral Wetlands" },
+            { "id": "defeat-xyclucian", "text": "Defeat Xyclucian, the Chimera" },
+            { "id": "choose-second-ascendancy", "text": "Choose your second Ascendancy" }
+          ]
+        },
+        {
+          "id": "act3-optional-bosses",
+          "title": "Optional Bosses & Rewards",
+          "type": "optional",
+          "steps": [
+            { "id": "defeat-mighty-silverfist", "text": "Defeat Mighty Silverfist (Jungle Ruins)", "reward": "+2 Weapon Set Passive Points", "rewardType": "points" },
+            { "id": "defeat-ignagduk", "text": "Defeat Ignagduk, the Bog Witch (The Azak Bog)", "reward": "+30 Spirit", "rewardType": "permanent" },
+            { "id": "defeat-blackjaw", "text": "Defeat Blackjaw, the Remnant (Jiquani's Machinarium)", "reward": "+10% Fire Resistance", "rewardType": "permanent" },
+            { "id": "sacrificial-heart", "text": "Acquire and sacrifice the Sacrificial Heart (Aggorat altar)", "reward": "+2 Weapon Set Passive Points", "rewardType": "points" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act-4",
+      "num": 4,
+      "title": "Act IV",
+      "quests": [
+        {
+          "id": "the-search",
+          "title": "The Search",
+          "type": "main",
+          "reward": "Boat Charter",
+          "rewardType": "item",
+          "steps": [
+            { "id": "reach-kingsmarch", "text": "Arrive in Kingsmarch and talk to Doryani" },
+            { "id": "meet-alva", "text": "Meet Alva and speak to Rog about hiring a ship" },
+            { "id": "take-charter", "text": "Take the Boat Charter and talk to Makoru" },
+            { "id": "explore-islands", "text": "Set sail and explore the islands for weapon pieces" },
+            { "id": "witness-hooded-one", "text": "Witness The Hooded One gather each weapon piece" },
+            { "id": "travel-arastas", "text": "Travel to Arastas and investigate" },
+            { "id": "defeat-torvian", "text": "Defeat Torvian, Hand of the Saviour" },
+            { "id": "defeat-benedictus", "text": "Defeat Benedictus, First Herald of Utopia" },
+            { "id": "reforge-weapon", "text": "Witness the Hooded One reforge the Weapon" },
+            { "id": "pursue-tavakai", "text": "Sail to Ngakanu and pursue Tavakai" },
+            { "id": "defeat-tavakai", "text": "Defeat Tavakai in the Heart of the Tribe" }
+          ]
+        },
+        {
+          "id": "abandoned-prison",
+          "title": "Abandoned Prison",
+          "type": "main",
+          "reward": "Choice: +30% Life Flask Recovery or +30% Mana Flask Recovery",
+          "rewardType": "choice",
+          "steps": [
+            { "id": "enter-prison", "text": "Enter the Abandoned Prison" },
+            { "id": "find-goddess", "text": "Find the Goddess of Justice" },
+            { "id": "choose-flask", "text": "Choose your flask recovery reward" }
+          ]
+        },
+        {
+          "id": "dark-mists",
+          "title": "Dark Mists",
+          "type": "main",
+          "reward": "+2 Weapon Set Passive Points",
+          "rewardType": "points",
+          "steps": [
+            { "id": "enter-dark-mists", "text": "Enter Kedge Bay and travel into the Dark Mists" },
+            { "id": "complete-dark-mists", "text": "Complete Dark Mists objectives" }
+          ]
+        },
+        {
+          "id": "land-of-the-kin",
+          "title": "Land of the Kin",
+          "type": "main",
+          "steps": [
+            { "id": "explore-isle-of-kin", "text": "Explore the Isle of Kin" },
+            { "id": "enter-volcanic-warrens", "text": "Enter the Volcanic Warrens" },
+            { "id": "defeat-krutog", "text": "Slay Krutog, the Kin Tyrant" }
+          ]
+        },
+        {
+          "id": "shrike-island",
+          "title": "Shrike Island",
+          "type": "main",
+          "reward": "Choice: Ring (Ruby / Sapphire / Topaz / Amethyst) or Uncut Skill Gem",
+          "rewardType": "item",
+          "steps": [
+            { "id": "sail-shrike", "text": "Sail to Shrike Island" },
+            { "id": "defeat-scourge", "text": "Kill the Scourge of the Skies" }
+          ]
+        },
+        {
+          "id": "whakapanu-island",
+          "title": "Whakapanu Island",
+          "type": "main",
+          "reward": "Rakiata's Lesson (choice of defensive bonuses)",
+          "rewardType": "choice",
+          "steps": [
+            { "id": "sail-whakapanu", "text": "Sail to Whakapanu Island" },
+            { "id": "defeat-great-white", "text": "Defeat Great White One" },
+            { "id": "tribal-medicine", "text": "Hand the Shark Fin to Kaimana for Rakiata's Lesson" }
+          ]
+        },
+        {
+          "id": "utopia",
+          "title": "Utopia",
+          "type": "main",
+          "steps": [
+            { "id": "travel-arastas-utopia", "text": "Travel to Arastas and explore" }
+          ]
+        },
+        {
+          "id": "search-continuation",
+          "title": "The Search (Continuation)",
+          "type": "main",
+          "steps": [
+            { "id": "finish-search", "text": "Complete The Search continuation and act finale" },
+            { "id": "act4-complete", "text": "Finish Act IV storyline" }
+          ]
+        },
+        {
+          "id": "act4-optional-rewards",
+          "title": "Optional Bosses & Rewards",
+          "type": "optional",
+          "steps": [
+            { "id": "navalis-rest", "text": "Find Navali's Rest (Eye of Hinekora)", "reward": "+5% Maximum Mana", "rewardType": "permanent" },
+            { "id": "halls-of-dead", "text": "Complete Halls of the Dead — defeat Yama the White", "reward": "+2 Weapon Set Passive Points + Ancestral Tattoos", "rewardType": "points" },
+            { "id": "trial-of-ancestors", "text": "Complete Trial of the Ancestors (Eye of Hinekora)", "reward": "Choice: Tattoo of Ngamahu / Tawhoa / Tasalio (+5 Stat or +5% Resistance)", "rewardType": "choice" },
+            { "id": "kaoms-lesson", "text": "Obtain Kaom's Lesson from the Izaro altar", "reward": "Choice: +30% Armour/Evasion/ES or Rakiata's Lesson bonuses", "rewardType": "choice" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interludes",
+      "num": 0,
+      "title": "Interludes",
+      "quests": [
+        {
+          "id": "recruit-vaal",
+          "title": "Recruit the Vaal",
+          "type": "main",
+          "steps": [
+            { "id": "start-recruit-vaal", "text": "Begin Recruit the Vaal interlude quest" },
+            { "id": "complete-recruit-vaal", "text": "Complete all Recruit the Vaal objectives" }
+          ]
+        },
+        {
+          "id": "recruit-ezomytes",
+          "title": "Recruit the Ezomytes",
+          "type": "main",
+          "steps": [
+            { "id": "start-recruit-ezomytes", "text": "Begin Recruit the Ezomytes interlude quest" },
+            { "id": "complete-recruit-ezomytes", "text": "Complete all Recruit the Ezomytes objectives" }
+          ]
+        },
+        {
+          "id": "recruit-maraketh",
+          "title": "Recruit the Maraketh",
+          "type": "main",
+          "steps": [
+            { "id": "start-recruit-maraketh", "text": "Begin Recruit the Maraketh interlude quest" },
+            { "id": "complete-recruit-maraketh", "text": "Complete all Recruit the Maraketh objectives" }
+          ]
+        },
+        {
+          "id": "siege-of-oriath",
+          "title": "Siege of Oriath",
+          "type": "main",
+          "reward": "Book of Specialisation (+2 Weapon Set Passive Points)",
+          "rewardType": "points",
+          "steps": [
+            { "id": "speak-hooded-one-kingsmarch", "text": "Speak to The Hooded One in Kingsmarch" },
+            { "id": "take-book", "text": "Take the Book of Specialisation reward" },
+            { "id": "use-book", "text": "Use the Book of Specialisation to unlock passive points" },
+            { "id": "travel-oriath", "text": "Travel toward Oriath to complete the Interludes" }
+          ]
+        },
+        {
+          "id": "interlude-optional-rewards",
+          "title": "Optional Bosses & Rewards",
+          "type": "optional",
+          "steps": [
+            { "id": "defeat-oswin", "text": "Defeat Oswin, the Dread Warden (Wolvenhold)", "reward": "+2 Weapon Set Passive Points", "rewardType": "points" },
+            { "id": "molten-shrine", "text": "Find the Molten Shrine (The Khari Crossing)", "reward": "+5% Maximum Life", "rewardType": "permanent" },
+            { "id": "defeat-akthi", "text": "Defeat Akthi, the Final Sting and Anundr, the Sandworm (The Khari Crossing)", "reward": "+2 Weapon Set Passive Points", "rewardType": "points" },
+            { "id": "seven-pillars", "text": "Interact with The Seven Pillars (Qimah)", "reward": "Choice of one permanent Boon (or Alima's Disgrace curse)", "rewardType": "choice" },
+            { "id": "defeat-lythara", "text": "Defeat Lythara, the Wayward Spear (Kriar Village)", "reward": "+40 Spirit", "rewardType": "permanent" },
+            { "id": "howling-winds", "text": "Complete Howling Winds — defeat The Abominable Yeti (Howling Caves)", "reward": "+2 Weapon Set Passive Points", "rewardType": "points" }
+          ]
+        }
+      ]
+    }
+  ]
+}

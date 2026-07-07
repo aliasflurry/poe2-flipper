@@ -8,7 +8,7 @@
   </head>
   <body>
     <main class="shell">
-      <section class="workspace">
+      <section class="workspace" data-game="poe2">
         <nav class="game-tabs" aria-label="Game">
           <button class="game-tab-button active" type="button" data-game="poe2" aria-pressed="true">Path of Exile 2</button>
           <button class="game-tab-button" type="button" data-game="poe" aria-pressed="false">Path of Exile</button>
@@ -30,6 +30,7 @@
         <nav class="tabs" aria-label="Tools">
           <button class="tab-button active" type="button" data-tab="exchange" aria-pressed="true">Exchange</button>
           <button class="tab-button" type="button" data-tab="stash" aria-pressed="false">Stash</button>
+          <button class="tab-button" type="button" data-tab="campaign" data-poe2-only aria-pressed="false">Campaign</button>
         </nav>
 
         <section id="exchangeView" class="tab-view active">
@@ -126,6 +127,28 @@
           <section id="stashSummary" class="stash-summary"></section>
           <section id="stashResults" class="stash-results"></section>
         </section>
+
+        <section id="campaignView" class="tab-view">
+          <header class="campaign-header">
+            <div class="campaign-header-left">
+              <h2>Campaign Checklist</h2>
+              <p id="campaignSummary" class="campaign-summary">Loading progress...</p>
+              <div class="campaign-overall-progress" role="progressbar" aria-label="Overall progress">
+                <div id="campaignOverallBar" class="campaign-overall-progress-fill" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="campaign-header-actions">
+              <button id="campaignResetButton" class="text-button" type="button">Reset progress</button>
+            </div>
+          </header>
+
+          <section class="campaign-status-line" aria-live="polite">
+            <span id="campaignStatus"></span>
+            <span id="campaignMeta"></span>
+          </section>
+
+          <section id="campaignActs" class="campaign-acts"></section>
+        </section>
       </section>
     </main>
 
@@ -154,6 +177,7 @@
       </article>
     </template>
 
+    <script src="campaign.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
