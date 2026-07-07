@@ -70,6 +70,14 @@ const els = {
   tabButtons: document.querySelectorAll(".tab-button"),
   exchangeView: document.querySelector("#exchangeView"),
   stashView: document.querySelector("#stashView"),
+  campaignView: document.querySelector("#campaignView"),
+  campaignTabButton: document.querySelector('.tab-button[data-tab="campaign"]'),
+  campaignActs: document.querySelector("#campaignActs"),
+  campaignSummary: document.querySelector("#campaignSummary"),
+  campaignStatus: document.querySelector("#campaignStatus"),
+  campaignMeta: document.querySelector("#campaignMeta"),
+  campaignResetButton: document.querySelector("#campaignResetButton"),
+  workspace: document.querySelector(".workspace"),
   stashControls: document.querySelector("#stashControls"),
   stashAccount: document.querySelector("#stashAccount"),
   stashLeague: document.querySelector("#stashLeague"),
@@ -1285,21 +1293,26 @@ function commitRateInput(edge, input) {
 }
 
 function switchTab(tabName) {
-  const isStash = tabName === "stash";
+  const activeTab = tabName === "stash" ? "stash" : tabName === "campaign" ? "campaign" : "exchange";
 
-  els.exchangeView.classList.toggle("active", !isStash);
-  els.stashView.classList.toggle("active", isStash);
+  els.exchangeView.classList.toggle("active", activeTab === "exchange");
+  els.stashView.classList.toggle("active", activeTab === "stash");
+  els.campaignView.classList.toggle("active", activeTab === "campaign");
 
   for (const button of els.tabButtons) {
-    const isActive = button.dataset.tab === tabName;
+    const isActive = button.dataset.tab === activeTab;
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
   }
 }
 
+window.switchTab = switchTab;
+
 function updateGameControls() {
   const game = currentGame();
   els.gameEyebrow.textContent = game.label;
+  els.workspace?.setAttribute("data-game", state.gameId);
+  window.CampaignModule?.setCampaignTabVisible(state.gameId === "poe2", els);
 
   for (const button of els.gameButtons) {
     const isActive = button.dataset.game === state.gameId;
@@ -1826,4 +1839,5 @@ loadRateOverrides();
 loadFilterSettings();
 updateGameControls();
 updateResetOverridesButton();
+window.CampaignModule?.initCampaign(els);
 loadData();

@@ -979,3 +979,475 @@ h2 {
     min-width: 620px;
   }
 }
+
+.workspace[data-game="poe"] .tab-button[data-poe2-only] {
+  display: none;
+}
+
+/* ── Campaign: header ───────────────────────────────────────── */
+
+.campaign-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 26px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.campaign-header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.campaign-header h2 {
+  font-size: 1.4rem;
+  line-height: 1.2;
+  margin: 0 0 6px;
+}
+
+.campaign-summary {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin: 0 0 12px;
+}
+
+.campaign-overall-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  max-width: 340px;
+}
+
+.campaign-overall-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green) 0%, var(--gold) 100%);
+  border-radius: 999px;
+  transition: width 0.35s ease;
+  min-width: 2px;
+}
+
+.campaign-header-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 0 0 auto;
+  padding-top: 4px;
+}
+
+/* ── Campaign: status line ─────────────────────────────────── */
+
+.campaign-status-line {
+  padding: 10px 26px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.campaign-status-line:empty {
+  display: none;
+}
+
+/* ── Campaign: act list ────────────────────────────────────── */
+
+.campaign-acts {
+  display: grid;
+  gap: 12px;
+  padding: 20px 26px 32px;
+}
+
+/* ── Campaign: act card ────────────────────────────────────── */
+
+.campaign-act {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.campaign-act.is-complete {
+  border-color: rgba(91, 191, 152, 0.35);
+}
+
+.campaign-act-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--panel-strong);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s ease;
+}
+
+.campaign-act-header:hover {
+  background: color-mix(in srgb, var(--panel-strong) 80%, var(--gold) 4%);
+}
+
+.campaign-act-toggle {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--muted);
+  transition: transform 0.18s ease, color 0.12s ease;
+}
+
+.campaign-act-toggle::before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid currentColor;
+  transition: transform 0.18s ease;
+}
+
+.campaign-act-toggle[aria-expanded="false"]::before {
+  transform: rotate(-90deg);
+}
+
+.campaign-act-toggle[aria-expanded="true"] {
+  color: var(--gold);
+}
+
+.campaign-act-title-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.campaign-act-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.campaign-act-title-row h2 {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.campaign-act-count {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.campaign-act.is-complete .campaign-act-count {
+  color: var(--green);
+}
+
+.campaign-act-progress {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+.campaign-act-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green) 0%, var(--gold) 100%);
+  border-radius: 999px;
+  transition: width 0.25s ease;
+  min-width: 0;
+}
+
+.campaign-act.is-complete .campaign-act-progress-fill {
+  background: var(--green);
+}
+
+/* ── Campaign: act body ────────────────────────────────────── */
+
+.campaign-act-body {
+  display: grid;
+  gap: 0;
+}
+
+.campaign-act-body[hidden] {
+  display: none;
+}
+
+/* ── Campaign: quest block ─────────────────────────────────── */
+
+.campaign-quest {
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+  border-left: 3px solid transparent;
+  transition: border-color 0.12s ease;
+}
+
+.campaign-quest:first-child {
+  border-top: none;
+}
+
+.campaign-quest[data-type="main"] {
+  border-left-color: rgba(215, 168, 79, 0.5);
+}
+
+.campaign-quest[data-type="side"] {
+  border-left-color: rgba(91, 191, 152, 0.5);
+}
+
+.campaign-quest[data-type="optional"] {
+  border-left-color: rgba(169, 160, 146, 0.25);
+}
+
+.campaign-quest-header {
+  margin-bottom: 10px;
+}
+
+.quest-type-badge {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.quest-type-main {
+  color: var(--gold);
+  background: rgba(215, 168, 79, 0.12);
+  border: 1px solid rgba(215, 168, 79, 0.35);
+}
+
+.quest-type-side {
+  color: var(--green);
+  background: rgba(91, 191, 152, 0.1);
+  border: 1px solid rgba(91, 191, 152, 0.35);
+}
+
+.quest-type-optional {
+  color: var(--muted);
+  background: rgba(169, 160, 146, 0.08);
+  border: 1px solid rgba(169, 160, 146, 0.22);
+}
+
+/* ── Campaign: quest reward ────────────────────────────────── */
+
+.campaign-quest-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.campaign-quest-title-row h3 {
+  flex: 1;
+  font-size: 0.97rem;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.campaign-quest-reward-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 7px;
+  flex-wrap: wrap;
+}
+
+.campaign-quest-reward-label {
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* ── Reward pills ──────────────────────────────────────────── */
+
+.reward-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Quest-level: slightly larger */
+.reward-pill:not(.reward-pill-step) {
+  font-size: 0.8rem;
+  padding: 3px 11px;
+}
+
+/* Step-level: compact, on its own line */
+.reward-pill-step {
+  display: block;
+  width: fit-content;
+  margin-top: 5px;
+}
+
+/* Permanent stat: gold */
+.reward-permanent {
+  color: #e8c96a;
+  background: rgba(215, 168, 79, 0.15);
+  border: 1px solid rgba(215, 168, 79, 0.4);
+}
+
+/* Passive skill points: green */
+.reward-points {
+  color: #7fd4b0;
+  background: rgba(91, 191, 152, 0.13);
+  border: 1px solid rgba(91, 191, 152, 0.38);
+}
+
+/* Ascendancy: purple */
+.reward-ascendancy {
+  color: #c084fc;
+  background: rgba(192, 132, 252, 0.12);
+  border: 1px solid rgba(192, 132, 252, 0.38);
+}
+
+/* Choice: teal */
+.reward-choice {
+  color: #67d4e6;
+  background: rgba(103, 212, 230, 0.1);
+  border: 1px solid rgba(103, 212, 230, 0.33);
+}
+
+/* Item: neutral silver */
+.reward-item {
+  color: #c8c2b8;
+  background: rgba(200, 194, 184, 0.08);
+  border: 1px solid rgba(200, 194, 184, 0.25);
+}
+
+/* Unlocks: muted */
+.reward-unlocks {
+  color: var(--muted);
+  background: rgba(169, 160, 146, 0.08);
+  border: 1px solid rgba(169, 160, 146, 0.22);
+}
+
+/* ── Campaign: step list ───────────────────────────────────── */
+
+.campaign-step-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.campaign-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 7px 9px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.1s ease, border-color 0.1s ease;
+}
+
+.campaign-step:hover {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+/* Custom checkbox */
+.campaign-step input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  border: 1.5px solid var(--line);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.campaign-step input[type="checkbox"]:hover {
+  border-color: var(--gold);
+}
+
+.campaign-step input[type="checkbox"]:checked {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.campaign-step input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 9px;
+  border: 2px solid #11100e;
+  border-top: none;
+  border-left: none;
+  transform: rotate(42deg);
+}
+
+.campaign-step-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.campaign-step-text {
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text);
+  transition: color 0.15s ease;
+}
+
+.campaign-step.done .campaign-step-text {
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-color: rgba(169, 160, 146, 0.45);
+}
+
+.campaign-step.done .reward-pill {
+  opacity: 0.45;
+}
+
+/* ── Campaign: responsive ──────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .campaign-header,
+  .campaign-status-line,
+  .campaign-acts {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .campaign-header {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .campaign-header-actions {
+    padding-top: 0;
+  }
+
+  .campaign-overall-progress {
+    max-width: 100%;
+  }
+}
