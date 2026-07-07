@@ -1,4 +1,4 @@
-const CAMPAIGN_STORAGE_KEY = "poe2-campaign-checklist";
+const CAMPAIGN_STORAGE_KEY = "poe2-campaign-v3";
 const CAMPAIGN_DATA_URL = "data/poe2_data/campaign-checklist.json";
 
 const campaignState = {
@@ -8,8 +8,8 @@ const campaignState = {
   saveTimer: null
 };
 
-function stepKey(actId, questId, stepId) {
-  return `${actId}.${questId}.${stepId}`;
+function objKey(actId, areaId, objId) {
+  return `${actId}.${areaId}.${objId}`;
 }
 
 function loadCampaignProgress() {
@@ -42,7 +42,7 @@ function saveCampaignProgress() {
       }
 
       localStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify({
-        version: campaignState.data?.version || 1,
+        version: campaignState.data?.version || 3,
         completed
       }));
     } catch {
@@ -51,12 +51,12 @@ function saveCampaignProgress() {
   }, 200);
 }
 
-function isStepCompleted(actId, questId, stepId) {
-  return campaignState.completed.get(stepKey(actId, questId, stepId)) === true;
+function isObjCompleted(actId, areaId, objId) {
+  return campaignState.completed.get(objKey(actId, areaId, objId)) === true;
 }
 
-function toggleStep(actId, questId, stepId, checked) {
-  const key = stepKey(actId, questId, stepId);
+function toggleObj(actId, areaId, objId, checked) {
+  const key = objKey(actId, areaId, objId);
   if (checked) {
     campaignState.completed.set(key, true);
   } else {
@@ -65,60 +65,42 @@ function toggleStep(actId, questId, stepId, checked) {
   saveCampaignProgress();
 }
 
-function countActProgress(act) {
+function countAreaProgress(act, area) {
   let total = 0;
   let done = 0;
-
-  for (const quest of act.quests) {
-    for (const step of quest.steps) {
-      total += 1;
-      if (isStepCompleted(act.id, quest.id, step.id)) {
-        done += 1;
-      }
-    }
+  for (const obj of area.objectives) {
+    total += 1;
+    if (isObjCompleted(act.id, area.id, obj.id)) done += 1;
   }
-
   return { done, total };
 }
 
-function countOverallProgress() {
-  if (!campaignState.data?.acts) return { done: 0, total: 0 };
-
-  return campaignState.data.acts.reduce(
-    (acc, act) => {
-      const progress = countActProgress(act);
-      acc.done += progress.done;
-      acc.total += progress.total;
+function countActProgress(act) {
+  return act.areas.reduce(
+    (acc, area) => {
+      const p = countAreaProgress(act, area);
+      acc.done += p.done;
+      acc.total += p.total;
       return acc;
     },
     { done: 0, total: 0 }
   );
 }
 
-function questTypeLabel(type) {
-  if (type === "side") return "Side";
-  if (type === "optional") return "Optional";
-  return "Main";
+function countOverallProgress() {
+  if (!campaignState.data?.acts) return { done: 0, total: 0 };
+  return campaignState.data.acts.reduce(
+    (acc, act) => {
+      const p = countActProgress(act);
+      acc.done += p.done;
+      acc.total += p.total;
+      return acc;
+    },
+    { done: 0, total: 0 }
+  );
 }
 
-function rewardLabel(rewardType) {
-  if (rewardType === "permanent") return "Permanent";
-  if (rewardType === "points") return "Skill Points";
-  if (rewardType === "ascendancy") return "Ascendancy";
-  if (rewardType === "choice") return "Choice";
-  if (rewardType === "unlocks") return "Unlocks";
-  return "Reward";
-}
-
-function createRewardPill(reward, rewardType, isStep) {
-  const pill = document.createElement("span");
-  pill.className = `reward-pill reward-${rewardType || "item"}${isStep ? " reward-pill-step" : ""}`;
-  pill.textContent = reward;
-  pill.setAttribute("title", rewardLabel(rewardType));
-  return pill;
-}
-
-function createProgressBar(done, total) {
+function createActProgressBar(done, total) {
   const bar = document.createElement("div");
   const fill = document.createElement("div");
   const percent = total > 0 ? Math.round((done / total) * 100) : 0;
@@ -135,17 +117,186 @@ function createProgressBar(done, total) {
   return bar;
 }
 
+function rewardLabel(rewardType) {
+  if (rewardType === "permanent") return "Permanent";
+  if (rewardType === "points") return "Skill Points";
+  if (rewardType === "ascendancy") return "Ascendancy";
+  if (rewardType === "choice") return "Choice";
+  if (rewardType === "unlocks") return "Unlocks";
+  return "Reward";
+}
+
+function createRewardPill(reward, rewardType) {
+  const pill = document.createElement("span");
+  pill.className = `reward-pill reward-${rewardType || "item"}`;
+  pill.textContent = reward;
+  pill.setAttribute("title", rewardLabel(rewardType));
+  return pill;
+}
+
+function createAreaProgressBar(done, total) {
+  const wrap = document.createElement("div");
+  const fill = document.createElement("div");
+  const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+
+  wrap.className = "campaign-area-progress";
+  wrap.setAttribute("role", "progressbar");
+  wrap.setAttribute("aria-valuemin", "0");
+  wrap.setAttribute("aria-valuemax", String(total));
+  wrap.setAttribute("aria-valuenow", String(done));
+
+  fill.className = "campaign-area-progress-fill";
+  fill.style.width = `${percent}%`;
+  wrap.append(fill);
+  return wrap;
+}
+
 function renderCampaignSummary(els) {
   const progress = countOverallProgress();
   const percent = progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0;
 
-  els.campaignSummary.textContent = `${progress.done} of ${progress.total} steps complete — ${percent}%`;
+  els.campaignSummary.textContent = `${progress.done} of ${progress.total} objectives complete — ${percent}%`;
 
   const bar = document.getElementById("campaignOverallBar");
   if (bar) {
     bar.style.width = `${percent}%`;
     bar.parentElement.setAttribute("aria-valuenow", String(progress.done));
     bar.parentElement.setAttribute("aria-valuemax", String(progress.total));
+  }
+}
+
+function renderArea(act, area, els) {
+  const progress = countAreaProgress(act, area);
+  const isComplete = progress.total > 0 && progress.done === progress.total;
+  const isTown = area.type === "town";
+
+  const areaEl = document.createElement("div");
+  areaEl.className = `campaign-area${isComplete ? " is-complete" : ""}${isTown ? " campaign-area-town" : ""}`;
+  areaEl.dataset.areaId = area.id;
+
+  // Area header
+  const header = document.createElement("div");
+  header.className = "campaign-area-header";
+
+  const headerLeft = document.createElement("div");
+  headerLeft.className = "campaign-area-header-left";
+
+  const nameEl = document.createElement("span");
+  nameEl.className = "campaign-area-name";
+  nameEl.textContent = area.name;
+  headerLeft.append(nameEl);
+
+  if (area.note) {
+    const noteEl = document.createElement("span");
+    noteEl.className = "campaign-area-note";
+    noteEl.textContent = area.note;
+    headerLeft.append(noteEl);
+  }
+
+  const headerRight = document.createElement("div");
+  headerRight.className = "campaign-area-header-right";
+
+  const countEl = document.createElement("span");
+  countEl.className = "campaign-area-count";
+  countEl.textContent = `${progress.done}/${progress.total}`;
+  headerRight.append(countEl);
+
+  header.append(headerLeft, headerRight);
+  areaEl.append(header);
+
+  // Area progress bar
+  areaEl.append(createAreaProgressBar(progress.done, progress.total));
+
+  // Separate required vs optional objectives
+  const required = area.objectives.filter(o => !o.optional);
+  const optional = area.objectives.filter(o => o.optional);
+
+  function buildObjectiveList(objectives) {
+    const list = document.createElement("ul");
+    list.className = "campaign-objective-list";
+
+    for (const obj of objectives) {
+      const item = document.createElement("li");
+      item.className = `campaign-objective${obj.optional ? " optional" : ""}`;
+
+      const label = document.createElement("label");
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = isObjCompleted(act.id, area.id, obj.id);
+      if (checkbox.checked) item.classList.add("done");
+
+      const textWrap = document.createElement("span");
+      textWrap.className = "campaign-objective-content";
+
+      const text = document.createElement("span");
+      text.className = "campaign-objective-text";
+      text.textContent = obj.text;
+      textWrap.append(text);
+
+      if (obj.rewards?.length) {
+        const rewardRow = document.createElement("span");
+        rewardRow.className = "campaign-objective-rewards";
+        for (const reward of obj.rewards) {
+          rewardRow.append(createRewardPill(reward.text, reward.type));
+        }
+        textWrap.append(rewardRow);
+      }
+
+      checkbox.addEventListener("change", () => {
+        toggleObj(act.id, area.id, obj.id, checkbox.checked);
+        item.classList.toggle("done", checkbox.checked);
+
+        // Update area header count and progress bar
+        const newProgress = countAreaProgress(act, area);
+        countEl.textContent = `${newProgress.done}/${newProgress.total}`;
+        const newPercent = newProgress.total > 0
+          ? Math.round((newProgress.done / newProgress.total) * 100)
+          : 0;
+        const areaBar = areaEl.querySelector(".campaign-area-progress-fill");
+        if (areaBar) areaBar.style.width = `${newPercent}%`;
+        areaEl.classList.toggle("is-complete", newProgress.total > 0 && newProgress.done === newProgress.total);
+
+        renderCampaignSummary(els);
+        updateActHeader(act, areaEl.closest(".campaign-act"));
+      });
+
+      label.append(checkbox, textWrap);
+      item.append(label);
+      list.append(item);
+    }
+
+    return list;
+  }
+
+  if (required.length > 0) {
+    areaEl.append(buildObjectiveList(required));
+  }
+
+  if (optional.length > 0) {
+    const optHeader = document.createElement("p");
+    optHeader.className = "campaign-optional-header";
+    optHeader.textContent = "Optional";
+    areaEl.append(optHeader, buildObjectiveList(optional));
+  }
+
+  return areaEl;
+}
+
+function updateActHeader(act, actEl) {
+  if (!actEl) return;
+  const progress = countActProgress(act);
+  const isComplete = progress.total > 0 && progress.done === progress.total;
+
+  actEl.classList.toggle("is-complete", isComplete);
+
+  const countEl = actEl.querySelector(".campaign-act-count");
+  if (countEl) countEl.textContent = `${progress.done} / ${progress.total}`;
+
+  const barFill = actEl.querySelector(".campaign-act-progress-fill");
+  if (barFill) {
+    const percent = progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0;
+    barFill.style.width = `${percent}%`;
   }
 }
 
@@ -169,7 +320,7 @@ function renderCampaignActs(els) {
     article.className = `campaign-act${isComplete ? " is-complete" : ""}`;
     article.dataset.actId = act.id;
 
-    // ── Act header (entire row is clickable) ──
+    // Act header (entire row is clickable)
     const header = document.createElement("div");
     header.className = "campaign-act-header";
     header.setAttribute("role", "button");
@@ -196,94 +347,31 @@ function renderCampaignActs(els) {
     count.textContent = `${progress.done} / ${progress.total}`;
 
     titleRow.append(title, count);
-    titleGroup.append(titleRow, createProgressBar(progress.done, progress.total));
+    titleGroup.append(titleRow, createActProgressBar(progress.done, progress.total));
     header.append(toggle, titleGroup);
 
-    // ── Act body ──
+    // Act body
     const body = document.createElement("div");
     body.className = "campaign-act-body";
     if (collapsed) body.setAttribute("hidden", "");
 
-    for (const quest of act.quests) {
-      const questBlock = document.createElement("section");
-      questBlock.className = "campaign-quest";
-      questBlock.dataset.type = quest.type || "main";
-
-      const questHeader = document.createElement("div");
-      questHeader.className = "campaign-quest-header";
-
-      const questTitleRow = document.createElement("div");
-      questTitleRow.className = "campaign-quest-title-row";
-
-      const questTitle = document.createElement("h3");
-      questTitle.textContent = quest.title;
-
-      const badge = document.createElement("span");
-      badge.className = `quest-type-badge quest-type-${quest.type || "main"}`;
-      badge.textContent = questTypeLabel(quest.type);
-
-      questTitleRow.append(questTitle, badge);
-      questHeader.append(questTitleRow);
-
-      if (quest.reward) {
-        const rewardRow = document.createElement("div");
-        rewardRow.className = "campaign-quest-reward-row";
-        const rewardLabel = document.createElement("span");
-        rewardLabel.className = "campaign-quest-reward-label";
-        rewardLabel.textContent = "Reward:";
-        rewardRow.append(rewardLabel, createRewardPill(quest.reward, quest.rewardType, false));
-        questHeader.append(rewardRow);
-      }
-
-      const stepList = document.createElement("ul");
-      stepList.className = "campaign-step-list";
-
-      for (const step of quest.steps) {
-        const item = document.createElement("li");
-        const label = document.createElement("label");
-        label.className = "campaign-step";
-
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = isStepCompleted(act.id, quest.id, step.id);
-
-        const stepContent = document.createElement("span");
-        stepContent.className = "campaign-step-content";
-
-        const text = document.createElement("span");
-        text.className = "campaign-step-text";
-        text.textContent = step.text;
-        stepContent.append(text);
-
-        if (step.reward) {
-          stepContent.append(createRewardPill(step.reward, step.rewardType, true));
-        }
-
-        if (checkbox.checked) label.classList.add("done");
-
-        checkbox.addEventListener("change", () => {
-          toggleStep(act.id, quest.id, step.id, checkbox.checked);
-          label.classList.toggle("done", checkbox.checked);
-          renderCampaign(els);
-        });
-
-        label.append(checkbox, stepContent);
-        item.append(label);
-        stepList.append(item);
-      }
-
-      questBlock.append(questHeader, stepList);
-      body.append(questBlock);
+    for (const area of act.areas) {
+      body.append(renderArea(act, area, els));
     }
 
-    // Clicking anywhere on the header row toggles the act
     function handleToggle() {
       if (campaignState.collapsedActs.has(act.id)) {
         campaignState.collapsedActs.delete(act.id);
+        body.removeAttribute("hidden");
+        header.setAttribute("aria-expanded", "true");
+        toggle.setAttribute("aria-expanded", "true");
       } else {
         campaignState.collapsedActs.add(act.id);
+        body.setAttribute("hidden", "");
+        header.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-expanded", "false");
       }
-      renderCampaignActs(els);
+      article.classList.toggle("is-collapsed", campaignState.collapsedActs.has(act.id));
     }
 
     header.addEventListener("click", handleToggle);
