@@ -32,7 +32,7 @@ jobs:
               historyPath = "data/poe2_data/price-history.json"
             },
             @{
-              source = "https://api.poe2scout.com/pc/Leagues/mirage/SnapshotPairs"
+              source = "https://api.poe2scout.com/pc/Leagues/allflame/SnapshotPairs"
               path = "data/poe_data/snapshot.json"
               historyPath = "data/poe_data/price-history.json"
             }
