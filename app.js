@@ -15,7 +15,7 @@ const GAME_CONFIGS = {
     localSnapshotUrl: "data/poe_data/snapshot.json",
     historyUrl: "data/poe_data/price-history.json",
     goldCostsUrl: "data/poe_data/gold-costs.json",
-    liveSnapshotUrl: "https://api.poe2scout.com/pc/Leagues/mirage/SnapshotPairs"
+    liveSnapshotUrl: "https://api.poe2scout.com/pc/Leagues/allflame/SnapshotPairs"
   }
 };
 const DEFAULT_GAME_ID = "poe2";
