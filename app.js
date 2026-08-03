@@ -353,15 +353,15 @@ function scorePath(edges, amount) {
     goldCost,
     profitPerGold: goldCost > 0 ? (amount * (multiplier - 1)) / goldCost : 0,
     profitPerMillionGold: goldCost > 0 ? ((amount * (multiplier - 1)) / goldCost) * 1000000 : 0,
-    profitPerMillionGoldExalted: goldCost > 0 ? ((amount * (multiplier - 1)) / goldCost) * 1000000 * exaltedValueFor(edges[0].from) : 0,
+    profitPerMillionGoldValue: goldCost > 0 ? ((amount * (multiplier - 1)) / goldCost) * 1000000 * marketValueFor(edges[0].from) : 0,
     route
   };
 }
 
 function compareCycles(a, b) {
   const direction = state.sortDirection === "asc" ? 1 : -1;
-  const valueA = state.sortBy === "profit" ? a.profitPerMillionGoldExalted : a.multiplier - 1;
-  const valueB = state.sortBy === "profit" ? b.profitPerMillionGoldExalted : b.multiplier - 1;
+  const valueA = state.sortBy === "profit" ? a.profitPerMillionGoldValue : a.multiplier - 1;
+  const valueB = state.sortBy === "profit" ? b.profitPerMillionGoldValue : b.multiplier - 1;
 
   if (valueA === valueB) {
     return b.multiplier - a.multiplier;
@@ -394,24 +394,31 @@ function exaltedValueFor(itemId) {
   return state.itemPricesById.get(itemId) || 0;
 }
 
+function marketValueFor(itemId) {
+  if (itemId === defaultStartCurrency()) return 1;
+  return state.itemPricesById.get(itemId) || 0;
+}
+
 function formatDivineAmount(divineValue) {
   return `${numberFormat.format(divineValue)} Divine Orb${divineValue === 1 ? "" : "s"}`;
 }
 
-function formatDivineExalted(exaltedValue) {
-  const divinePrice = exaltedValueFor("divine");
+function formatDivineProfit(value) {
+  const divinePrice = marketValueFor("divine");
+  const fallbackCurrency = state.gameId === "poe" ? "Chaos Orb" : "Exalted Orb";
+  const remainderCurrency = state.gameId === "poe" ? "Chaos" : "Exalted";
   if (!divinePrice) {
-    return `${numberFormat.format(exaltedValue)} Exalted Orb`;
+    return `${numberFormat.format(value)} ${fallbackCurrency}`;
   }
 
-  const divines = Math.floor(exaltedValue / divinePrice);
-  const exalted = exaltedValue - (divines * divinePrice);
+  const divines = Math.floor(value / divinePrice);
+  const remainder = value - (divines * divinePrice);
 
   if (divines <= 0) {
-    return `${numberFormat.format(exalted)} Exalted Orb`;
+    return `${numberFormat.format(remainder)} ${fallbackCurrency}`;
   }
 
-  return `${numberFormat.format(divines)} Divine + ${numberFormat.format(exalted)} Exalted`;
+  return `${numberFormat.format(divines)} Divine + ${numberFormat.format(remainder)} ${remainderCurrency}`;
 }
 
 function loadExcludedItems() {
@@ -659,7 +666,7 @@ function renderResults() {
     title.textContent = `${numberFormat.format(cycle.input)} ${itemLabel(settings.start)} -> ${numberFormat.format(cycle.output)} ${itemLabel(settings.start)}`;
     path.textContent = `${cycle.route.map(itemLabel).join(" > ")} | gold ${numberFormat.format(Math.ceil(cycle.goldCost))}`;
     gain.textContent = `+${percentFormat.format(cycle.multiplier - 1)}`;
-    profitScore.textContent = formatDivineExalted(cycle.profitPerMillionGoldExalted);
+    profitScore.textContent = formatDivineProfit(cycle.profitPerMillionGoldValue);
     card.style.setProperty("--accent", cycle.multiplier > 1.1 ? "#d7a84f" : "#5bbf98");
 
     cycle.edges.forEach((edge, stepIndex) => {
