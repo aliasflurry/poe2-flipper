@@ -1,0 +1,2121 @@
+﻿{
+    "updatedAt":  "2026-07-03T03:38:41.6188412Z",
+    "source":  "https://poedb.tw/us/Currency_Exchange",
+    "costs":  [
+                  {
+                      "name":  "A Fate Worse Than Death",
+                      "slug":  "a-fate-worse-than-death",
+                      "gold":  525
+                  },
+                  {
+                      "name":  "A Stone Perfected",
+                      "slug":  "a-stone-perfected",
+                      "gold":  425
+                  },
+                  {
+                      "name":  "Aberrant Fossil",
+                      "slug":  "aberrant-fossil",
+                      "gold":  30
+                  },
+                  {
+                      "name":  "Abrasive Catalyst",
+                      "slug":  "abrasive-catalyst",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Abyss Scarab",
+                      "slug":  "abyss-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Abyss Scarab of Descending",
+                      "slug":  "abyss-scarab-of-emptiness",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Abyss Scarab of Edifice",
+                      "slug":  "abyss-scarab-of-edifice",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Abyss Scarab of Multitudes",
+                      "slug":  "abyss-scarab-of-multitudes",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Abyss Scarab of Profound Depth",
+                      "slug":  "abyss-scarab-of-profound-depth",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Accelerating Catalyst",
+                      "slug":  "accelerating-catalyst",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Akil\u0027s Prophecy",
+                      "slug":  "akils-prophecy",
+                      "gold":  400
+                  },
+                  {
+                      "name":  "Al-Hezmin\u0027s Crest",
+                      "slug":  "al-hezmins-crest",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Allflame Ember of the Ethereal",
+                      "slug":  "allflame-ember-of-the-ethereal",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Allflame Ember of the Wildwood",
+                      "slug":  "allflame-ember-of-the-wildwood",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Amber Oil",
+                      "slug":  "amber-oil",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Ambush Scarab",
+                      "slug":  "ambush-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Ambush Scarab of Containment",
+                      "slug":  "ambush-scarab-of-containment",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Ambush Scarab of Discernment",
+                      "slug":  "ambush-scarab-of-discernment",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Ambush Scarab of Hidden Compartments",
+                      "slug":  "ambush-scarab-of-hidden-compartments",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Ambush Scarab of Potency",
+                      "slug":  "ambush-scarab-of-potency",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "An Audience With The King",
+                      "slug":  "an-audience-with-the-king",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Anarchy Scarab",
+                      "slug":  "anarchy-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Anarchy Scarab of Partnership",
+                      "slug":  "anarchy-scarab-of-partnership",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Anarchy Scarab of the Exceptional",
+                      "slug":  "anarchy-scarab-of-the-exceptional",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Ancient Orb",
+                      "slug":  "ancient-orb",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Armoursmith\u0027s Delirium Orb",
+                      "slug":  "armoursmiths-delirium-orb",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Assassin\u0027s Favour",
+                      "slug":  "assassins-favour",
+                      "gold":  65
+                  },
+                  {
+                      "name":  "Awakener\u0027s Orb",
+                      "slug":  "awakeners-orb",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Awakening Fragment",
+                      "slug":  "awakening-fragment",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Azure Oil",
+                      "slug":  "azure-oil",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Bestiary Scarab",
+                      "slug":  "bestiary-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Bestiary Scarab of Duplicating",
+                      "slug":  "bestiary-scarab-of-duplicating",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Bestiary Scarab of the Herd",
+                      "slug":  "bestiary-scarab-of-the-herd",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Betrayal Scarab",
+                      "slug":  "betrayal-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Betrayal Scarab of Reinforcements",
+                      "slug":  "betrayal-scarab-of-reinforcements",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Betrayal Scarab of the Allflame",
+                      "slug":  "betrayal-scarab-of-the-allflame",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Betrayal Scarab of Unbreaking",
+                      "slug":  "betrayal-scarab-of-perpetuation",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Beyond Scarab",
+                      "slug":  "beyond-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Beyond Scarab of Haemophilia",
+                      "slug":  "beyond-scarab-of-haemophilia",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Beyond Scarab of Resurgence",
+                      "slug":  "beyond-scarab-of-resurgence",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Beyond Scarab of the Invasion",
+                      "slug":  "beyond-scarab-of-the-invasion",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Black Oil",
+                      "slug":  "black-oil",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Blacksmith\u0027s Delirium Orb",
+                      "slug":  "blacksmiths-delirium-orb",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Blazing Fragment",
+                      "slug":  "blazing-fragment",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Blessed Orb",
+                      "slug":  "blessed",
+                      "gold":  35
+                  },
+                  {
+                      "name":  "Blight Scarab of Blooming",
+                      "slug":  "blight-scarab-of-blooming",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Blight Scarab of Invigoration",
+                      "slug":  "blight-scarab-of-invigoration",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Blighted Delirium Orb",
+                      "slug":  "blighted-delirium-orb",
+                      "gold":  225
+                  },
+                  {
+                      "name":  "Breach Scarab of Instability",
+                      "slug":  "breach-scarab-of-lordship",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Breach Scarab of Resonant Cascade",
+                      "slug":  "breach-scarab-of-resonant-cascade",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Breach Scarab of the Hive",
+                      "slug":  "breach-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Breach Scarab of the Incensed Swarm",
+                      "slug":  "breach-scarab-of-snares",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Breach Scarab of the Marshal",
+                      "slug":  "breach-scarab-of-splintering",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Burial Medallion",
+                      "slug":  "burial-medallion",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Cartographer\u0027s Delirium Orb",
+                      "slug":  "cartographers-delirium-orb",
+                      "gold":  175
+                  },
+                  {
+                      "name":  "Cartography Scarab of Corruption",
+                      "slug":  "cartography-scarab-of-corruption",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Cartography Scarab of Escalation",
+                      "slug":  "cartography-scarab-of-escalation",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Cartography Scarab of Risk",
+                      "slug":  "cartography-scarab-of-risk",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Cartography Scarab of the Multitude",
+                      "slug":  "cartography-scarab-of-the-multitude",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Chaos Orb",
+                      "slug":  "chaos",
+                      "gold":  15
+                  },
+                  {
+                      "name":  "Chaotic Astrolabe",
+                      "slug":  "chaotic-astrolabe",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Chaotic Disposition",
+                      "slug":  "chaotic-disposition",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Chromatic Orb",
+                      "slug":  "chrome",
+                      "gold":  10
+                  },
+                  {
+                      "name":  "Clear Oil",
+                      "slug":  "clear-oil",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Coin of Desecration",
+                      "slug":  "coin-of-desecration",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Coin of Knowledge",
+                      "slug":  "coin-of-knowledge",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Coin of Power",
+                      "slug":  "coin-of-power",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Coin of Restoration",
+                      "slug":  "coin-of-restoration",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Coin of Skill",
+                      "slug":  "coin-of-skill",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Corroded Fossil",
+                      "slug":  "corroded-fossil",
+                      "gold":  45
+                  },
+                  {
+                      "name":  "Cosmic Fragment",
+                      "slug":  "cosmic-fragment",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Costly Curio",
+                      "slug":  "costly-curio",
+                      "gold":  275
+                  },
+                  {
+                      "name":  "Crescent Splinter",
+                      "slug":  "crescent-splinter",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Crimson Oil",
+                      "slug":  "crimson-oil",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Crusader\u0027s Exalted Orb",
+                      "slug":  "crusaders-exalted-orb",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Crystallised Rancour",
+                      "slug":  "sandswept-lifeforce",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Damnation",
+                      "slug":  "damnation",
+                      "gold":  1350
+                  },
+                  {
+                      "name":  "Deafening Essence of Anger",
+                      "slug":  "deafening-essence-of-anger",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Contempt",
+                      "slug":  "deafening-essence-of-contempt",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Doubt",
+                      "slug":  "deafening-essence-of-doubt",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Envy",
+                      "slug":  "deafening-essence-of-envy",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Greed",
+                      "slug":  "deafening-essence-of-greed",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Loathing",
+                      "slug":  "deafening-essence-of-loathing",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Misery",
+                      "slug":  "deafening-essence-of-misery",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Scorn",
+                      "slug":  "deafening-essence-of-scorn",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Sorrow",
+                      "slug":  "deafening-essence-of-sorrow",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Spite",
+                      "slug":  "deafening-essence-of-spite",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Torment",
+                      "slug":  "deafening-essence-of-torment",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Wrath",
+                      "slug":  "deafening-essence-of-wrath",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Deafening Essence of Zeal",
+                      "slug":  "deafening-essence-of-zeal",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Decaying Fragment",
+                      "slug":  "decaying-fragment",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Deft Fossil",
+                      "slug":  "deft-fossil",
+                      "gold":  45
+                  },
+                  {
+                      "name":  "Delirium Scarab",
+                      "slug":  "delirium-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Delirium Scarab of Delusions",
+                      "slug":  "delirium-scarab-of-delusions",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Delirium Scarab of Mania",
+                      "slug":  "delirium-scarab-of-mania",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Delirium Scarab of Neuroses",
+                      "slug":  "delirium-scarab-of-neuroses",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Delirium Scarab of Paranoia",
+                      "slug":  "delirium-scarab-of-paranoia",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Dense Fossil",
+                      "slug":  "dense-fossil",
+                      "gold":  30
+                  },
+                  {
+                      "name":  "Devouring Fragment",
+                      "slug":  "devouring-fragment",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Dextral Catalyst",
+                      "slug":  "dextral-catalyst",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Divination Scarab of Pilfering",
+                      "slug":  "divination-scarab-of-pilfering",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Divination Scarab of Plenty",
+                      "slug":  "divination-scarab-of-plenty",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Divination Scarab of The Cloister",
+                      "slug":  "divination-scarab-of-the-cloister",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Divine Orb",
+                      "slug":  "divine",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Divine Vessel",
+                      "slug":  "divine-vessel",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Diviner\u0027s Delirium Orb",
+                      "slug":  "diviners-delirium-orb",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Domination Scarab",
+                      "slug":  "domination-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Domination Scarab of Apparitions",
+                      "slug":  "domination-scarab-of-apparitions",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Domination Scarab of Evolution",
+                      "slug":  "domination-scarab-of-evolution",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Domination Scarab of Terrors",
+                      "slug":  "domination-scarab-of-terrors",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Drox\u0027s Crest",
+                      "slug":  "droxs-crest",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Dying Anguish",
+                      "slug":  "dying-anguish",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Echo of Loneliness",
+                      "slug":  "echo-of-loneliness",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Echo of Reverence",
+                      "slug":  "echo-of-reverence",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Echo of Trauma",
+                      "slug":  "echo-of-trauma",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Eldritch Chaos Orb",
+                      "slug":  "eldritch-chaos-orb",
+                      "gold":  525
+                  },
+                  {
+                      "name":  "Eldritch Exalted Orb",
+                      "slug":  "eldritch-exalted-orb",
+                      "gold":  525
+                  },
+                  {
+                      "name":  "Eldritch Orb of Annulment",
+                      "slug":  "eldritch-orb-of-annulment",
+                      "gold":  525
+                  },
+                  {
+                      "name":  "Emperor of Purity",
+                      "slug":  "emperor-of-purity",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Emperor\u0027s Luck",
+                      "slug":  "emperors-luck",
+                      "gold":  10
+                  },
+                  {
+                      "name":  "Enkindling Orb",
+                      "slug":  "enkindling-orb",
+                      "gold":  35
+                  },
+                  {
+                      "name":  "Enshrouded Astrolabe",
+                      "slug":  "enshrouded-astrolabe",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Essence of Desolation",
+                      "slug":  "essence-of-desolation",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Essence of Horror",
+                      "slug":  "essence-of-horror",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Essence of Hysteria",
+                      "slug":  "essence-of-hysteria",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Essence of Insanity",
+                      "slug":  "essence-of-insanity",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Essence Scarab",
+                      "slug":  "essence-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Essence Scarab of Adaptation",
+                      "slug":  "essence-scarab-of-adaptation",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Essence Scarab of Ascent",
+                      "slug":  "essence-scarab-of-ascent",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Essence Scarab of Calcification",
+                      "slug":  "essence-scarab-of-calcification",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Essence Scarab of Stability",
+                      "slug":  "essence-scarab-of-stability",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Exalted Orb",
+                      "slug":  "exalted",
+                      "gold":  20
+                  },
+                  {
+                      "name":  "Exceptional Eldritch Ember",
+                      "slug":  "exceptional-eldritch-ember",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Exceptional Eldritch Ichor",
+                      "slug":  "exceptional-eldritch-ichor",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Exotic Coinage",
+                      "slug":  "exotic-coinage",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Expedition Scarab",
+                      "slug":  "expedition-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Expedition Scarab of Archaeology",
+                      "slug":  "expedition-scarab-of-archaeology",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Expedition Scarab of Infusion",
+                      "slug":  "expedition-scarab-of-the-skald",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Expedition Scarab of Runefinding",
+                      "slug":  "expedition-scarab-of-runefinding",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Expedition Scarab of Verisium Powder",
+                      "slug":  "expedition-scarab-of-verisium-powder",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Faceted Fossil",
+                      "slug":  "faceted-fossil",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Fertile Catalyst",
+                      "slug":  "fertile-catalyst",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Fine Delirium Orb",
+                      "slug":  "fine-delirium-orb",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Flesh of Xesht",
+                      "slug":  "flesh-of-xesht",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Foulborn Exalted Orb",
+                      "slug":  "foulborn-exalted-orb",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Fractured Fossil",
+                      "slug":  "fractured-fossil",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Fracturing Orb",
+                      "slug":  "fracturing-orb",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Fragment of Constriction",
+                      "slug":  "fragment-of-constriction",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Fragment of Emptiness",
+                      "slug":  "fragment-of-emptiness",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Fragment of Enslavement",
+                      "slug":  "fragment-of-enslavement",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Fragment of Eradication",
+                      "slug":  "fragment-of-eradication",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Fragment of Purification",
+                      "slug":  "fragment-of-purification",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Fragment of Shape",
+                      "slug":  "fragment-of-shape",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Fragment of Terror",
+                      "slug":  "fragment-of-terror",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Fragment of the Hydra",
+                      "slug":  "hydra",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Fragment of the Minotaur",
+                      "slug":  "minot",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Fragment of the Phoenix",
+                      "slug":  "phoenix",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Fragmented Delirium Orb",
+                      "slug":  "fragmented-delirium-orb",
+                      "gold":  225
+                  },
+                  {
+                      "name":  "Frigid Fossil",
+                      "slug":  "frigid-fossil",
+                      "gold":  30
+                  },
+                  {
+                      "name":  "Fruiting Astrolabe",
+                      "slug":  "fruiting-astrolabe",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Fungal Astrolabe",
+                      "slug":  "fungal-astrolabe",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Gemcutter\u0027s Prism",
+                      "slug":  "gcp",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Gift of Asenath",
+                      "slug":  "gift-of-asenath",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Gift to the Goddess",
+                      "slug":  "offer-gift",
+                      "gold":  180
+                  },
+                  {
+                      "name":  "Gilded Fossil",
+                      "slug":  "gilded-fossil",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Glassblower\u0027s Bauble",
+                      "slug":  "bauble",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Glyphic Fossil",
+                      "slug":  "glyphic-fossil",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Golden Oil",
+                      "slug":  "golden-oil",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Grand Eldritch Ember",
+                      "slug":  "grand-eldritch-ember",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Grand Eldritch Ichor",
+                      "slug":  "grand-eldritch-ichor",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Grasping Astrolabe",
+                      "slug":  "grasping-astrolabe",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Greater Eldritch Ember",
+                      "slug":  "greater-eldritch-ember",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Greater Eldritch Ichor",
+                      "slug":  "greater-eldritch-ichor",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Guardian\u0027s Challenge",
+                      "slug":  "guardians-challenge",
+                      "gold":  175
+                  },
+                  {
+                      "name":  "Harvest Scarab",
+                      "slug":  "harvest-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Harvest Scarab of Cornucopia",
+                      "slug":  "harvest-scarab-of-cornucopia",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Harvest Scarab of Doubling",
+                      "slug":  "harvest-scarab-of-doubling",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Hinekora\u0027s Lock",
+                      "slug":  "hinekoras-lock",
+                      "gold":  6250
+                  },
+                  {
+                      "name":  "Hollow Fossil",
+                      "slug":  "hollow-fossil",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Horned Scarab of Awakening",
+                      "slug":  "horned-scarab-of-awakening",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Horned Scarab of Bloodlines",
+                      "slug":  "horned-scarab-of-bloodlines",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Horned Scarab of Glittering",
+                      "slug":  "horned-scarab-of-glittering",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Horned Scarab of Nemeses",
+                      "slug":  "horned-scarab-of-nemeses",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Horned Scarab of Pandemonium",
+                      "slug":  "horned-scarab-of-pandemonium",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Horned Scarab of Preservation",
+                      "slug":  "horned-scarab-of-preservation",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "House of Mirrors",
+                      "slug":  "house-of-mirrors",
+                      "gold":  1850
+                  },
+                  {
+                      "name":  "Hunter\u0027s Exalted Orb",
+                      "slug":  "hunters-exalted-orb",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Imbued Catalyst",
+                      "slug":  "imbued-catalyst",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Incursion Scarab",
+                      "slug":  "incursion-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Incursion Scarab of Champions",
+                      "slug":  "incursion-scarab-of-champions",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Incursion Scarab of Invasion",
+                      "slug":  "incursion-scarab-of-invasion",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Incursion Scarab of Timelines",
+                      "slug":  "incursion-scarab-of-timelines",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Indigo Oil",
+                      "slug":  "indigo-oil",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Influencing Scarab of Hordes",
+                      "slug":  "influencing-scarab-of-hordes",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Influencing Scarab of Interference",
+                      "slug":  "influencing-scarab-of-conversion",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Influencing Scarab of the Elder",
+                      "slug":  "influencing-scarab-of-the-elder",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Influencing Scarab of the Shaper",
+                      "slug":  "influencing-scarab-of-the-shaper",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Instilling Orb",
+                      "slug":  "instilling-orb",
+                      "gold":  20
+                  },
+                  {
+                      "name":  "Intrinsic Catalyst",
+                      "slug":  "intrinsic-catalyst",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Jagged Fossil",
+                      "slug":  "jagged-fossil",
+                      "gold":  30
+                  },
+                  {
+                      "name":  "Jeweller\u0027s Delirium Orb",
+                      "slug":  "jewellers-delirium-orb",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Jeweller\u0027s Orb",
+                      "slug":  "jewellers",
+                      "gold":  10
+                  },
+                  {
+                      "name":  "Kalguuran Scarab",
+                      "slug":  "kalguuran-scarab",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Kalguuran Scarab of Enriching",
+                      "slug":  "kalguuran-scarab-of-enriching",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Kalguuran Scarab of Guarded Riches",
+                      "slug":  "kalguuran-scarab-of-guarded-riches",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Kalguuran Scarab of Refinement",
+                      "slug":  "kalguuran-scarab-of-refinement",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Legion Scarab",
+                      "slug":  "legion-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Legion Scarab of Eternal Conflict",
+                      "slug":  "legion-scarab-of-eternal-conflict",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Legion Scarab of Officers",
+                      "slug":  "legion-scarab-of-officers",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Legion Scarab of Treasures",
+                      "slug":  "legion-scarab-of-command",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Lesser Eldritch Ember",
+                      "slug":  "lesser-eldritch-ember",
+                      "gold":  35
+                  },
+                  {
+                      "name":  "Lesser Eldritch Ichor",
+                      "slug":  "lesser-eldritch-ichor",
+                      "gold":  35
+                  },
+                  {
+                      "name":  "Lightless Astrolabe",
+                      "slug":  "lightless-astrolabe",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Lonely Fragment",
+                      "slug":  "lonely-fragment",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Lonely Warrior",
+                      "slug":  "lonely-warrior",
+                      "gold":  1250
+                  },
+                  {
+                      "name":  "Lucent Fossil",
+                      "slug":  "lucent-fossil",
+                      "gold":  45
+                  },
+                  {
+                      "name":  "Lucky Bastion",
+                      "slug":  "lucky-bastion",
+                      "gold":  850
+                  },
+                  {
+                      "name":  "Magnum Opus",
+                      "slug":  "magnum-opus",
+                      "gold":  575
+                  },
+                  {
+                      "name":  "Maven\u0027s Chisel of Avarice",
+                      "slug":  "mavens-chisel-of-avarice",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Maven\u0027s Chisel of Divination",
+                      "slug":  "mavens-chisel-of-divination",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Maven\u0027s Chisel of Procurement",
+                      "slug":  "mavens-chisel-of-procurement",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Maven\u0027s Chisel of Proliferation",
+                      "slug":  "mavens-chisel-of-proliferation",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Maven\u0027s Chisel of Scarabs",
+                      "slug":  "mavens-chisel-of-scarabs",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Memory of Loneliness",
+                      "slug":  "memory-of-loneliness",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Memory of Reverence",
+                      "slug":  "memory-of-reverence",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Memory of Trauma",
+                      "slug":  "memory-of-trauma",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Metallic Fossil",
+                      "slug":  "metallic-fossil",
+                      "gold":  30
+                  },
+                  {
+                      "name":  "Mirror of Kalandra",
+                      "slug":  "mirror",
+                      "gold":  25000
+                  },
+                  {
+                      "name":  "Mirror Shard",
+                      "slug":  "mirror-shard",
+                      "gold":  1250
+                  },
+                  {
+                      "name":  "Mortal Grief",
+                      "slug":  "grie",
+                      "gold":  40
+                  },
+                  {
+                      "name":  "Mortal Hope",
+                      "slug":  "hope",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Mortal Ignorance",
+                      "slug":  "ign",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Mortal Rage",
+                      "slug":  "rage",
+                      "gold":  190
+                  },
+                  {
+                      "name":  "Nameless Astrolabe",
+                      "slug":  "nameless-astrolabe",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Offering to the Goddess",
+                      "slug":  "offer",
+                      "gold":  30
+                  },
+                  {
+                      "name":  "Omen of Amelioration",
+                      "slug":  "omen-of-amelioration",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Omen of Blanching",
+                      "slug":  "omen-of-blanching",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Omen of Connections",
+                      "slug":  "omen-of-connections",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Omen of Return",
+                      "slug":  "omen-of-return",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Opalescent Oil",
+                      "slug":  "opalescent-oil",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Orb of Alchemy",
+                      "slug":  "alch",
+                      "gold":  15
+                  },
+                  {
+                      "name":  "Orb of Alteration",
+                      "slug":  "alt",
+                      "gold":  10
+                  },
+                  {
+                      "name":  "Orb of Annulment",
+                      "slug":  "annul",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Orb of Augmentation",
+                      "slug":  "aug",
+                      "gold":  5
+                  },
+                  {
+                      "name":  "Orb of Binding",
+                      "slug":  "orb-of-binding",
+                      "gold":  20
+                  },
+                  {
+                      "name":  "Orb of Chance",
+                      "slug":  "chance",
+                      "gold":  10
+                  },
+                  {
+                      "name":  "Orb of Conflict",
+                      "slug":  "orb-of-conflict",
+                      "gold":  1050
+                  },
+                  {
+                      "name":  "Orb of Dominance",
+                      "slug":  "mavens-orb",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Orb of Fusing",
+                      "slug":  "fusing",
+                      "gold":  15
+                  },
+                  {
+                      "name":  "Orb of Regret",
+                      "slug":  "regret",
+                      "gold":  20
+                  },
+                  {
+                      "name":  "Orb of Remembrance",
+                      "slug":  "orb-of-remembrance",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Orb of Scouring",
+                      "slug":  "scour",
+                      "gold":  15
+                  },
+                  {
+                      "name":  "Orb of Unmaking",
+                      "slug":  "orb-of-unmaking",
+                      "gold":  20
+                  },
+                  {
+                      "name":  "Portal Scroll",
+                      "slug":  "portal",
+                      "gold":  1
+                  },
+                  {
+                      "name":  "Potent Chaotic Resonator",
+                      "slug":  "potent-chaotic-resonator",
+                      "gold":  10
+                  },
+                  {
+                      "name":  "Powerful Chaotic Resonator",
+                      "slug":  "powerful-chaotic-resonator",
+                      "gold":  15
+                  },
+                  {
+                      "name":  "Pride Before the Fall",
+                      "slug":  "pride-before-the-fall",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "Primal Crystallised Lifeforce",
+                      "slug":  "primal-lifeforce",
+                      "gold":  0.125
+                  },
+                  {
+                      "name":  "Primitive Chaotic Resonator",
+                      "slug":  "primitive-chaotic-resonator",
+                      "gold":  5
+                  },
+                  {
+                      "name":  "Prismatic Catalyst",
+                      "slug":  "prismatic-catalyst",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Prismatic Oil",
+                      "slug":  "prismatic-oil",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Reality Fragment",
+                      "slug":  "reality-fragment",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Rebirth",
+                      "slug":  "rebirth",
+                      "gold":  475
+                  },
+                  {
+                      "name":  "Redeemer\u0027s Exalted Orb",
+                      "slug":  "redeemers-exalted-orb",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Reflecting Mist",
+                      "slug":  "reflecting-mist",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Reflective Oil",
+                      "slug":  "reflective-oil",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Refracting Fog",
+                      "slug":  "cluster-fog",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Regal Orb",
+                      "slug":  "regal",
+                      "gold":  20
+                  },
+                  {
+                      "name":  "Reverent Fragment",
+                      "slug":  "reverent-fragment",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Ritual Scarab of Abundance",
+                      "slug":  "ritual-scarab-of-abundance",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Ritual Scarab of Corpses",
+                      "slug":  "ritual-scarab-of-corpses",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Ritual Scarab of Selectiveness",
+                      "slug":  "ritual-scarab-of-selectiveness",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Ritual Vessel",
+                      "slug":  "ritual-vessel",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Rogue\u0027s Marker",
+                      "slug":  "rogues-marker",
+                      "gold":  0.001
+                  },
+                  {
+                      "name":  "Runegraft of Resurgence",
+                      "slug":  "runegraft-of-resurgence",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Runegraft of the Fortress",
+                      "slug":  "runegraft-of-the-fortress",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Runegraft of the Warp",
+                      "slug":  "runegraft-of-the-warp",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Runegraft of Treachery",
+                      "slug":  "runegraft-of-treachery",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Runic Astrolabe",
+                      "slug":  "runic-astrolabe",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Sacred Blossom",
+                      "slug":  "sacred-blossom",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Sacred Crystallised Lifeforce",
+                      "slug":  "sacred-lifeforce",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Sacred Orb",
+                      "slug":  "sacred-orb",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Sacrifice at Dawn",
+                      "slug":  "dawn",
+                      "gold":  20
+                  },
+                  {
+                      "name":  "Sacrifice at Dusk",
+                      "slug":  "dusk",
+                      "gold":  15
+                  },
+                  {
+                      "name":  "Sacrifice at Midnight",
+                      "slug":  "mid",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Sacrifice at Noon",
+                      "slug":  "noon",
+                      "gold":  30
+                  },
+                  {
+                      "name":  "Scarab of Divinity",
+                      "slug":  "scarab-of-divinity",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Scarab of Monstrous Lineage",
+                      "slug":  "scarab-of-monstrous-lineage",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Scarab of Stability",
+                      "slug":  "scarab-of-stability",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Scarab of the Dextral",
+                      "slug":  "scarab-of-the-dextral",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Scarab of the Sinistral",
+                      "slug":  "scarab-of-the-sinistral",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Scarab of Wisps",
+                      "slug":  "scarab-of-wisps",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Scorched Fossil",
+                      "slug":  "scorched-fossil",
+                      "gold":  30
+                  },
+                  {
+                      "name":  "Screaming Essence of Anguish",
+                      "slug":  "screaming-essence-of-anguish",
+                      "gold":  65
+                  },
+                  {
+                      "name":  "Screaming Essence of Dread",
+                      "slug":  "screaming-essence-of-dread",
+                      "gold":  65
+                  },
+                  {
+                      "name":  "Screaming Essence of Hatred",
+                      "slug":  "screaming-essence-of-hatred",
+                      "gold":  65
+                  },
+                  {
+                      "name":  "Screaming Essence of Sorrow",
+                      "slug":  "screaming-essence-of-sorrow",
+                      "gold":  65
+                  },
+                  {
+                      "name":  "Screaming Essence of Spite",
+                      "slug":  "screaming-essence-of-spite",
+                      "gold":  65
+                  },
+                  {
+                      "name":  "Screaming Essence of Suffering",
+                      "slug":  "screaming-essence-of-suffering",
+                      "gold":  65
+                  },
+                  {
+                      "name":  "Screaming Essence of Torment",
+                      "slug":  "screaming-essence-of-torment",
+                      "gold":  65
+                  },
+                  {
+                      "name":  "Scroll of Wisdom",
+                      "slug":  "wisdom",
+                      "gold":  1
+                  },
+                  {
+                      "name":  "Sepia Oil",
+                      "slug":  "sepia-oil",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Serrated Fossil",
+                      "slug":  "serrated-fossil",
+                      "gold":  45
+                  },
+                  {
+                      "name":  "Seven Years Bad Luck",
+                      "slug":  "seven-years-bad-luck",
+                      "gold":  550
+                  },
+                  {
+                      "name":  "Shaper\u0027s Exalted Orb",
+                      "slug":  "shapers-exalted-orb",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Shrieking Essence of Anger",
+                      "slug":  "shrieking-essence-of-anger",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Shrieking Essence of Envy",
+                      "slug":  "shrieking-essence-of-envy",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Shrieking Essence of Greed",
+                      "slug":  "shrieking-essence-of-greed",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Shrieking Essence of Hatred",
+                      "slug":  "shrieking-essence-of-hatred",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Shrieking Essence of Sorrow",
+                      "slug":  "shrieking-essence-of-sorrow",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Shrieking Essence of Suffering",
+                      "slug":  "shrieking-essence-of-suffering",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Shrieking Essence of Woe",
+                      "slug":  "shrieking-essence-of-woe",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Shrieking Essence of Wrath",
+                      "slug":  "shrieking-essence-of-wrath",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Shrieking Essence of Zeal",
+                      "slug":  "shrieking-essence-of-zeal",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Shuddering Fossil",
+                      "slug":  "shuddering-fossil",
+                      "gold":  45
+                  },
+                  {
+                      "name":  "Silver Oil",
+                      "slug":  "silver-oil",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Simulacrum",
+                      "slug":  "simulacrum",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Sinistral Catalyst",
+                      "slug":  "sinistral-catalyst",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Skittering Delirium Orb",
+                      "slug":  "skittering-delirium-orb",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Society\u0027s Remorse",
+                      "slug":  "societys-remorse",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Stacked Deck",
+                      "slug":  "stacked-deck",
+                      "gold":  35
+                  },
+                  {
+                      "name":  "Syndicate Medallion",
+                      "slug":  "syndicate-medallion",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Synthesising Fragment",
+                      "slug":  "synthesising-fragment",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Tailoring Orb",
+                      "slug":  "tailoring-orb",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Tainted Armourer\u0027s Scrap",
+                      "slug":  "tainted-armourers-scrap",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Tainted Blacksmith\u0027s Whetstone",
+                      "slug":  "tainted-blacksmiths-whetstone",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Tainted Catalyst",
+                      "slug":  "tainted-catalyst",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Tainted Chaos Orb",
+                      "slug":  "tainted-chaos-orb",
+                      "gold":  375
+                  },
+                  {
+                      "name":  "Tainted Chromatic Orb",
+                      "slug":  "tainted-chromatic-orb",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Tainted Divine Teardrop",
+                      "slug":  "tainted-divine-teardrop",
+                      "gold":  900
+                  },
+                  {
+                      "name":  "Tainted Exalted Orb",
+                      "slug":  "tainted-exalted-orb",
+                      "gold":  575
+                  },
+                  {
+                      "name":  "Tainted Jeweller\u0027s Orb",
+                      "slug":  "tainted-jewellers-orb",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Tainted Mythic Orb",
+                      "slug":  "tainted-mythic-orb",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Tainted Oil",
+                      "slug":  "tainted-oil",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Tainted Orb of Fusing",
+                      "slug":  "tainted-orb-of-fusing",
+                      "gold":  150
+                  },
+                  {
+                      "name":  "Tattoo of the Arohongui Shaman",
+                      "slug":  "tattoo-of-the-arohongui-shaman",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Tattoo of the Arohongui Warrior",
+                      "slug":  "tattoo-of-the-arohongui-warrior",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Tattoo of the Hinekora Warmonger",
+                      "slug":  "tattoo-of-the-hinekora-warmonger",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Tattoo of the Hinekora Warrior",
+                      "slug":  "tattoo-of-the-hinekora-warrior",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Tattoo of the Kitava Warrior",
+                      "slug":  "tattoo-of-the-kitava-warrior",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Tattoo of the Ngamahu Firewalker",
+                      "slug":  "tattoo-of-the-ngamahu-firewalker",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Tattoo of the Ngamahu Warmonger",
+                      "slug":  "tattoo-of-the-ngamahu-warmonger",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Tattoo of the Ramako Scout",
+                      "slug":  "tattoo-of-the-ramako-scout",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Tattoo of the Ramako Shaman",
+                      "slug":  "tattoo-of-the-ramako-shaman",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Tattoo of the Ramako Sniper",
+                      "slug":  "tattoo-of-the-ramako-sniper",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Tattoo of the Tasalio Tideshifter",
+                      "slug":  "tattoo-of-the-tasalio-tideshifter",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Tattoo of the Tukohama Warcaller",
+                      "slug":  "tattoo-of-the-tukohama-warcaller",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Tattoo of the Tukohama Warrior",
+                      "slug":  "tattoo-of-the-tukohama-warrior",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Tattoo of the Valako Shieldbearer",
+                      "slug":  "tattoo-of-the-valako-shieldbearer",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Tattoo of the Valako Stormrider",
+                      "slug":  "tattoo-of-the-valako-stormrider",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Teal Oil",
+                      "slug":  "teal-oil",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Tempering Catalyst",
+                      "slug":  "tempering-catalyst",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Tempering Orb",
+                      "slug":  "tempering-orb",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Templar Astrolabe",
+                      "slug":  "templar-astrolabe",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "The Apothecary",
+                      "slug":  "the-apothecary",
+                      "gold":  1100
+                  },
+                  {
+                      "name":  "The Artist",
+                      "slug":  "the-artist",
+                      "gold":  675
+                  },
+                  {
+                      "name":  "The Black Barya",
+                      "slug":  "the-black-barya",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "The Doctor",
+                      "slug":  "the-doctor",
+                      "gold":  925
+                  },
+                  {
+                      "name":  "The Forbidden Fruit",
+                      "slug":  "the-forbidden-fruit",
+                      "gold":  1150
+                  },
+                  {
+                      "name":  "The Fortunate",
+                      "slug":  "the-fortunate",
+                      "gold":  175
+                  },
+                  {
+                      "name":  "The Immortal",
+                      "slug":  "the-immortal",
+                      "gold":  825
+                  },
+                  {
+                      "name":  "The Inventor",
+                      "slug":  "the-inventor",
+                      "gold":  105
+                  },
+                  {
+                      "name":  "The Lake",
+                      "slug":  "the-lake",
+                      "gold":  1500
+                  },
+                  {
+                      "name":  "The Mad King",
+                      "slug":  "the-mad-king",
+                      "gold":  300
+                  },
+                  {
+                      "name":  "The Maven\u0027s Writ",
+                      "slug":  "the-mavens-writ",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "The Nurse",
+                      "slug":  "the-nurse",
+                      "gold":  450
+                  },
+                  {
+                      "name":  "The Offspring",
+                      "slug":  "the-offspring",
+                      "gold":  325
+                  },
+                  {
+                      "name":  "The Patient",
+                      "slug":  "the-patient",
+                      "gold":  225
+                  },
+                  {
+                      "name":  "The Porcupine",
+                      "slug":  "the-porcupine",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "The Price of Devotion",
+                      "slug":  "the-price-of-devotion",
+                      "gold":  1850
+                  },
+                  {
+                      "name":  "The Rabbit\u0027s Foot",
+                      "slug":  "the-rabbits-foot",
+                      "gold":  575
+                  },
+                  {
+                      "name":  "The Realm",
+                      "slug":  "the-realm",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "The Risk",
+                      "slug":  "the-risk",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "The Sephirot",
+                      "slug":  "the-sephirot",
+                      "gold":  325
+                  },
+                  {
+                      "name":  "The Silly Boy",
+                      "slug":  "the-silly-boy",
+                      "gold":  700
+                  },
+                  {
+                      "name":  "The Skeleton",
+                      "slug":  "the-skeleton",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "The Slumbering Beast",
+                      "slug":  "the-slumbering-beast",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "The Summoner",
+                      "slug":  "the-summoner",
+                      "gold":  110
+                  },
+                  {
+                      "name":  "The Tinkerer\u0027s Table",
+                      "slug":  "the-tinkerers-table",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "The Unexpected Prize",
+                      "slug":  "the-unexpected-prize",
+                      "gold":  275
+                  },
+                  {
+                      "name":  "Timeless Astrolabe",
+                      "slug":  "timeless-astrolabe",
+                      "gold":  1000
+                  },
+                  {
+                      "name":  "Timeless Eternal Emblem",
+                      "slug":  "timeless-eternal-emblem",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Timeless Eternal Empire Splinter",
+                      "slug":  "timeless-eternal-empire-splinter",
+                      "gold":  2
+                  },
+                  {
+                      "name":  "Timeless Karui Emblem",
+                      "slug":  "timeless-karui-emblem",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Timeless Karui Splinter",
+                      "slug":  "timeless-karui-splinter",
+                      "gold":  0.5
+                  },
+                  {
+                      "name":  "Timeless Templar Emblem",
+                      "slug":  "timeless-templar-emblem",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Timeless Templar Splinter",
+                      "slug":  "timeless-templar-splinter",
+                      "gold":  1
+                  },
+                  {
+                      "name":  "Timeless Vaal Emblem",
+                      "slug":  "timeless-vaal-emblem",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Timeless Vaal Splinter",
+                      "slug":  "timeless-vaal-splinter",
+                      "gold":  0.5
+                  },
+                  {
+                      "name":  "Titanic Scarab of Treasures",
+                      "slug":  "titanic-scarab-of-treasures",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Torment Scarab",
+                      "slug":  "torment-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Torment Scarab of Possession",
+                      "slug":  "torment-scarab-of-possession",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Traumatic Fragment",
+                      "slug":  "traumatic-fragment",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Tribute to the Goddess",
+                      "slug":  "offer-tribute",
+                      "gold":  180
+                  },
+                  {
+                      "name":  "Triskaidekaphobia",
+                      "slug":  "triskaidekaphobia",
+                      "gold":  200
+                  },
+                  {
+                      "name":  "Turbulent Catalyst",
+                      "slug":  "turbulent-catalyst",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Ultimatum Scarab",
+                      "slug":  "ultimatum-scarab",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Ultimatum Scarab of Bribing",
+                      "slug":  "ultimatum-scarab-of-bribing",
+                      "gold":  100
+                  },
+                  {
+                      "name":  "Ultimatum Scarab of Catalysing",
+                      "slug":  "ultimatum-scarab-of-catalysing",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Ultimatum Scarab of Dueling",
+                      "slug":  "ultimatum-scarab-of-dueling",
+                      "gold":  350
+                  },
+                  {
+                      "name":  "Ultimatum Scarab of Inscription",
+                      "slug":  "ultimatum-scarab-of-inscription",
+                      "gold":  125
+                  },
+                  {
+                      "name":  "Unrelenting Timeless Karui Emblem",
+                      "slug":  "uber-timeless-karui-emblem",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Unrelenting Timeless Maraketh Emblem",
+                      "slug":  "uber-timeless-maraketh-emblem",
+                      "gold":  750
+                  },
+                  {
+                      "name":  "Unrelenting Timeless Templar Emblem",
+                      "slug":  "uber-timeless-templar-emblem",
+                      "gold":  750
+                  },
+                  {
+                      "name":  "Unrelenting Timeless Vaal Emblem",
+                      "slug":  "uber-timeless-vaal-emblem",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Unrequited Love",
+                      "slug":  "unrequited-love",
+                      "gold":  1450
+                  },
+                  {
+                      "name":  "Unstable Catalyst",
+                      "slug":  "unstable-catalyst",
+                      "gold":  50
+                  },
+                  {
+                      "name":  "Vaal Orb",
+                      "slug":  "vaal",
+                      "gold":  20
+                  },
+                  {
+                      "name":  "Valdo\u0027s Puzzle Box",
+                      "slug":  "valdos-puzzle-box",
+                      "gold":  300
+                  },
+                  {
+                      "name":  "Veiled Chaos Orb",
+                      "slug":  "veiled-chaos-orb",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Veiled Exalted Orb",
+                      "slug":  "veiled-exalted-orb",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Veritania\u0027s Crest",
+                      "slug":  "veritanias-crest",
+                      "gold":  250
+                  },
+                  {
+                      "name":  "Violet Oil",
+                      "slug":  "violet-oil",
+                      "gold":  75
+                  },
+                  {
+                      "name":  "Vivid Crystallised Lifeforce",
+                      "slug":  "vivid-lifeforce",
+                      "gold":  0.125
+                  },
+                  {
+                      "name":  "Voidborn Reliquary Key",
+                      "slug":  "voidborn-reliquary-key",
+                      "gold":  975
+                  },
+                  {
+                      "name":  "Volatile Vaal Orb",
+                      "slug":  "tainted-divine-orb",
+                      "gold":  900
+                  },
+                  {
+                      "name":  "Wailing Essence of Wrath",
+                      "slug":  "wailing-essence-of-wrath",
+                      "gold":  55
+                  },
+                  {
+                      "name":  "Warlord\u0027s Exalted Orb",
+                      "slug":  "warlords-exalted-orb",
+                      "gold":  500
+                  },
+                  {
+                      "name":  "Wealth and Power",
+                      "slug":  "wealth-and-power",
+                      "gold":  675
+                  },
+                  {
+                      "name":  "Weeping Essence of Greed",
+                      "slug":  "weeping-essence-of-greed",
+                      "gold":  45
+                  },
+                  {
+                      "name":  "Whispering Delirium Orb",
+                      "slug":  "whispering-delirium-orb",
+                      "gold":  175
+                  },
+                  {
+                      "name":  "Whispering Essence of Woe",
+                      "slug":  "whispering-essence-of-woe",
+                      "gold":  25
+                  },
+                  {
+                      "name":  "Wild Crystallised Lifeforce",
+                      "slug":  "wild-lifeforce",
+                      "gold":  0.125
+                  }
+              ]
+}
