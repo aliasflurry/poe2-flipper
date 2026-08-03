@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: snapshots
 
       - name: Download latest snapshots
         shell: pwsh
@@ -166,4 +168,5 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update poe2scout snapshots
+          branch: snapshots
           file_pattern: data/poe2_data/snapshot.json data/poe_data/snapshot.json data/poe2_data/price-history.json data/poe_data/price-history.json

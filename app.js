@@ -1,10 +1,12 @@
+const SNAPSHOT_DATA_BASE = "https://raw.githubusercontent.com/aliasflurry/poe2-flipper/snapshots";
+
 const GAME_CONFIGS = {
   poe2: {
     label: "Path of Exile 2",
     storagePrefix: "poe2",
     defaultStartCurrency: "exalted",
-    localSnapshotUrl: "data/poe2_data/snapshot.json",
-    historyUrl: "data/poe2_data/price-history.json",
+    localSnapshotUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/snapshot.json`,
+    historyUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/price-history.json`,
     goldCostsUrl: "data/poe2_data/gold-costs.json",
     liveSnapshotUrl: "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs"
   },
@@ -12,8 +14,8 @@ const GAME_CONFIGS = {
     label: "Path of Exile",
     storagePrefix: "poe",
     defaultStartCurrency: "chaos",
-    localSnapshotUrl: "data/poe_data/snapshot.json",
-    historyUrl: "data/poe_data/price-history.json",
+    localSnapshotUrl: `${SNAPSHOT_DATA_BASE}/data/poe_data/snapshot.json`,
+    historyUrl: `${SNAPSHOT_DATA_BASE}/data/poe_data/price-history.json`,
     goldCostsUrl: "data/poe_data/gold-costs.json",
     liveSnapshotUrl: "https://api.poe2scout.com/pc/Leagues/allflame/SnapshotPairs"
   }
