@@ -82,6 +82,15 @@
                 <datalist id="excludeOptions"></datalist>
               </div>
             </label>
+
+            <label class="exclude-field" for="includeSearch">
+              Include items
+              <div class="exclude-picker">
+                <div id="includedChips" class="excluded-chips" aria-live="polite"></div>
+                <input id="includeSearch" list="includeOptions" type="search" placeholder="Search item to include">
+                <datalist id="includeOptions"></datalist>
+              </div>
+            </label>
           </form>
 
           <section class="status-line" aria-live="polite">
