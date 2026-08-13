@@ -28,6 +28,8 @@ const FILTER_SETTINGS_STORAGE_KEY = "exchange-filter-settings";
 const TRENDS_SETTINGS_STORAGE_KEY = "price-trends-settings";
 const TRENDS_MIN_DAILY_VOLUME = 100;
 const DIVINATION_CARD_CATEGORY = "cards";
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+const HISTORY_PREDICTION_COLOR = "#9aa4b5";
 
 const state = {
   gameId: DEFAULT_GAME_ID,
@@ -980,6 +982,55 @@ function isDivinationCard(item) {
   return String(item?.category || "").toLowerCase() === DIVINATION_CARD_CATEGORY;
 }
 
+function predictNextDayPoints(points) {
+  if (!Array.isArray(points) || points.length < 2) return null;
+
+  const t0 = points[0].date.getTime();
+  let sumT = 0;
+  let sumP = 0;
+  let sumTP = 0;
+  let sumTT = 0;
+
+  for (const point of points) {
+    const t = point.date.getTime() - t0;
+    const price = point.price;
+    if (!Number.isFinite(t) || !Number.isFinite(price)) continue;
+    sumT += t;
+    sumP += price;
+    sumTP += t * price;
+    sumTT += t * t;
+  }
+
+  const n = points.length;
+  const denom = n * sumTT - sumT * sumT;
+  if (!denom) return null;
+
+  const slope = (n * sumTP - sumT * sumP) / denom;
+  const intercept = (sumP - slope * sumT) / n;
+  const last = points[points.length - 1];
+  const forecastTime = last.date.getTime() + ONE_DAY_MS;
+  const forecastPrice = intercept + slope * (forecastTime - t0);
+  if (!Number.isFinite(forecastPrice) || forecastPrice <= 0 || !last.price) return null;
+
+  return {
+    points: [
+      { date: new Date(last.date.getTime()), price: last.price },
+      { date: new Date(forecastTime), price: forecastPrice }
+    ],
+    change: (forecastPrice - last.price) / last.price
+  };
+}
+
+function formatSignedPercent(change) {
+  if (!Number.isFinite(change)) return "";
+  const sign = change >= 0 ? "+" : "";
+  return `${sign}${percentFormat.format(change)}`;
+}
+
+function seriesColor(entry, index) {
+  return entry?.color || historyColor(index);
+}
+
 function renderHistoryChart(container, series) {
   const namespace = "http://www.w3.org/2000/svg";
   const width = 720;
@@ -1008,11 +1059,11 @@ function renderHistoryChart(container, series) {
   crosshair.style.opacity = "0";
 
   const focusLayer = document.createElementNS(namespace, "g");
-  const focusDots = series.map((_, index) => {
+  const focusDots = series.map((entry, index) => {
     const focus = document.createElementNS(namespace, "circle");
     focus.setAttribute("class", "history-focus");
     focus.setAttribute("r", "4.5");
-    focus.setAttribute("fill", historyColor(index));
+    focus.setAttribute("fill", seriesColor(entry, index));
     focus.style.opacity = "0";
     focusLayer.append(focus);
     return focus;
@@ -1081,9 +1132,9 @@ function renderHistoryChart(container, series) {
 
     for (const [index, entry] of series.entries()) {
       if (!visibility[index]) continue;
-      const color = historyColor(index);
+      const color = seriesColor(entry, index);
       const group = document.createElementNS(namespace, "g");
-      group.setAttribute("class", "history-series");
+      group.setAttribute("class", entry.predicted ? "history-series history-series-predicted" : "history-series");
       const path = document.createElementNS(namespace, "path");
       const d = entry.points
         .map((point, pointIndex) => `${pointIndex === 0 ? "M" : "L"} ${xFor(point.date.getTime()).toFixed(2)} ${yFor(point.price).toFixed(2)}`)
@@ -1092,18 +1143,26 @@ function renderHistoryChart(container, series) {
       path.setAttribute("d", d);
       path.setAttribute("fill", "none");
       path.setAttribute("stroke", color);
-      path.setAttribute("stroke-width", "3");
+      path.setAttribute("stroke-width", entry.predicted ? "2.5" : "3");
       path.setAttribute("stroke-linecap", "round");
       path.setAttribute("stroke-linejoin", "round");
+      if (entry.predicted) {
+        path.setAttribute("stroke-dasharray", "7 5");
+      }
       group.append(path);
 
-      for (const point of entry.points) {
+      for (const [pointIndex, point] of entry.points.entries()) {
+        if (entry.predicted && pointIndex === 0) continue;
         const dot = document.createElementNS(namespace, "circle");
-        dot.setAttribute("class", "history-point");
+        dot.setAttribute("class", entry.predicted ? "history-point history-point-predicted" : "history-point");
         dot.setAttribute("cx", xFor(point.date.getTime()).toFixed(2));
         dot.setAttribute("cy", yFor(point.price).toFixed(2));
-        dot.setAttribute("r", "2.5");
-        dot.setAttribute("fill", color);
+        dot.setAttribute("r", entry.predicted ? "3.5" : "2.5");
+        dot.setAttribute("fill", entry.predicted ? "transparent" : color);
+        if (entry.predicted) {
+          dot.setAttribute("stroke", color);
+          dot.setAttribute("stroke-width", "2");
+        }
         group.append(dot);
       }
 
@@ -1177,7 +1236,7 @@ function attachHistoryInteractions(ctx) {
       focus.setAttribute("cx", snapX.toFixed(2));
       focus.setAttribute("cy", yFor(price).toFixed(2));
       focus.style.opacity = "1";
-      rows.push(`<div class="history-tooltip-row"><span class="history-tooltip-dot" style="background:${historyColor(index)}"></span>${entry.name}<strong>${numberFormat.format(price)}</strong></div>`);
+      rows.push(`<div class="history-tooltip-row"><span class="history-tooltip-dot" style="background:${seriesColor(entry, index)}"></span><span class="history-tooltip-name">${entry.name}</span><strong>${numberFormat.format(price)}</strong></div>`);
     }
 
     if (!rows.length) {
@@ -1190,9 +1249,29 @@ function attachHistoryInteractions(ctx) {
 
     const containerRect = container.getBoundingClientRect();
     const pixelX = (snapX / ctx.width) * rect.width;
-    const tooltipWidth = tooltip.offsetWidth;
-    const left = Math.min(Math.max(pixelX + 14, 4), containerRect.width - tooltipWidth - 4);
-    const top = Math.min(Math.max(event.clientY - containerRect.top - tooltip.offsetHeight - 12, 4), containerRect.height - tooltip.offsetHeight - 4);
+    const maxTooltipWidth = Math.max(120, containerRect.width - 8);
+    tooltip.style.maxWidth = `${Math.min(260, maxTooltipWidth)}px`;
+
+    const tooltipWidth = Math.ceil(Math.max(tooltip.offsetWidth, tooltip.scrollWidth));
+    const tooltipHeight = Math.ceil(Math.max(tooltip.offsetHeight, tooltip.scrollHeight));
+    const gap = 14;
+    const maxLeft = Math.max(4, containerRect.width - tooltipWidth - 4);
+    const maxTop = Math.max(4, containerRect.height - tooltipHeight - 4);
+
+    // Prefer the right side of the cursor, but flip left near the chart edge
+    // so the tooltip is not clipped by overflow:hidden on .history-chart.
+    let left = pixelX + gap;
+    if (left > maxLeft) {
+      left = pixelX - tooltipWidth - gap;
+    }
+    left = Math.min(Math.max(left, 4), maxLeft);
+
+    let top = event.clientY - containerRect.top - tooltipHeight - 12;
+    if (top < 4) {
+      top = event.clientY - containerRect.top + 12;
+    }
+    top = Math.min(Math.max(top, 4), maxTop);
+
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
   };
@@ -1393,9 +1472,12 @@ function makeTrendCard(entry, startName) {
   const titleWrap = document.createElement("div");
   const title = document.createElement("h2");
   const subtitle = document.createElement("p");
+  const metrics = document.createElement("div");
   const change = document.createElement("strong");
+  const forecast = document.createElement("strong");
   const chart = document.createElement("div");
   const changeText = formatHistoryChange(entry.points);
+  const prediction = predictNextDayPoints(entry.points);
 
   card.className = "trends-card";
   header.className = "trends-card-header";
@@ -1407,28 +1489,54 @@ function makeTrendCard(entry, startName) {
   title.textContent = entry.name;
   subtitle.className = "trends-card-subtitle";
   subtitle.textContent = `Price in ${startName}`;
+  metrics.className = "trends-card-metrics";
   change.className = "trends-card-change";
   if (entry.change !== null) {
     change.textContent = changeText;
+    change.title = "7 day change";
     change.classList.toggle("down", entry.change < 0);
     change.classList.toggle("up", entry.change > 0);
   } else {
     change.textContent = "n/a";
     change.classList.add("muted");
   }
+
+  forecast.className = "trends-card-forecast";
+  if (prediction) {
+    forecast.textContent = `1d ${formatSignedPercent(prediction.change)}`;
+    forecast.title = "Linear forecast for the next 1 day";
+    forecast.classList.toggle("down", prediction.change < 0);
+    forecast.classList.toggle("up", prediction.change > 0);
+  } else {
+    forecast.textContent = "1d n/a";
+    forecast.classList.add("muted");
+  }
+
   chart.className = "history-chart trends-card-chart";
 
   titleWrap.append(title, subtitle);
   identity.append(icon, titleWrap);
-  header.append(identity, change);
+  metrics.append(change, forecast);
+  header.append(identity, metrics);
   card.append(header, chart);
 
-  renderHistoryChart(chart, [
+  const chartSeries = [
     {
       name: `${entry.name} / ${startName}`,
       points: entry.points
     }
-  ]);
+  ];
+
+  if (prediction) {
+    chartSeries.push({
+      name: "1 day forecast",
+      points: prediction.points,
+      predicted: true,
+      color: HISTORY_PREDICTION_COLOR
+    });
+  }
+
+  renderHistoryChart(chart, chartSeries);
 
   return card;
 }
