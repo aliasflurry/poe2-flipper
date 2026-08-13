@@ -25,11 +25,7 @@ const EXCLUDED_STORAGE_KEY = "exchange-excluded-items";
 const INCLUDED_STORAGE_KEY = "exchange-included-items";
 const RATE_OVERRIDES_STORAGE_KEY = "exchange-rate-overrides";
 const FILTER_SETTINGS_STORAGE_KEY = "exchange-filter-settings";
-const STASH_SETTINGS_STORAGE_KEY = "poe2-exchange-stash-settings";
-const TRADE_API_BASE = "https://www.pathofexile.com/api/trade2";
-const TRADE_PROXY_BASE = "/api/trade2";
-const TRADE_FETCH_BATCH_SIZE = 10;
-const TRADE_RESULT_LIMIT = 120;
+const TRENDS_SETTINGS_STORAGE_KEY = "price-trends-settings";
 
 const state = {
   gameId: DEFAULT_GAME_ID,
@@ -42,12 +38,14 @@ const state = {
   edgesByFrom: new Map(),
   lastLoadedAt: null,
   currentPage: 1,
+  trendsPage: 1,
   sortBy: "gain",
   sortDirection: "desc",
   excludedItems: new Set(),
   includedItems: new Set(),
   rateOverrides: new Map(),
-  filterSettings: null
+  filterSettings: null,
+  trendsSettings: null
 };
 
 const els = {
@@ -76,24 +74,29 @@ const els = {
   gameEyebrow: document.querySelector("#gameEyebrow"),
   tabButtons: document.querySelectorAll(".tab-button"),
   exchangeView: document.querySelector("#exchangeView"),
-  stashView: document.querySelector("#stashView"),
+  priceTrendsView: document.querySelector("#priceTrendsView"),
   campaignView: document.querySelector("#campaignView"),
   campaignTabButton: document.querySelector('.tab-button[data-tab="campaign"]'),
+  trendsControls: document.querySelector("#trendsControls"),
+  trendsStartCurrency: document.querySelector("#trendsStartCurrency"),
+  trendsSearch: document.querySelector("#trendsSearch"),
+  trendsPageSize: document.querySelector("#trendsPageSize"),
+  trendsStatus: document.querySelector("#trendsStatus"),
+  trendsMeta: document.querySelector("#trendsMeta"),
+  trendsResults: document.querySelector("#trendsResults"),
+  trendsPagination: document.querySelector("#trendsPagination"),
   campaignActs: document.querySelector("#campaignActs"),
   campaignSummary: document.querySelector("#campaignSummary"),
   campaignStatus: document.querySelector("#campaignStatus"),
   campaignMeta: document.querySelector("#campaignMeta"),
   campaignResetButton: document.querySelector("#campaignResetButton"),
-  workspace: document.querySelector(".workspace"),
-  stashControls: document.querySelector("#stashControls"),
-  stashAccount: document.querySelector("#stashAccount"),
-  stashLeague: document.querySelector("#stashLeague"),
-  stashTabNames: document.querySelector("#stashTabNames"),
-  stashLookupButton: document.querySelector("#stashLookupButton"),
-  stashStatus: document.querySelector("#stashStatus"),
-  stashMeta: document.querySelector("#stashMeta"),
-  stashSummary: document.querySelector("#stashSummary"),
-  stashResults: document.querySelector("#stashResults")
+  workspace: document.querySelector(".workspace")
+};
+
+const TAB_VIEWS = {
+  exchange: () => els.exchangeView,
+  "price-trends": () => els.priceTrendsView,
+  campaign: () => els.campaignView
 };
 
 const numberFormat = new Intl.NumberFormat("en-US", {
@@ -287,6 +290,7 @@ function populateCurrencies() {
   els.includeOptions.replaceChildren(...searchOptions);
   renderExcludedChips();
   renderIncludedChips();
+  populateTrendsCurrencies();
 }
 
 function getSettings() {
@@ -424,10 +428,6 @@ function marketValueFor(itemId) {
   return state.itemPricesById.get(itemId) || 0;
 }
 
-function formatDivineAmount(divineValue) {
-  return `${numberFormat.format(divineValue)} Divine Orb${divineValue === 1 ? "" : "s"}`;
-}
-
 function formatDivineProfit(value) {
   const divinePrice = marketValueFor("divine");
   const fallbackCurrency = state.gameId === "poe" ? "Chaos Orb" : "Exalted Orb";
@@ -560,6 +560,62 @@ function applyFilterSettings() {
   if (["asc", "desc"].includes(settings.sortDirection)) {
     state.sortDirection = settings.sortDirection;
   }
+}
+
+function loadTrendsSettings() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(gameStorageKey(TRENDS_SETTINGS_STORAGE_KEY)) || "null");
+    state.trendsSettings = stored && typeof stored === "object" ? stored : null;
+    applyTrendsSettings();
+  } catch {
+    state.trendsSettings = null;
+  }
+}
+
+function saveTrendsSettings() {
+  const settings = {
+    startCurrency: els.trendsStartCurrency.value,
+    pageSize: els.trendsPageSize.value,
+    search: els.trendsSearch.value
+  };
+
+  state.trendsSettings = settings;
+
+  try {
+    localStorage.setItem(gameStorageKey(TRENDS_SETTINGS_STORAGE_KEY), JSON.stringify(settings));
+  } catch {
+    // Trends settings still apply for the current session if storage is unavailable.
+  }
+}
+
+function applyTrendsSettings() {
+  const settings = state.trendsSettings;
+  if (!settings) return;
+
+  setInputValue(els.trendsPageSize, settings.pageSize);
+  if (typeof settings.search === "string") {
+    els.trendsSearch.value = settings.search;
+  }
+
+  if (typeof settings.startCurrency === "string" && (!state.items.size || state.items.has(settings.startCurrency))) {
+    els.trendsStartCurrency.value = settings.startCurrency;
+  }
+}
+
+function populateTrendsCurrencies() {
+  const fallback = defaultStartCurrency();
+  const current = state.trendsSettings?.startCurrency || els.trendsStartCurrency.value || fallback;
+  const options = [...state.items.values()]
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((item) => {
+      const option = document.createElement("option");
+      option.value = item.id;
+      option.textContent = item.name;
+      return option;
+    });
+
+  els.trendsStartCurrency.replaceChildren(...options);
+  els.trendsStartCurrency.value = state.items.has(current) ? current : fallback;
 }
 
 function setInputValue(input, value) {
@@ -1187,6 +1243,204 @@ function formatHistoryChange(points) {
   return `${sign}${percentFormat.format(change)}`;
 }
 
+function historyChangeValue(points) {
+  if (points.length < 2) return null;
+  const first = points[0].price;
+  const last = points[points.length - 1].price;
+  if (!first) return null;
+  const change = (last - first) / first;
+  return Number.isFinite(change) ? change : null;
+}
+
+function getTrendsPageSize() {
+  return Math.min(100, Math.max(1, Number(els.trendsPageSize.value) || 10));
+}
+
+function buildTrendEntries(startId) {
+  if (!startId || !state.items.has(startId)) return [];
+
+  const entries = [];
+  for (const item of state.items.values()) {
+    if (item.id === startId) continue;
+    const points = pairRatePointsFor(item.id, startId);
+    if (!points.length) continue;
+    entries.push({
+      itemId: item.id,
+      name: item.name,
+      points,
+      change: historyChangeValue(points)
+    });
+  }
+
+  entries.sort((a, b) => {
+    const aHas = a.change !== null;
+    const bHas = b.change !== null;
+    if (aHas && bHas) return a.change - b.change;
+    if (aHas) return -1;
+    if (bHas) return 1;
+    return a.name.localeCompare(b.name);
+  });
+
+  return entries;
+}
+
+function renderPriceTrends() {
+  const startId = els.trendsStartCurrency.value;
+  const search = els.trendsSearch.value.trim().toLowerCase();
+  const pageSize = getTrendsPageSize();
+
+  if (!state.items.size) {
+    renderTrendsEmpty("Load exchange data to view price trends.");
+    els.trendsStatus.textContent = "Waiting for exchange data...";
+    els.trendsMeta.textContent = "";
+    return;
+  }
+
+  if (!startId || !state.items.has(startId)) {
+    renderTrendsEmpty("Select a starting currency to view price trends.");
+    els.trendsStatus.textContent = "Select a starting currency.";
+    els.trendsMeta.textContent = "";
+    return;
+  }
+
+  let entries = buildTrendEntries(startId);
+  if (search) {
+    entries = entries.filter((entry) => entry.name.toLowerCase().includes(search));
+  }
+
+  const totalResults = entries.length;
+  const totalPages = Math.max(1, Math.ceil(totalResults / pageSize));
+  state.trendsPage = Math.min(Math.max(1, state.trendsPage), totalPages);
+
+  const startName = itemLabel(startId);
+  els.trendsStatus.textContent = totalResults
+    ? `${totalResults.toLocaleString()} items vs ${startName}, sorted by % change (low to high)`
+    : search
+      ? `No items match "${els.trendsSearch.value.trim()}"`
+      : `No historical pairs found vs ${startName}`;
+  els.trendsMeta.textContent = state.priceHistory.length
+    ? `${state.priceHistory.length} snapshots (7 day)`
+    : "No snapshots";
+
+  if (!totalResults) {
+    renderTrendsEmpty(
+      state.priceHistory.length
+        ? "No matching items with price history for this currency."
+        : "Historical prices will appear here after the snapshot workflow runs."
+    );
+    return;
+  }
+
+  const pageEntries = entries.slice((state.trendsPage - 1) * pageSize, state.trendsPage * pageSize);
+  const cards = pageEntries.map((entry) => makeTrendCard(entry, startName));
+  els.trendsResults.replaceChildren(...cards);
+  els.trendsPagination.replaceChildren();
+  renderTrendsPagination(totalResults, totalPages, pageSize);
+}
+
+function renderTrendsEmpty(message) {
+  const empty = document.createElement("p");
+  empty.className = "empty";
+  empty.textContent = message;
+  els.trendsResults.replaceChildren(empty);
+  els.trendsPagination.replaceChildren();
+}
+
+function makeTrendCard(entry, startName) {
+  const card = document.createElement("article");
+  const header = document.createElement("div");
+  const identity = document.createElement("div");
+  const icon = document.createElement("img");
+  const titleWrap = document.createElement("div");
+  const title = document.createElement("h2");
+  const subtitle = document.createElement("p");
+  const change = document.createElement("strong");
+  const chart = document.createElement("div");
+  const changeText = formatHistoryChange(entry.points);
+
+  card.className = "trends-card";
+  header.className = "trends-card-header";
+  identity.className = "trends-card-identity";
+  icon.src = itemIcon(entry.itemId);
+  icon.alt = "";
+  icon.className = "trends-card-icon";
+  titleWrap.className = "trends-card-titles";
+  title.textContent = entry.name;
+  subtitle.className = "trends-card-subtitle";
+  subtitle.textContent = `Price in ${startName}`;
+  change.className = "trends-card-change";
+  if (entry.change !== null) {
+    change.textContent = changeText;
+    change.classList.toggle("down", entry.change < 0);
+    change.classList.toggle("up", entry.change > 0);
+  } else {
+    change.textContent = "n/a";
+    change.classList.add("muted");
+  }
+  chart.className = "history-chart trends-card-chart";
+
+  titleWrap.append(title, subtitle);
+  identity.append(icon, titleWrap);
+  header.append(identity, change);
+  card.append(header, chart);
+
+  renderHistoryChart(chart, [
+    {
+      name: `${entry.name} / ${startName}`,
+      points: entry.points
+    }
+  ]);
+
+  return card;
+}
+
+function renderTrendsPagination(totalResults, totalPages, pageSize) {
+  const previous = makeTrendsPageButton("Previous", state.trendsPage - 1, state.trendsPage === 1);
+  const next = makeTrendsPageButton("Next", state.trendsPage + 1, state.trendsPage === totalPages);
+  const summary = document.createElement("span");
+  const pages = document.createElement("div");
+  const firstResult = (state.trendsPage - 1) * pageSize + 1;
+  const lastResult = Math.min(state.trendsPage * pageSize, totalResults);
+
+  summary.className = "pagination-summary";
+  summary.textContent = `${numberFormat.format(firstResult)}-${numberFormat.format(lastResult)} of ${numberFormat.format(totalResults)} results`;
+  pages.className = "page-numbers";
+
+  for (const page of getVisiblePages(totalPages, state.trendsPage)) {
+    if (page === "...") {
+      const gap = document.createElement("span");
+      gap.className = "page-gap";
+      gap.textContent = "...";
+      pages.append(gap);
+      continue;
+    }
+
+    const pageButton = makeTrendsPageButton(String(page), page, page === state.trendsPage);
+    pageButton.classList.add("page-number");
+    pageButton.setAttribute("aria-label", `Go to page ${page}`);
+    if (page === state.trendsPage) {
+      pageButton.setAttribute("aria-current", "page");
+    }
+    pages.append(pageButton);
+  }
+
+  els.trendsPagination.append(previous, pages, next, summary);
+}
+
+function makeTrendsPageButton(label, page, disabled) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "page-button";
+  button.textContent = label;
+  button.disabled = disabled;
+  button.addEventListener("click", () => {
+    state.trendsPage = page;
+    renderPriceTrends();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  return button;
+}
+
 function historyColor(index) {
   return ["#d7a84f", "#5bbf98", "#7aa7ff", "#d66d5f"][index % 4];
 }
@@ -1388,16 +1642,20 @@ function commitRateInput(edge, input) {
 }
 
 function switchTab(tabName) {
-  const activeTab = tabName === "stash" ? "stash" : tabName === "campaign" ? "campaign" : "exchange";
+  const activeTab = TAB_VIEWS[tabName] ? tabName : "exchange";
 
-  els.exchangeView.classList.toggle("active", activeTab === "exchange");
-  els.stashView.classList.toggle("active", activeTab === "stash");
-  els.campaignView.classList.toggle("active", activeTab === "campaign");
+  for (const [name, getView] of Object.entries(TAB_VIEWS)) {
+    getView()?.classList.toggle("active", name === activeTab);
+  }
 
   for (const button of els.tabButtons) {
     const isActive = button.dataset.tab === activeTab;
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
+  }
+
+  if (activeTab === "price-trends") {
+    renderPriceTrends();
   }
 }
 
@@ -1418,10 +1676,13 @@ function updateGameControls() {
 
 function resetControlsToDefaults() {
   document.querySelector("#controls").reset();
+  els.trendsControls?.reset();
   state.currentPage = 1;
+  state.trendsPage = 1;
   state.sortBy = "gain";
   state.sortDirection = "desc";
   state.filterSettings = null;
+  state.trendsSettings = null;
   updateSortButtons();
 }
 
@@ -1437,19 +1698,25 @@ function resetExchangeState() {
   state.includedItems.clear();
   state.rateOverrides.clear();
   els.startCurrency.replaceChildren();
+  els.trendsStartCurrency.replaceChildren();
   els.excludeOptions.replaceChildren();
   els.excludedChips.replaceChildren();
   els.includeOptions.replaceChildren();
   els.includedChips.replaceChildren();
   els.results.replaceChildren();
   els.pagination.replaceChildren();
+  els.trendsResults.replaceChildren();
+  els.trendsPagination.replaceChildren();
   els.snapshotMeta.textContent = "";
+  els.trendsStatus.textContent = "Select a starting currency to view price trends.";
+  els.trendsMeta.textContent = "";
 }
 
 function switchGame(gameId) {
   if (!GAME_CONFIGS[gameId] || gameId === state.gameId) return;
 
   saveFilterSettings();
+  saveTrendsSettings();
   state.gameId = gameId;
   updateGameControls();
   resetExchangeState();
@@ -1458,303 +1725,9 @@ function switchGame(gameId) {
   loadIncludedItems();
   loadRateOverrides();
   loadFilterSettings();
+  loadTrendsSettings();
   updateResetOverridesButton();
   loadData();
-}
-
-function loadStashSettings() {
-  try {
-    const settings = JSON.parse(localStorage.getItem(STASH_SETTINGS_STORAGE_KEY) || "null");
-    if (!settings || typeof settings !== "object") return;
-
-    setInputValue(els.stashAccount, settings.account);
-    setInputValue(els.stashLeague, settings.league);
-    setInputValue(els.stashTabNames, settings.tabNames);
-  } catch {
-    // Stash settings are optional convenience state.
-  }
-}
-
-function saveStashSettings() {
-  try {
-    localStorage.setItem(STASH_SETTINGS_STORAGE_KEY, JSON.stringify({
-      account: els.stashAccount.value,
-      league: els.stashLeague.value,
-      tabNames: els.stashTabNames.value
-    }));
-  } catch {
-    // The lookup still works for the current submission if storage is unavailable.
-  }
-}
-
-function parseStashTabNames(value) {
-  return String(value || "")
-    .split(",")
-    .map((name) => name.trim())
-    .filter(Boolean);
-}
-
-function stashTabMatches(stashName, tabNames) {
-  const normalized = normalizeName(stashName);
-  return tabNames.some((tabName) => normalized.includes(normalizeName(tabName)));
-}
-
-function itemExaltedValueByName(name) {
-  const normalized = normalizeName(name);
-  for (const item of state.items.values()) {
-    if (normalizeName(item.name) === normalized) {
-      return exaltedValueFor(item.id);
-    }
-  }
-  return 0;
-}
-
-function listingItemName(item) {
-  return item?.currencyTypeName || item?.typeLine || item?.baseType || item?.name || "Unknown item";
-}
-
-function listingStackSize(item) {
-  const stackSize = Number(item?.stackSize);
-  if (Number.isFinite(stackSize) && stackSize > 0) return stackSize;
-
-  const property = (item?.properties || []).find((entry) => normalizeName(entry.name) === "stack size");
-  const text = property?.values?.[0]?.[0];
-  const parsed = Number(String(text || "").split("/")[0]);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
-}
-
-function buildTradeSearchPayload(accountName) {
-  return {
-    query: {
-      status: { option: "any" },
-      stats: [{ type: "and", filters: [], disabled: false }],
-      filters: {
-        trade_filters: {
-          filters: {
-            account: { input: accountName }
-          }
-        }
-      }
-    },
-    sort: { price: "desc" }
-  };
-}
-
-async function searchTradeListings(accountName, league) {
-  const response = await fetchTradeApi(`/search/poe2/${encodeURIComponent(league)}`, {
-    method: "POST",
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json"
-    },
-    body: JSON.stringify(buildTradeSearchPayload(accountName))
-  });
-
-  if (!response.ok) {
-    throw new Error(`trade search HTTP ${response.status}`);
-  }
-
-  const payload = await response.json();
-  return {
-    queryId: payload.id,
-    ids: Array.isArray(payload.result) ? payload.result.slice(0, TRADE_RESULT_LIMIT) : [],
-    total: payload.total || payload.result?.length || 0
-  };
-}
-
-async function fetchTradeListings(ids, queryId) {
-  const listings = [];
-
-  for (let index = 0; index < ids.length; index += TRADE_FETCH_BATCH_SIZE) {
-    const batch = ids.slice(index, index + TRADE_FETCH_BATCH_SIZE);
-    const response = await fetchTradeApi(`/fetch/${batch.join(",")}?query=${encodeURIComponent(queryId)}&realm=poe2`, {
-      headers: { accept: "application/json" }
-    });
-
-    if (!response.ok) {
-      throw new Error(`trade fetch HTTP ${response.status}`);
-    }
-
-    const payload = await response.json();
-    listings.push(...(payload.result || []));
-  }
-
-  return listings;
-}
-
-async function fetchTradeApi(path, options = {}) {
-  const proxyResponse = await fetch(`${TRADE_PROXY_BASE}${path}`, options).catch(() => null);
-  if (proxyResponse?.ok) return proxyResponse;
-  if (proxyResponse && proxyResponse.status !== 404) return proxyResponse;
-
-  return fetch(`${TRADE_API_BASE}${path}`, options);
-}
-
-function valueStashListings(listings, tabNames) {
-  const divinePrice = exaltedValueFor("divine");
-  const rows = [];
-  const unknown = [];
-  const tabs = new Map();
-  let totalDivines = 0;
-  let matchedListings = 0;
-
-  if (!divinePrice) {
-    throw new Error("Divine Orb price is not available in the exchange snapshot yet.");
-  }
-
-  for (const listing of listings) {
-    const stashName = listing?.listing?.stash?.name || "";
-    if (!stashTabMatches(stashName, tabNames)) continue;
-    matchedListings += 1;
-
-    const name = listingItemName(listing.item);
-    const amount = listingStackSize(listing.item);
-    const exaltedValue = itemExaltedValueByName(name);
-    if (!exaltedValue) {
-      unknown.push({ name, amount, stashName });
-      continue;
-    }
-
-    const divines = (amount * exaltedValue) / divinePrice;
-    totalDivines += divines;
-
-    const normalizedTab = stashName || "Matched stash";
-    const tab = tabs.get(normalizedTab) || { name: normalizedTab, divines: 0, listings: 0 };
-    tab.divines += divines;
-    tab.listings += 1;
-    tabs.set(normalizedTab, tab);
-
-    rows.push({ name, amount, stashName: normalizedTab, divines, exaltedValue });
-  }
-
-  rows.sort((a, b) => b.divines - a.divines);
-  return {
-    totalDivines,
-    matchedListings,
-    pricedListings: rows.length,
-    unknown,
-    tabs: [...tabs.values()].sort((a, b) => b.divines - a.divines),
-    rows
-  };
-}
-
-function renderStashValuation(valuation, searchedCount, totalAvailable) {
-  els.stashSummary.replaceChildren();
-  els.stashResults.replaceChildren();
-
-  const cards = [
-    ["Total", formatDivineAmount(valuation.totalDivines)],
-    ["Priced listings", numberFormat.format(valuation.pricedListings)],
-    ["Matched listings", numberFormat.format(valuation.matchedListings)],
-    ["Searched", `${numberFormat.format(searchedCount)} of ${numberFormat.format(totalAvailable)}`]
-  ].map(([label, value]) => {
-    const card = document.createElement("article");
-    const span = document.createElement("span");
-    const strong = document.createElement("strong");
-    card.className = "stash-metric";
-    span.textContent = label;
-    strong.textContent = value;
-    card.append(span, strong);
-    return card;
-  });
-
-  els.stashSummary.append(...cards);
-
-  if (!valuation.rows.length) {
-    const empty = document.createElement("p");
-    empty.className = "empty";
-    empty.textContent = "No priced public listings were found in the matching stash tabs.";
-    els.stashResults.append(empty);
-    return;
-  }
-
-  const tabList = document.createElement("section");
-  tabList.className = "stash-tab-breakdown";
-  for (const tab of valuation.tabs) {
-    const row = document.createElement("div");
-    const name = document.createElement("span");
-    const value = document.createElement("strong");
-    name.textContent = tab.name;
-    value.textContent = formatDivineAmount(tab.divines);
-    row.append(name, value);
-    tabList.append(row);
-  }
-
-  const table = document.createElement("table");
-  table.className = "stash-table";
-  table.innerHTML = "<thead><tr><th>Item</th><th>Tab</th><th>Amount</th><th>Value</th></tr></thead>";
-  const body = document.createElement("tbody");
-
-  for (const row of valuation.rows) {
-    const tr = document.createElement("tr");
-    const item = document.createElement("td");
-    const tab = document.createElement("td");
-    const amount = document.createElement("td");
-    const value = document.createElement("td");
-
-    item.textContent = row.name;
-    tab.textContent = row.stashName;
-    amount.textContent = numberFormat.format(row.amount);
-    value.textContent = formatDivineAmount(row.divines);
-    tr.append(item, tab, amount, value);
-    body.append(tr);
-  }
-
-  table.append(body);
-  els.stashResults.append(tabList, table);
-
-  if (valuation.unknown.length) {
-    const note = document.createElement("p");
-    note.className = "stash-note";
-    note.textContent = `${numberFormat.format(valuation.unknown.length)} matched listing${valuation.unknown.length === 1 ? "" : "s"} could not be priced from the exchange snapshot.`;
-    els.stashResults.append(note);
-  }
-}
-
-async function handleStashLookup(event) {
-  event.preventDefault();
-
-  const accountName = els.stashAccount.value.trim();
-  const league = els.stashLeague.value.trim();
-  const tabNames = parseStashTabNames(els.stashTabNames.value);
-
-  if (!accountName || !league || !tabNames.length) {
-    els.stashStatus.textContent = "Account name, league, and at least one stash tab name are required.";
-    return;
-  }
-
-  saveStashSettings();
-  els.stashLookupButton.disabled = true;
-  els.stashSummary.replaceChildren();
-  els.stashResults.replaceChildren();
-  els.stashStatus.textContent = "Searching public trade listings...";
-  els.stashMeta.textContent = "";
-
-  try {
-    const search = await searchTradeListings(accountName, league);
-    if (!search.ids.length) {
-      els.stashStatus.textContent = "No public trade listings were found for that account and league.";
-      els.stashMeta.textContent = "";
-      return;
-    }
-
-    els.stashStatus.textContent = `Fetching ${numberFormat.format(search.ids.length)} trade listings...`;
-    const listings = await fetchTradeListings(search.ids, search.queryId);
-    const valuation = valueStashListings(listings, tabNames);
-
-    renderStashValuation(valuation, search.ids.length, search.total);
-    els.stashStatus.textContent = `Estimated ${formatDivineAmount(valuation.totalDivines)} in matching public stash listings.`;
-    els.stashMeta.textContent = "Trade only exposes public listings, not private stash contents.";
-  } catch (error) {
-    els.stashStatus.textContent = "Could not read trade listings from this browser.";
-    els.stashMeta.textContent = error.message;
-    const empty = document.createElement("p");
-    empty.className = "empty";
-    empty.textContent = "The stash valuation needs the trade API proxy when the browser blocks direct trade API requests.";
-    els.stashResults.replaceChildren(empty);
-  } finally {
-    els.stashLookupButton.disabled = false;
-  }
 }
 
 async function loadData() {
@@ -1781,6 +1754,7 @@ async function loadData() {
     hydrateGoldCosts();
     populateCurrencies();
     renderResults();
+    renderPriceTrends();
 
     els.status.textContent = `${state.rawPairs.length.toLocaleString()} ${game.label} exchange pairs loaded`;
     const matchedGoldCosts = `${state.goldCostsByItem.size.toLocaleString()} gold costs matched`;
@@ -1793,6 +1767,7 @@ async function loadData() {
     els.status.textContent = `Could not load ${game.label} poe2scout data.`;
     els.snapshotMeta.textContent = error.message;
     renderEmpty("The exchange snapshot could not be reached from this browser. Refresh again or try the other game tab.");
+    renderTrendsEmpty("The exchange snapshot could not be reached from this browser.");
   } finally {
     if (requestedGameId === state.gameId) {
       els.refreshButton.disabled = false;
@@ -1926,16 +1901,23 @@ function handleSortClick(event) {
   renderResults();
 }
 
+function handleTrendsControlsChange() {
+  state.trendsPage = 1;
+  saveTrendsSettings();
+  renderPriceTrends();
+}
+
 for (const button of els.tabButtons) {
   button.addEventListener("click", () => switchTab(button.dataset.tab));
 }
 for (const button of els.gameButtons) {
   button.addEventListener("click", () => switchGame(button.dataset.game));
 }
-els.stashControls.addEventListener("submit", handleStashLookup);
 
 document.querySelector("#controls").addEventListener("input", handleControlsInput);
 document.querySelector("#controls").addEventListener("change", handleControlsInput);
+els.trendsControls.addEventListener("input", handleTrendsControlsChange);
+els.trendsControls.addEventListener("change", handleTrendsControlsChange);
 els.excludeSearch.addEventListener("keydown", handleExcludeKeydown);
 els.excludeSearch.addEventListener("change", handleExcludeChange);
 els.includeSearch.addEventListener("keydown", handleIncludeKeydown);
@@ -1950,6 +1932,7 @@ loadExcludedItems();
 loadIncludedItems();
 loadRateOverrides();
 loadFilterSettings();
+loadTrendsSettings();
 updateGameControls();
 updateResetOverridesButton();
 window.CampaignModule?.initCampaign(els);
