@@ -22,6 +22,7 @@ const GAME_CONFIGS = {
 };
 const DEFAULT_GAME_ID = "poe2";
 const EXCLUDED_STORAGE_KEY = "exchange-excluded-items";
+const INCLUDED_STORAGE_KEY = "exchange-included-items";
 const RATE_OVERRIDES_STORAGE_KEY = "exchange-rate-overrides";
 const FILTER_SETTINGS_STORAGE_KEY = "exchange-filter-settings";
 const STASH_SETTINGS_STORAGE_KEY = "poe2-exchange-stash-settings";
@@ -44,6 +45,7 @@ const state = {
   sortBy: "gain",
   sortDirection: "desc",
   excludedItems: new Set(),
+  includedItems: new Set(),
   rateOverrides: new Map(),
   filterSettings: null
 };
@@ -61,6 +63,9 @@ const els = {
   excludeSearch: document.querySelector("#excludeSearch"),
   excludeOptions: document.querySelector("#excludeOptions"),
   excludedChips: document.querySelector("#excludedChips"),
+  includeSearch: document.querySelector("#includeSearch"),
+  includeOptions: document.querySelector("#includeOptions"),
+  includedChips: document.querySelector("#includedChips"),
   status: document.querySelector("#status"),
   snapshotMeta: document.querySelector("#snapshotMeta"),
   results: document.querySelector("#results"),
@@ -248,6 +253,17 @@ function populateCurrencies() {
     saveExcludedItems();
   }
 
+  let removedMissingInclusions = false;
+  for (const itemId of state.includedItems) {
+    if (!state.items.has(itemId)) {
+      state.includedItems.delete(itemId);
+      removedMissingInclusions = true;
+    }
+  }
+  if (removedMissingInclusions) {
+    saveIncludedItems();
+  }
+
   const options = [...state.items.values()]
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((item) => {
@@ -267,8 +283,10 @@ function populateCurrencies() {
 
   els.startCurrency.replaceChildren(...options);
   els.startCurrency.value = state.items.has(current) ? current : fallback;
-  els.excludeOptions.replaceChildren(...searchOptions);
+  els.excludeOptions.replaceChildren(...searchOptions.map((option) => option.cloneNode(true)));
+  els.includeOptions.replaceChildren(...searchOptions);
   renderExcludedChips();
+  renderIncludedChips();
 }
 
 function getSettings() {
@@ -280,7 +298,8 @@ function getSettings() {
     minStock: Math.max(toNumber(els.minStock.value), 0),
     maxGoldCost: Math.max(toNumber(els.maxGoldCost.value), 0),
     pageSize: Math.min(Math.max(Math.round(toNumber(els.pageSize.value)), 1), 100),
-    excludedItems: state.excludedItems
+    excludedItems: state.excludedItems,
+    includedItems: state.includedItems
   };
 }
 
@@ -318,6 +337,10 @@ function findCycles(settings) {
 
   return cycles
     .filter((cycle) => cycle.route.every((itemId) => !settings.excludedItems.has(itemId)))
+    .filter((cycle) => (
+      settings.includedItems.size === 0
+      || cycle.route.some((itemId) => settings.includedItems.has(itemId))
+    ))
     .filter((cycle) => cycle.multiplier > 1)
     .filter((cycle) => settings.maxGoldCost === 0 || cycle.goldCost <= settings.maxGoldCost)
     .sort(compareCycles);
@@ -435,6 +458,23 @@ function loadExcludedItems() {
 function saveExcludedItems() {
   try {
     localStorage.setItem(gameStorageKey(EXCLUDED_STORAGE_KEY), JSON.stringify([...state.excludedItems]));
+  } catch {
+    // The filter still works for the current session if storage is unavailable.
+  }
+}
+
+function loadIncludedItems() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(gameStorageKey(INCLUDED_STORAGE_KEY)) || "[]");
+    state.includedItems = new Set(Array.isArray(stored) ? stored.filter((itemId) => typeof itemId === "string") : []);
+  } catch {
+    state.includedItems = new Set();
+  }
+}
+
+function saveIncludedItems() {
+  try {
+    localStorage.setItem(gameStorageKey(INCLUDED_STORAGE_KEY), JSON.stringify([...state.includedItems]));
   } catch {
     // The filter still works for the current session if storage is unavailable.
   }
@@ -612,6 +652,52 @@ function renderExcludedChips() {
 
     chip.append(name, remove);
     els.excludedChips.append(chip);
+  }
+}
+
+function addIncludedItem(value) {
+  const item = findItemBySearch(value);
+  if (!item) return false;
+
+  state.includedItems.add(item.id);
+  saveIncludedItems();
+  els.includeSearch.value = "";
+  state.currentPage = 1;
+  renderIncludedChips();
+  renderResults();
+  return true;
+}
+
+function removeIncludedItem(itemId) {
+  state.includedItems.delete(itemId);
+  saveIncludedItems();
+  state.currentPage = 1;
+  renderIncludedChips();
+  renderResults();
+}
+
+function renderIncludedChips() {
+  els.includedChips.replaceChildren();
+
+  for (const itemId of [...state.includedItems].sort((a, b) => itemLabel(a).localeCompare(itemLabel(b)))) {
+    const item = state.items.get(itemId);
+    if (!item) continue;
+
+    const chip = document.createElement("span");
+    const name = document.createElement("span");
+    const remove = document.createElement("button");
+
+    chip.className = "exclude-chip";
+    name.textContent = item.name;
+    remove.type = "button";
+    remove.className = "chip-remove";
+    remove.textContent = "X";
+    remove.title = `Remove ${item.name}`;
+    remove.setAttribute("aria-label", `Remove ${item.name}`);
+    remove.addEventListener("click", () => removeIncludedItem(item.id));
+
+    chip.append(name, remove);
+    els.includedChips.append(chip);
   }
 }
 
@@ -1348,10 +1434,13 @@ function resetExchangeState() {
   state.goldCostsByItem.clear();
   state.edgesByFrom.clear();
   state.excludedItems.clear();
+  state.includedItems.clear();
   state.rateOverrides.clear();
   els.startCurrency.replaceChildren();
   els.excludeOptions.replaceChildren();
   els.excludedChips.replaceChildren();
+  els.includeOptions.replaceChildren();
+  els.includedChips.replaceChildren();
   els.results.replaceChildren();
   els.pagination.replaceChildren();
   els.snapshotMeta.textContent = "";
@@ -1366,6 +1455,7 @@ function switchGame(gameId) {
   resetExchangeState();
   resetControlsToDefaults();
   loadExcludedItems();
+  loadIncludedItems();
   loadRateOverrides();
   loadFilterSettings();
   updateResetOverridesButton();
@@ -1794,7 +1884,7 @@ function handleFilterChange() {
 }
 
 function handleControlsInput(event) {
-  if (event.target === els.excludeSearch) return;
+  if (event.target === els.excludeSearch || event.target === els.includeSearch) return;
   handleFilterChange();
 }
 
@@ -1807,6 +1897,17 @@ function handleExcludeKeydown(event) {
 
 function handleExcludeChange() {
   addExcludedItem(els.excludeSearch.value);
+}
+
+function handleIncludeKeydown(event) {
+  if (event.key !== "Enter") return;
+
+  event.preventDefault();
+  addIncludedItem(els.includeSearch.value);
+}
+
+function handleIncludeChange() {
+  addIncludedItem(els.includeSearch.value);
 }
 
 function handleSortClick(event) {
@@ -1837,6 +1938,8 @@ document.querySelector("#controls").addEventListener("input", handleControlsInpu
 document.querySelector("#controls").addEventListener("change", handleControlsInput);
 els.excludeSearch.addEventListener("keydown", handleExcludeKeydown);
 els.excludeSearch.addEventListener("change", handleExcludeChange);
+els.includeSearch.addEventListener("keydown", handleIncludeKeydown);
+els.includeSearch.addEventListener("change", handleIncludeChange);
 for (const button of els.sortButtons) {
   button.addEventListener("click", handleSortClick);
 }
@@ -1844,6 +1947,7 @@ els.refreshButton.addEventListener("click", loadData);
 els.resetOverridesButton.addEventListener("click", resetRateOverrides);
 
 loadExcludedItems();
+loadIncludedItems();
 loadRateOverrides();
 loadFilterSettings();
 updateGameControls();
