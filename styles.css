@@ -621,6 +621,7 @@ h2 {
 .history-tooltip {
   position: absolute;
   z-index: 3;
+  box-sizing: border-box;
   min-width: 140px;
   max-width: 260px;
   padding: 8px 10px;
@@ -631,6 +632,7 @@ h2 {
   color: var(--text);
   font-size: 0.8rem;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .history-tooltip[hidden] {
@@ -649,12 +651,20 @@ h2 {
   align-items: center;
   gap: 6px;
   padding: 2px 0;
+  min-width: 0;
+}
+
+.history-tooltip-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .history-tooltip-row strong {
   margin-left: auto;
   font-variant-numeric: tabular-nums;
+  flex: 0 0 auto;
 }
 
 .history-tooltip-dot {
@@ -912,17 +922,37 @@ h2 {
   color: var(--muted);
 }
 
-.trends-card-change.up {
+.trends-card-metrics {
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+  flex: 0 0 auto;
+}
+
+.trends-card-forecast {
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.trends-card-change.up,
+.trends-card-forecast.up {
   color: #5bbf98;
 }
 
-.trends-card-change.down {
+.trends-card-change.down,
+.trends-card-forecast.down {
   color: #d66d5f;
 }
 
-.trends-card-change.muted {
+.trends-card-change.muted,
+.trends-card-forecast.muted {
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+.history-series-predicted {
+  opacity: 0.92;
 }
 
 .trends-card-chart {
