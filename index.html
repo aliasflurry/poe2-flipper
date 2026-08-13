@@ -29,7 +29,7 @@
 
         <nav class="tabs" aria-label="Tools">
           <button class="tab-button active" type="button" data-tab="exchange" aria-pressed="true">Exchange</button>
-          <button class="tab-button" type="button" data-tab="stash" aria-pressed="false">Stash</button>
+          <button class="tab-button" type="button" data-tab="price-trends" aria-pressed="false">Price trends</button>
           <button class="tab-button" type="button" data-tab="campaign" data-poe2-only aria-pressed="false">Campaign</button>
         </nav>
 
@@ -108,33 +108,31 @@
           <nav id="pagination" class="pagination" aria-label="Result pages"></nav>
         </section>
 
-        <section id="stashView" class="tab-view">
-          <form class="stash-controls" id="stashControls">
+        <section id="priceTrendsView" class="tab-view">
+          <form class="controls trends-controls" id="trendsControls">
             <label>
-              Account name
-              <input id="stashAccount" type="text" autocomplete="username" placeholder="PoE account name">
+              Start currency
+              <select id="trendsStartCurrency"></select>
+            </label>
+
+            <label class="trends-search-field">
+              Search items
+              <input id="trendsSearch" type="search" placeholder="Filter by item name" autocomplete="off">
             </label>
 
             <label>
-              League
-              <input id="stashLeague" type="text" value="Standard" placeholder="League name">
+              Per page
+              <input id="trendsPageSize" type="number" min="1" max="100" step="1" value="10">
             </label>
-
-            <label>
-              Stash tab names
-              <input id="stashTabNames" type="text" value="Currency, Essence, Delirium, Expedition, Breach, Ritual, Runes, Maps">
-            </label>
-
-            <button id="stashLookupButton" class="text-button primary-action" type="submit">Calculate stash</button>
           </form>
 
           <section class="status-line" aria-live="polite">
-            <span id="stashStatus">Enter an account name to value public listings from matching stash tabs.</span>
-            <span id="stashMeta"></span>
+            <span id="trendsStatus">Select a starting currency to view price trends.</span>
+            <span id="trendsMeta"></span>
           </section>
 
-          <section id="stashSummary" class="stash-summary"></section>
-          <section id="stashResults" class="stash-results"></section>
+          <section id="trendsResults" class="trends-results"></section>
+          <nav id="trendsPagination" class="pagination" aria-label="Price trends pages"></nav>
         </section>
 
         <section id="campaignView" class="tab-view">

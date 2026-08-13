@@ -829,159 +829,135 @@ h2 {
   display: block;
 }
 
-.stash-controls {
-  display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(150px, 0.75fr) minmax(260px, 1.5fr) auto;
-  gap: 12px;
-  align-items: end;
-  padding: 18px 26px;
-  border-bottom: 1px solid var(--line);
-}
-
-.primary-action {
-  min-width: 148px;
-  background: color-mix(in srgb, var(--gold) 18%, var(--panel-strong));
-}
-
-.stash-summary {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  padding: 18px 26px 0;
-}
-
-.stash-metric {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #15130f;
-  padding: 14px;
-}
-
-.stash-metric span {
-  display: block;
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 900;
-  margin-bottom: 5px;
-  text-transform: uppercase;
-}
-
-.stash-metric strong {
-  color: var(--gold);
-  font-size: 1.35rem;
-  font-weight: 900;
-}
-
-.stash-results {
-  display: grid;
-  gap: 14px;
-  padding: 18px 26px 28px;
-}
-
-.stash-tab-breakdown {
-  display: grid;
-  gap: 8px;
-}
-
-.stash-tab-breakdown div {
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.025);
-  padding: 10px 12px;
-}
-
-.stash-tab-breakdown span,
-.stash-tab-breakdown strong {
-  overflow-wrap: anywhere;
-}
-
-.stash-tab-breakdown strong {
-  color: var(--gold);
-  text-align: right;
-}
-
-.stash-table {
-  width: 100%;
-  border-collapse: collapse;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #15130f;
-}
-
-.stash-table th,
-.stash-table td {
-  border-bottom: 1px solid var(--line);
-  padding: 10px 12px;
-  text-align: left;
-  vertical-align: top;
-}
-
-.stash-table th {
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.stash-table td:nth-child(3),
-.stash-table td:nth-child(4) {
-  text-align: right;
-  white-space: nowrap;
-}
-
-.stash-table tr:last-child td {
-  border-bottom: 0;
-}
-
-.stash-note {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-@media (max-width: 900px) {
-  .stash-controls,
-  .stash-summary {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .primary-action {
-    min-width: 0;
-  }
-}
-
 @media (max-width: 620px) {
-  .tabs,
-  .stash-controls,
-  .stash-summary,
-  .stash-results {
+  .tabs {
     padding-left: 16px;
     padding-right: 16px;
-  }
-
-  .tabs {
     overflow-x: auto;
-  }
-
-  .stash-controls,
-  .stash-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .stash-results {
-    overflow-x: auto;
-  }
-
-  .stash-table {
-    min-width: 620px;
   }
 }
 
 .workspace[data-game="poe"] .tab-button[data-poe2-only] {
   display: none;
+}
+
+/* ── Price trends ───────────────────────────────────────────── */
+
+.trends-controls {
+  grid-template-columns: minmax(190px, 1.2fr) minmax(220px, 2fr) minmax(100px, 0.7fr);
+}
+
+.trends-search-field {
+  min-width: 0;
+}
+
+.trends-results {
+  display: grid;
+  gap: 14px;
+  padding: 18px 26px 8px;
+}
+
+.trends-card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #15130f;
+  padding: 16px;
+}
+
+.trends-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.trends-card-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.trends-card-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.trends-card-titles {
+  min-width: 0;
+}
+
+.trends-card-titles h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.trends-card-subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.trends-card-change {
+  flex: 0 0 auto;
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.trends-card-change.up {
+  color: #5bbf98;
+}
+
+.trends-card-change.down {
+  color: #d66d5f;
+}
+
+.trends-card-change.muted {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.trends-card-chart {
+  min-height: 180px;
+}
+
+@media (max-width: 900px) {
+  .trends-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .trends-search-field {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 620px) {
+  .trends-controls {
+    grid-template-columns: 1fr;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .trends-results {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .trends-card-header {
+    align-items: flex-start;
+  }
+
+  .trends-card-change {
+    font-size: 1rem;
+  }
 }
 
 /* ── Campaign: header ───────────────────────────────────────── */
