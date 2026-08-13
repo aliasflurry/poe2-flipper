@@ -26,6 +26,8 @@ const INCLUDED_STORAGE_KEY = "exchange-included-items";
 const RATE_OVERRIDES_STORAGE_KEY = "exchange-rate-overrides";
 const FILTER_SETTINGS_STORAGE_KEY = "exchange-filter-settings";
 const TRENDS_SETTINGS_STORAGE_KEY = "price-trends-settings";
+const TRENDS_MIN_DAILY_VOLUME = 100;
+const DIVINATION_CARD_CATEGORY = "cards";
 
 const state = {
   gameId: DEFAULT_GAME_ID,
@@ -947,6 +949,37 @@ function pairRateAt(snapshot, fromId, toId) {
   return NaN;
 }
 
+function pairVolumeAt(snapshot, fromId, toId) {
+  const pairs = snapshot?.pairs;
+  if (!pairs) return NaN;
+
+  const direct = pairs[`${fromId}>${toId}`];
+  if (direct) {
+    const volume = Number(direct.volume);
+    if (Number.isFinite(volume)) return volume;
+  }
+
+  const reverse = pairs[`${toId}>${fromId}`];
+  if (reverse) {
+    const volume = Number(reverse.volume);
+    if (Number.isFinite(volume)) return volume;
+  }
+
+  return NaN;
+}
+
+function latestPairVolume(fromId, toId) {
+  for (let index = state.priceHistory.length - 1; index >= 0; index -= 1) {
+    const volume = pairVolumeAt(state.priceHistory[index], fromId, toId);
+    if (Number.isFinite(volume)) return volume;
+  }
+  return NaN;
+}
+
+function isDivinationCard(item) {
+  return String(item?.category || "").toLowerCase() === DIVINATION_CARD_CATEGORY;
+}
+
 function renderHistoryChart(container, series) {
   const namespace = "http://www.w3.org/2000/svg";
   const width = 720;
@@ -1262,13 +1295,19 @@ function buildTrendEntries(startId) {
   const entries = [];
   for (const item of state.items.values()) {
     if (item.id === startId) continue;
+    if (isDivinationCard(item)) continue;
+
+    const volume = latestPairVolume(item.id, startId);
+    if (!(volume > TRENDS_MIN_DAILY_VOLUME)) continue;
+
     const points = pairRatePointsFor(item.id, startId);
     if (!points.length) continue;
     entries.push({
       itemId: item.id,
       name: item.name,
       points,
-      change: historyChangeValue(points)
+      change: historyChangeValue(points),
+      volume
     });
   }
 
@@ -1314,10 +1353,10 @@ function renderPriceTrends() {
 
   const startName = itemLabel(startId);
   els.trendsStatus.textContent = totalResults
-    ? `${totalResults.toLocaleString()} items vs ${startName}, sorted by % change (low to high)`
+    ? `${totalResults.toLocaleString()} items vs ${startName} (vol > ${TRENDS_MIN_DAILY_VOLUME}, no cards), sorted by % change`
     : search
       ? `No items match "${els.trendsSearch.value.trim()}"`
-      : `No historical pairs found vs ${startName}`;
+      : `No historical pairs found vs ${startName} with volume > ${TRENDS_MIN_DAILY_VOLUME}`;
   els.trendsMeta.textContent = state.priceHistory.length
     ? `${state.priceHistory.length} snapshots (7 day)`
     : "No snapshots";
@@ -1325,7 +1364,7 @@ function renderPriceTrends() {
   if (!totalResults) {
     renderTrendsEmpty(
       state.priceHistory.length
-        ? "No matching items with price history for this currency."
+        ? "No matching items with price history, volume over 100, and no divination cards."
         : "Historical prices will appear here after the snapshot workflow runs."
     );
     return;
