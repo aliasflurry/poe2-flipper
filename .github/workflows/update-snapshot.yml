@@ -115,8 +115,8 @@ jobs:
           function Update-PriceHistory($path, $source, $updatedAt, $pairs) {
             $now = [datetime]$updatedAt
             $cutoff = $now.AddDays(-7)
-            # Snapshots run every 30 minutes, but price history is only appended four times a day.
-            $minGapHours = 5.5
+            # Snapshots run every 30 minutes, but price history is only appended every 3 hours.
+            $minGapHours = 2.5
             $snapshots = @()
             $lastAppendedAt = $null
 

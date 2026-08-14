@@ -13,8 +13,8 @@ const GAMES = [
   }
 ];
 
-const SNAPSHOT_COUNT = 28; // 7 days, four times a day
-const STEP_MS = 6 * 60 * 60 * 1000; // every 6 hours
+const SNAPSHOT_COUNT = 56; // 7 days, every 3 hours
+const STEP_MS = 3 * 60 * 60 * 1000; // every 3 hours
 const MAX_STEP = 0.06; // up to +/-6% random walk per step
 
 function getPairs(payload) {
