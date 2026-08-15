@@ -124,6 +124,15 @@
               Per page
               <input id="trendsPageSize" type="number" min="1" max="100" step="1" value="10">
             </label>
+
+            <label class="exclude-field" for="trendsExcludeTypeSearch">
+              Excluded types
+              <div class="exclude-picker">
+                <div id="trendsExcludedTypeChips" class="excluded-chips" aria-live="polite"></div>
+                <input id="trendsExcludeTypeSearch" list="trendsExcludeTypeOptions" type="search" placeholder="Search type to exclude" autocomplete="off">
+                <datalist id="trendsExcludeTypeOptions"></datalist>
+              </div>
+            </label>
           </form>
 
           <section class="status-line" aria-live="polite">
