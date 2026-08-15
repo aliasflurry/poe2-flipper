@@ -27,9 +27,46 @@ const RATE_OVERRIDES_STORAGE_KEY = "exchange-rate-overrides";
 const FILTER_SETTINGS_STORAGE_KEY = "exchange-filter-settings";
 const TRENDS_SETTINGS_STORAGE_KEY = "price-trends-settings";
 const TRENDS_MIN_DAILY_VOLUME = 100;
-const DIVINATION_CARD_CATEGORY = "cards";
-const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+const FORECAST_CHECKPOINT_COUNT = 8;
+const DEFAULT_CHECKPOINT_MS = 2.5 * 60 * 60 * 1000;
 const HISTORY_PREDICTION_COLOR = "#9aa4b5";
+
+const CATEGORY_LABELS = {
+  poe: {
+    allflameembers: "Allflame Embers",
+    ancestor: "Tattoos & Omens",
+    cards: "Divination Cards",
+    catalysts: "Catalysts",
+    currency: "Currency",
+    deliriumorbs: "Delirium Orbs",
+    delve: "Delve",
+    essences: "Essences",
+    expedition: "Expedition",
+    fragments: "Fragments",
+    keepers: "Keepers",
+    oils: "Oils",
+    runegrafts: "Runegrafts"
+  },
+  poe2: {
+    abyss: "Abyss",
+    breach: "Breach",
+    currency: "Currency",
+    delirium: "Delirium",
+    essences: "Essences",
+    expedition: "Expedition",
+    fragments: "Fragments",
+    idol: "Idols",
+    incursion: "Incursion",
+    lineagesupportgems: "Lineage Support Gems",
+    ritual: "Ritual",
+    runes: "Runes",
+    ultimatum: "Ultimatum",
+    uncutgems: "Uncut Gems",
+    vaal: "Vaal",
+    vaultkeys: "Vault Keys",
+    verisium: "Verisium"
+  }
+};
 
 const state = {
   gameId: DEFAULT_GAME_ID,
@@ -49,7 +86,8 @@ const state = {
   includedItems: new Set(),
   rateOverrides: new Map(),
   filterSettings: null,
-  trendsSettings: null
+  trendsSettings: null,
+  excludedTrendsTypes: new Set()
 };
 
 const els = {
@@ -85,6 +123,9 @@ const els = {
   trendsStartCurrency: document.querySelector("#trendsStartCurrency"),
   trendsSearch: document.querySelector("#trendsSearch"),
   trendsPageSize: document.querySelector("#trendsPageSize"),
+  trendsExcludeTypeSearch: document.querySelector("#trendsExcludeTypeSearch"),
+  trendsExcludeTypeOptions: document.querySelector("#trendsExcludeTypeOptions"),
+  trendsExcludedTypeChips: document.querySelector("#trendsExcludedTypeChips"),
   trendsStatus: document.querySelector("#trendsStatus"),
   trendsMeta: document.querySelector("#trendsMeta"),
   trendsResults: document.querySelector("#trendsResults"),
@@ -573,6 +614,7 @@ function loadTrendsSettings() {
     applyTrendsSettings();
   } catch {
     state.trendsSettings = null;
+    state.excludedTrendsTypes = new Set();
   }
 }
 
@@ -580,7 +622,8 @@ function saveTrendsSettings() {
   const settings = {
     startCurrency: els.trendsStartCurrency.value,
     pageSize: els.trendsPageSize.value,
-    search: els.trendsSearch.value
+    search: els.trendsSearch.value,
+    excludedTypes: [...state.excludedTrendsTypes]
   };
 
   state.trendsSettings = settings;
@@ -594,7 +637,11 @@ function saveTrendsSettings() {
 
 function applyTrendsSettings() {
   const settings = state.trendsSettings;
-  if (!settings) return;
+  if (!settings) {
+    state.excludedTrendsTypes = new Set();
+    renderExcludedTrendsTypeChips();
+    return;
+  }
 
   setInputValue(els.trendsPageSize, settings.pageSize);
   if (typeof settings.search === "string") {
@@ -603,6 +650,119 @@ function applyTrendsSettings() {
 
   if (typeof settings.startCurrency === "string" && (!state.items.size || state.items.has(settings.startCurrency))) {
     els.trendsStartCurrency.value = settings.startCurrency;
+  }
+
+  state.excludedTrendsTypes = new Set(
+    Array.isArray(settings.excludedTypes)
+      ? settings.excludedTypes.filter((value) => typeof value === "string" && value.trim())
+      : []
+  );
+  renderExcludedTrendsTypeChips();
+}
+
+function categoryLabel(categoryId) {
+  const id = String(categoryId || "").toLowerCase();
+  if (!id) return "Unknown";
+  const labels = CATEGORY_LABELS[state.gameId] || {};
+  if (labels[id]) return labels[id];
+  return id
+    .replace(/[_-]+/g, " ")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function availableTrendCategories() {
+  const categories = new Map();
+  for (const item of state.items.values()) {
+    const id = String(item.category || "").toLowerCase();
+    if (!id) continue;
+    if (!categories.has(id)) {
+      categories.set(id, categoryLabel(id));
+    }
+  }
+  return [...categories.entries()]
+    .map(([id, label]) => ({ id, label }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
+function populateTrendsTypeOptions() {
+  const options = availableTrendCategories().map((category) => {
+    const option = document.createElement("option");
+    option.value = category.label;
+    option.dataset.categoryId = category.id;
+    return option;
+  });
+  els.trendsExcludeTypeOptions.replaceChildren(...options);
+
+  let removedMissing = false;
+  for (const categoryId of [...state.excludedTrendsTypes]) {
+    if (![...state.items.values()].some((item) => String(item.category || "").toLowerCase() === categoryId)) {
+      state.excludedTrendsTypes.delete(categoryId);
+      removedMissing = true;
+    }
+  }
+  if (removedMissing) saveTrendsSettings();
+  renderExcludedTrendsTypeChips();
+}
+
+function findTrendCategoryBySearch(value) {
+  const query = value.trim().toLowerCase();
+  if (!query) return null;
+
+  const categories = availableTrendCategories();
+  const exact = categories.find((category) => (
+    category.label.toLowerCase() === query || category.id === query
+  ));
+  if (exact) return exact;
+
+  const partial = categories.filter((category) => (
+    category.label.toLowerCase().includes(query) || category.id.includes(query)
+  ));
+  return partial.length === 1 ? partial[0] : null;
+}
+
+function addExcludedTrendsType(value) {
+  const category = findTrendCategoryBySearch(value);
+  if (!category) return false;
+
+  state.excludedTrendsTypes.add(category.id);
+  saveTrendsSettings();
+  els.trendsExcludeTypeSearch.value = "";
+  state.trendsPage = 1;
+  renderExcludedTrendsTypeChips();
+  renderPriceTrends();
+  return true;
+}
+
+function removeExcludedTrendsType(categoryId) {
+  state.excludedTrendsTypes.delete(categoryId);
+  saveTrendsSettings();
+  state.trendsPage = 1;
+  renderExcludedTrendsTypeChips();
+  renderPriceTrends();
+}
+
+function renderExcludedTrendsTypeChips() {
+  if (!els.trendsExcludedTypeChips) return;
+  els.trendsExcludedTypeChips.replaceChildren();
+
+  for (const categoryId of [...state.excludedTrendsTypes].sort((a, b) => categoryLabel(a).localeCompare(categoryLabel(b)))) {
+    const label = categoryLabel(categoryId);
+    const chip = document.createElement("span");
+    const name = document.createElement("span");
+    const remove = document.createElement("button");
+
+    chip.className = "exclude-chip";
+    name.textContent = label;
+    remove.type = "button";
+    remove.className = "chip-remove";
+    remove.textContent = "X";
+    remove.title = `Remove ${label}`;
+    remove.setAttribute("aria-label", `Remove ${label}`);
+    remove.addEventListener("click", () => removeExcludedTrendsType(categoryId));
+
+    chip.append(name, remove);
+    els.trendsExcludedTypeChips.append(chip);
   }
 }
 
@@ -620,6 +780,7 @@ function populateTrendsCurrencies() {
 
   els.trendsStartCurrency.replaceChildren(...options);
   els.trendsStartCurrency.value = state.items.has(current) ? current : fallback;
+  populateTrendsTypeOptions();
 }
 
 function setInputValue(input, value) {
@@ -978,12 +1139,22 @@ function latestPairVolume(fromId, toId) {
   return NaN;
 }
 
-function isDivinationCard(item) {
-  return String(item?.category || "").toLowerCase() === DIVINATION_CARD_CATEGORY;
+function averageCheckpointIntervalMs(points) {
+  if (!Array.isArray(points) || points.length < 2) return DEFAULT_CHECKPOINT_MS;
+
+  const gaps = [];
+  for (let index = 1; index < points.length; index += 1) {
+    const gap = points[index].date.getTime() - points[index - 1].date.getTime();
+    if (Number.isFinite(gap) && gap > 0) gaps.push(gap);
+  }
+
+  if (!gaps.length) return DEFAULT_CHECKPOINT_MS;
+  gaps.sort((a, b) => a - b);
+  return gaps[Math.floor(gaps.length / 2)];
 }
 
-function predictNextDayPoints(points) {
-  if (!Array.isArray(points) || points.length < 2) return null;
+function predictNextCheckpointPoints(points, checkpointCount = FORECAST_CHECKPOINT_COUNT) {
+  if (!Array.isArray(points) || points.length < 2 || checkpointCount < 1) return null;
 
   const t0 = points[0].date.getTime();
   let sumT = 0;
@@ -1008,16 +1179,22 @@ function predictNextDayPoints(points) {
   const slope = (n * sumTP - sumT * sumP) / denom;
   const intercept = (sumP - slope * sumT) / n;
   const last = points[points.length - 1];
-  const forecastTime = last.date.getTime() + ONE_DAY_MS;
-  const forecastPrice = intercept + slope * (forecastTime - t0);
-  if (!Number.isFinite(forecastPrice) || forecastPrice <= 0 || !last.price) return null;
+  if (!last?.price) return null;
 
+  const intervalMs = averageCheckpointIntervalMs(points);
+  const forecastPoints = [{ date: new Date(last.date.getTime()), price: last.price }];
+
+  for (let step = 1; step <= checkpointCount; step += 1) {
+    const forecastTime = last.date.getTime() + step * intervalMs;
+    const forecastPrice = intercept + slope * (forecastTime - t0);
+    if (!Number.isFinite(forecastPrice) || forecastPrice <= 0) return null;
+    forecastPoints.push({ date: new Date(forecastTime), price: forecastPrice });
+  }
+
+  const end = forecastPoints[forecastPoints.length - 1];
   return {
-    points: [
-      { date: new Date(last.date.getTime()), price: last.price },
-      { date: new Date(forecastTime), price: forecastPrice }
-    ],
-    change: (forecastPrice - last.price) / last.price
+    points: forecastPoints,
+    change: (end.price - last.price) / last.price
   };
 }
 
@@ -1374,7 +1551,8 @@ function buildTrendEntries(startId) {
   const entries = [];
   for (const item of state.items.values()) {
     if (item.id === startId) continue;
-    if (isDivinationCard(item)) continue;
+    const categoryId = String(item.category || "").toLowerCase();
+    if (categoryId && state.excludedTrendsTypes.has(categoryId)) continue;
 
     const volume = latestPairVolume(item.id, startId);
     if (!(volume > TRENDS_MIN_DAILY_VOLUME)) continue;
@@ -1431,8 +1609,9 @@ function renderPriceTrends() {
   state.trendsPage = Math.min(Math.max(1, state.trendsPage), totalPages);
 
   const startName = itemLabel(startId);
+  const excludedTypeCount = state.excludedTrendsTypes.size;
   els.trendsStatus.textContent = totalResults
-    ? `${totalResults.toLocaleString()} items vs ${startName} (vol > ${TRENDS_MIN_DAILY_VOLUME}, no cards), sorted by % change`
+    ? `${totalResults.toLocaleString()} items vs ${startName} (vol > ${TRENDS_MIN_DAILY_VOLUME}${excludedTypeCount ? `, ${excludedTypeCount} type${excludedTypeCount === 1 ? "" : "s"} excluded` : ""}), sorted by % change`
     : search
       ? `No items match "${els.trendsSearch.value.trim()}"`
       : `No historical pairs found vs ${startName} with volume > ${TRENDS_MIN_DAILY_VOLUME}`;
@@ -1443,7 +1622,7 @@ function renderPriceTrends() {
   if (!totalResults) {
     renderTrendsEmpty(
       state.priceHistory.length
-        ? "No matching items with price history, volume over 100, and no divination cards."
+        ? "No matching items with price history and volume over 100 for the current filters."
         : "Historical prices will appear here after the snapshot workflow runs."
     );
     return;
@@ -1477,7 +1656,7 @@ function makeTrendCard(entry, startName) {
   const forecast = document.createElement("strong");
   const chart = document.createElement("div");
   const changeText = formatHistoryChange(entry.points);
-  const prediction = predictNextDayPoints(entry.points);
+  const prediction = predictNextCheckpointPoints(entry.points);
 
   card.className = "trends-card";
   header.className = "trends-card-header";
@@ -1503,12 +1682,12 @@ function makeTrendCard(entry, startName) {
 
   forecast.className = "trends-card-forecast";
   if (prediction) {
-    forecast.textContent = `1d ${formatSignedPercent(prediction.change)}`;
-    forecast.title = "Linear forecast for the next 1 day";
+    forecast.textContent = `+${FORECAST_CHECKPOINT_COUNT} ${formatSignedPercent(prediction.change)}`;
+    forecast.title = `Linear forecast for the next ${FORECAST_CHECKPOINT_COUNT} checkpoints`;
     forecast.classList.toggle("down", prediction.change < 0);
     forecast.classList.toggle("up", prediction.change > 0);
   } else {
-    forecast.textContent = "1d n/a";
+    forecast.textContent = `+${FORECAST_CHECKPOINT_COUNT} n/a`;
     forecast.classList.add("muted");
   }
 
@@ -1529,7 +1708,7 @@ function makeTrendCard(entry, startName) {
 
   if (prediction) {
     chartSeries.push({
-      name: "1 day forecast",
+      name: `+${FORECAST_CHECKPOINT_COUNT} checkpoint forecast`,
       points: prediction.points,
       predicted: true,
       color: HISTORY_PREDICTION_COLOR
@@ -1830,6 +2009,8 @@ function resetControlsToDefaults() {
   state.sortDirection = "desc";
   state.filterSettings = null;
   state.trendsSettings = null;
+  state.excludedTrendsTypes = new Set();
+  renderExcludedTrendsTypeChips();
   updateSortButtons();
 }
 
@@ -1846,6 +2027,7 @@ function resetExchangeState() {
   state.rateOverrides.clear();
   els.startCurrency.replaceChildren();
   els.trendsStartCurrency.replaceChildren();
+  els.trendsExcludeTypeOptions.replaceChildren();
   els.excludeOptions.replaceChildren();
   els.excludedChips.replaceChildren();
   els.includeOptions.replaceChildren();
@@ -1857,6 +2039,7 @@ function resetExchangeState() {
   els.snapshotMeta.textContent = "";
   els.trendsStatus.textContent = "Select a starting currency to view price trends.";
   els.trendsMeta.textContent = "";
+  renderExcludedTrendsTypeChips();
 }
 
 function switchGame(gameId) {
@@ -2048,10 +2231,21 @@ function handleSortClick(event) {
   renderResults();
 }
 
-function handleTrendsControlsChange() {
+function handleTrendsControlsChange(event) {
+  if (event?.target === els.trendsExcludeTypeSearch) return;
   state.trendsPage = 1;
   saveTrendsSettings();
   renderPriceTrends();
+}
+
+function handleTrendsExcludeTypeKeydown(event) {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  addExcludedTrendsType(els.trendsExcludeTypeSearch.value);
+}
+
+function handleTrendsExcludeTypeChange() {
+  addExcludedTrendsType(els.trendsExcludeTypeSearch.value);
 }
 
 for (const button of els.tabButtons) {
@@ -2065,6 +2259,8 @@ document.querySelector("#controls").addEventListener("input", handleControlsInpu
 document.querySelector("#controls").addEventListener("change", handleControlsInput);
 els.trendsControls.addEventListener("input", handleTrendsControlsChange);
 els.trendsControls.addEventListener("change", handleTrendsControlsChange);
+els.trendsExcludeTypeSearch.addEventListener("keydown", handleTrendsExcludeTypeKeydown);
+els.trendsExcludeTypeSearch.addEventListener("change", handleTrendsExcludeTypeChange);
 els.excludeSearch.addEventListener("keydown", handleExcludeKeydown);
 els.excludeSearch.addEventListener("change", handleExcludeChange);
 els.includeSearch.addEventListener("keydown", handleIncludeKeydown);

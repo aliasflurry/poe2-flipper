@@ -857,6 +857,10 @@ h2 {
   grid-template-columns: minmax(190px, 1.2fr) minmax(220px, 2fr) minmax(100px, 0.7fr);
 }
 
+.trends-controls .exclude-field {
+  grid-column: 1 / -1;
+}
+
 .trends-search-field {
   min-width: 0;
 }
