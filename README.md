@@ -47,7 +47,7 @@ No build step is required.
 
 The exchange path finder is fully static, so no build step is required.
 
-The browser cannot reliably fetch the poe2scout API directly because of CORS, so `.github/workflows/update-snapshot.yml` refreshes the snapshot JSON files and commits them to the `snapshots` branch. `main` keeps the app source clean, while the generated snapshot history lives separately. The workflow fetches live snapshot pairs every 30 minutes, but only appends a price-history snapshot four times a day. Each price-history snapshot records the per-pair price history (both currencies' relative prices and volume) alongside a flat item price map, and only the last 7 days are kept.
+The browser cannot reliably fetch the poe2scout API directly because of CORS, so `.github/workflows/update-snapshot.yml` refreshes the snapshot JSON files and commits them to the `snapshots` branch. `main` keeps the app source clean, while the generated snapshot history lives separately. The workflow fetches live snapshot pairs every 30 minutes, but only appends a price-history snapshot every 3 hours. Each price-history snapshot records the per-pair price history (both currencies' relative prices and volume) alongside a flat item price map, and only the last 7 days are kept.
 
 ## Stash lookup proxy
 
