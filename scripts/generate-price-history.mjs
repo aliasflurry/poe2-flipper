@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs";
+import { computeTotalDifferences } from "./price-history-totals.mjs";
 
 const GAMES = [
   {
@@ -128,6 +129,7 @@ function generate(game) {
   const output = {
     updatedAt: snapshots[snapshots.length - 1].updatedAt,
     source: game.source,
+    totalDifferences: computeTotalDifferences(snapshots),
     snapshots
   };
 
