@@ -112,6 +112,107 @@ jobs:
             return @($payload)
           }
 
+          function Get-ObjectProperty($object, $name) {
+            if (-not $object -or -not $name) {
+              return $null
+            }
+            return $object.PSObject.Properties[$name]
+          }
+
+          function Get-PairRate($snapshot, $fromId, $toId) {
+            $direct = Get-ObjectProperty $snapshot.pairs "$fromId>$toId"
+            if ($direct -and $direct.Value) {
+              $onePrice = [double]$direct.Value.onePrice
+              $twoPrice = [double]$direct.Value.twoPrice
+              if ($twoPrice -ne 0 -and $onePrice -gt 0 -and $twoPrice -gt 0 -and -not [double]::IsNaN($onePrice) -and -not [double]::IsNaN($twoPrice) -and -not [double]::IsInfinity($onePrice) -and -not [double]::IsInfinity($twoPrice)) {
+                $rate = $onePrice / $twoPrice
+                if ($rate -gt 0 -and -not [double]::IsNaN($rate) -and -not [double]::IsInfinity($rate)) {
+                  return $rate
+                }
+              }
+            }
+
+            $reverse = Get-ObjectProperty $snapshot.pairs "$toId>$fromId"
+            if ($reverse -and $reverse.Value) {
+              $onePrice = [double]$reverse.Value.onePrice
+              $twoPrice = [double]$reverse.Value.twoPrice
+              if ($onePrice -ne 0 -and $onePrice -gt 0 -and $twoPrice -gt 0 -and -not [double]::IsNaN($onePrice) -and -not [double]::IsNaN($twoPrice) -and -not [double]::IsInfinity($onePrice) -and -not [double]::IsInfinity($twoPrice)) {
+                $rate = $twoPrice / $onePrice
+                if ($rate -gt 0 -and -not [double]::IsNaN($rate) -and -not [double]::IsInfinity($rate)) {
+                  return $rate
+                }
+              }
+            }
+
+            $fromProp = Get-ObjectProperty $snapshot.prices $fromId
+            $toProp = Get-ObjectProperty $snapshot.prices $toId
+            if ($fromProp -and $toProp) {
+              $fromPrice = [double]$fromProp.Value
+              $toPrice = [double]$toProp.Value
+              if ($fromPrice -gt 0 -and $toPrice -gt 0 -and -not [double]::IsNaN($fromPrice) -and -not [double]::IsNaN($toPrice) -and -not [double]::IsInfinity($fromPrice) -and -not [double]::IsInfinity($toPrice)) {
+                return $fromPrice / $toPrice
+              }
+            }
+
+            return $null
+          }
+
+          function Get-TotalDifferences($snapshots) {
+            $ordered = @($snapshots | Sort-Object { [datetime]$_.updatedAt })
+            $pairKeys = [System.Collections.Generic.HashSet[string]]::new()
+            foreach ($snapshot in $ordered) {
+              if (-not $snapshot.pairs) {
+                continue
+              }
+              foreach ($property in $snapshot.pairs.PSObject.Properties) {
+                [void]$pairKeys.Add($property.Name)
+              }
+            }
+
+            $totalDifferences = [ordered]@{}
+            foreach ($key in $pairKeys) {
+              $separator = $key.IndexOf(">")
+              if ($separator -lt 1) {
+                continue
+              }
+              $one = $key.Substring(0, $separator)
+              $two = $key.Substring($separator + 1)
+              if (-not $one -or -not $two) {
+                continue
+              }
+
+              foreach ($direction in @(@($one, $two), @($two, $one))) {
+                $fromId = $direction[0]
+                $toId = $direction[1]
+                $outKey = "$fromId>$toId"
+                if ($totalDifferences.Contains($outKey)) {
+                  continue
+                }
+
+                $previous = $null
+                $total = 0.0
+                $compared = 0
+                foreach ($snapshot in $ordered) {
+                  $rate = Get-PairRate $snapshot $fromId $toId
+                  if ($null -eq $rate) {
+                    continue
+                  }
+                  if ($null -ne $previous) {
+                    $total += [math]::Abs($rate - $previous)
+                    $compared += 1
+                  }
+                  $previous = $rate
+                }
+
+                if ($compared -gt 0) {
+                  $totalDifferences[$outKey] = [math]::Round($total, 8)
+                }
+              }
+            }
+
+            return $totalDifferences
+          }
+
           function Update-PriceHistory($path, $source, $updatedAt, $pairs) {
             $now = [datetime]$updatedAt
             $cutoff = $now.AddDays(-7)
@@ -119,6 +220,7 @@ jobs:
             $minGapHours = 2.5
             $snapshots = @()
             $lastAppendedAt = $null
+            $existing = $null
 
             if (Test-Path -Path $path) {
               $existing = Get-Content -Path $path -Raw | ConvertFrom-Json
@@ -132,20 +234,24 @@ jobs:
               }
             }
 
-            if ($lastAppendedAt -and $lastAppendedAt -gt $now.AddHours(-$minGapHours)) {
+            $skipAppend = $lastAppendedAt -and $lastAppendedAt -gt $now.AddHours(-$minGapHours)
+            if ($skipAppend) {
               Write-Host "Skipping price-history append for $path; last entry $lastAppendedAt is within $minGapHours hours."
-              return
+            } else {
+              $snapshots += [pscustomobject]@{
+                updatedAt = $updatedAt
+                prices = Get-PriceMap $pairs
+                pairs = Get-PairMap $pairs
+              }
             }
 
-            $snapshots += [pscustomobject]@{
-              updatedAt = $updatedAt
-              prices = Get-PriceMap $pairs
-              pairs = Get-PairMap $pairs
-            }
-
+            $totalDifferences = Get-TotalDifferences $snapshots
+            $historyUpdatedAt = if ($skipAppend -and $existing.updatedAt) { $existing.updatedAt } else { $updatedAt }
+            Write-Host "Updating totalDifferences for $path ($($totalDifferences.Count) pair directions) from $($snapshots.Count) snapshots."
             [pscustomobject]@{
-              updatedAt = $updatedAt
+              updatedAt = $historyUpdatedAt
               source = $source
+              totalDifferences = $totalDifferences
               snapshots = $snapshots
             } | ConvertTo-Json -Depth 100 -Compress | Set-Content -Path $path -Encoding utf8NoBOM
           }

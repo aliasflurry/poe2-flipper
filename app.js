@@ -74,6 +74,7 @@ const state = {
   items: new Map(),
   itemPricesById: new Map(),
   priceHistory: [],
+  totalDifferences: {},
   goldCostsByName: new Map(),
   goldCostsByItem: new Map(),
   edgesByFrom: new Map(),
@@ -1541,6 +1542,24 @@ function historyChangeValue(points) {
   return Number.isFinite(change) ? change : null;
 }
 
+function historyTotalDifference(points) {
+  if (!Array.isArray(points) || points.length < 2) return null;
+  let total = 0;
+  let compared = 0;
+  for (let index = 1; index < points.length; index += 1) {
+    const delta = points[index].price - points[index - 1].price;
+    if (!Number.isFinite(delta)) continue;
+    total += Math.abs(delta);
+    compared += 1;
+  }
+  return compared ? total : null;
+}
+
+function storedTotalDifference(fromId, toId) {
+  const value = Number(state.totalDifferences[`${fromId}>${toId}`]);
+  return Number.isFinite(value) ? value : null;
+}
+
 function getTrendsPageSize() {
   return Math.min(100, Math.max(1, Number(els.trendsPageSize.value) || 10));
 }
@@ -1564,14 +1583,19 @@ function buildTrendEntries(startId) {
       name: item.name,
       points,
       change: historyChangeValue(points),
+      totalDifference: storedTotalDifference(item.id, startId) ?? historyTotalDifference(points),
       volume
     });
   }
 
   entries.sort((a, b) => {
-    const aHas = a.change !== null;
-    const bHas = b.change !== null;
-    if (aHas && bHas) return a.change - b.change;
+    const aHas = a.totalDifference !== null;
+    const bHas = b.totalDifference !== null;
+    if (aHas && bHas) {
+      const diff = b.totalDifference - a.totalDifference;
+      if (diff) return diff;
+      return a.name.localeCompare(b.name);
+    }
     if (aHas) return -1;
     if (bHas) return 1;
     return a.name.localeCompare(b.name);
@@ -1611,7 +1635,7 @@ function renderPriceTrends() {
   const startName = itemLabel(startId);
   const excludedTypeCount = state.excludedTrendsTypes.size;
   els.trendsStatus.textContent = totalResults
-    ? `${totalResults.toLocaleString()} items vs ${startName} (vol > ${TRENDS_MIN_DAILY_VOLUME}${excludedTypeCount ? `, ${excludedTypeCount} type${excludedTypeCount === 1 ? "" : "s"} excluded` : ""}), sorted by % change`
+    ? `${totalResults.toLocaleString()} items vs ${startName} (vol > ${TRENDS_MIN_DAILY_VOLUME}${excludedTypeCount ? `, ${excludedTypeCount} type${excludedTypeCount === 1 ? "" : "s"} excluded` : ""}), sorted by total difference`
     : search
       ? `No items match "${els.trendsSearch.value.trim()}"`
       : `No historical pairs found vs ${startName} with volume > ${TRENDS_MIN_DAILY_VOLUME}`;
@@ -2019,6 +2043,7 @@ function resetExchangeState() {
   state.items.clear();
   state.itemPricesById.clear();
   state.priceHistory = [];
+  state.totalDifferences = {};
   state.goldCostsByName.clear();
   state.goldCostsByItem.clear();
   state.edgesByFrom.clear();
@@ -2077,7 +2102,8 @@ async function loadData() {
     if (requestedGameId !== state.gameId) return;
 
     state.rawPairs = loaded.pairs;
-    state.priceHistory = history;
+    state.priceHistory = history.snapshots || [];
+    state.totalDifferences = history.totalDifferences || {};
     state.goldCostsByName = goldCosts.costsByName;
     state.lastLoadedAt = new Date();
     buildGraph(state.rawPairs);
@@ -2127,25 +2153,41 @@ async function fetchGoldCosts() {
   };
 }
 
+function normalizeTotalDifferences(payload) {
+  const raw = payload?.totalDifferences;
+  if (!raw || typeof raw !== "object") return {};
+
+  const totalDifferences = {};
+  for (const [key, value] of Object.entries(raw)) {
+    const total = Number(value);
+    if (key && Number.isFinite(total)) totalDifferences[key] = total;
+  }
+  return totalDifferences;
+}
+
 async function fetchPriceHistory() {
+  const empty = { snapshots: [], totalDifferences: {} };
   const game = currentGame();
-  if (!game.historyUrl) return [];
+  if (!game.historyUrl) return empty;
 
   const response = await fetch(game.historyUrl, { cache: "no-store" }).catch(() => null);
-  if (!response?.ok) return [];
+  if (!response?.ok) return empty;
 
   const payload = await response.json();
   const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const snapshots = Array.isArray(payload?.snapshots) ? payload.snapshots : [];
 
-  return snapshots
-    .filter((snapshot) => {
-      const time = new Date(snapshot?.updatedAt).getTime();
-      const hasPrices = snapshot?.prices && typeof snapshot.prices === "object";
-      const hasPairs = snapshot?.pairs && typeof snapshot.pairs === "object";
-      return Number.isFinite(time) && time >= cutoff && (hasPrices || hasPairs);
-    })
-    .sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt));
+  return {
+    snapshots: snapshots
+      .filter((snapshot) => {
+        const time = new Date(snapshot?.updatedAt).getTime();
+        const hasPrices = snapshot?.prices && typeof snapshot.prices === "object";
+        const hasPairs = snapshot?.pairs && typeof snapshot.pairs === "object";
+        return Number.isFinite(time) && time >= cutoff && (hasPrices || hasPairs);
+      })
+      .sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt)),
+    totalDifferences: normalizeTotalDifferences(payload)
+  };
 }
 
 function normalizeSnapshotPayload(payload) {
