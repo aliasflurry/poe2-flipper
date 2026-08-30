@@ -1,4 +1,9 @@
 const SNAPSHOT_DATA_BASE = "https://raw.githubusercontent.com/aliasflurry/poe2-flipper/snapshots";
+const API_QUERY = new URLSearchParams(location.search);
+const USE_API = API_QUERY.has("api")
+  ? API_QUERY.get("api") !== "0"
+  : !location.hostname.endsWith("github.io");
+const STALE_SNAPSHOT_MS = 60 * 60 * 1000;
 
 const GAME_CONFIGS = {
   poe2: {
@@ -74,7 +79,10 @@ const state = {
   items: new Map(),
   itemPricesById: new Map(),
   priceHistory: [],
+  historySnapshotCount: 0,
   totalDifferences: {},
+  snapshotPairs: new Map(),
+  pairHistoryCache: new Map(),
   goldCostsByName: new Map(),
   goldCostsByItem: new Map(),
   edgesByFrom: new Map(),
@@ -156,6 +164,71 @@ const percentFormat = new Intl.NumberFormat("en-US", {
 
 function currentGame() {
   return GAME_CONFIGS[state.gameId] || GAME_CONFIGS[DEFAULT_GAME_ID];
+}
+
+function historySnapshotLabel() {
+  const count = USE_API ? state.historySnapshotCount : state.priceHistory.length;
+  return count ? `${count} snapshots` : "No snapshots";
+}
+
+async function ensureGameConfigs() {
+  const response = await fetch("/api/games", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`games HTTP ${response.status}`);
+  }
+
+  const payload = await response.json();
+  for (const game of payload.games || []) {
+    const existing = GAME_CONFIGS[game.id] || {};
+    GAME_CONFIGS[game.id] = {
+      ...existing,
+      label: game.label,
+      storagePrefix: game.id,
+      defaultStartCurrency: game.defaultStartCurrency,
+      localSnapshotUrl: `/api/snapshots/${game.id}/current`,
+      historyUrl: null,
+      goldCostsUrl: `/api/data/${game.id}/gold-costs`,
+      liveSnapshotUrl: existing.liveSnapshotUrl || null
+    };
+  }
+}
+
+async function fetchPairHistoryPoints(fromId, toId) {
+  const cacheKey = `${fromId}>${toId}`;
+  if (state.pairHistoryCache.has(cacheKey)) {
+    return state.pairHistoryCache.get(cacheKey);
+  }
+
+  const response = await fetch(
+    `/api/trends/${state.gameId}/pair/${encodeURIComponent(cacheKey)}`,
+    { cache: "no-store" }
+  );
+  if (!response.ok) {
+    return [];
+  }
+
+  const payload = await response.json();
+  const points = (payload.points || [])
+    .map((point) => {
+      const date = new Date(point.updatedAt);
+      const price = Number(point.rate);
+      if (!Number.isFinite(price) || price <= 0 || Number.isNaN(date.getTime())) return null;
+      return { date, price };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.date - b.date);
+
+  state.pairHistoryCache.set(cacheKey, points);
+  return points;
+}
+
+function formatSnapshotMeta(updatedAt) {
+  if (!updatedAt) return "Live snapshot";
+  const date = new Date(updatedAt);
+  if (Number.isNaN(date.getTime())) return "Snapshot loaded";
+  const stale = Date.now() - date.getTime() > STALE_SNAPSHOT_MS;
+  const label = `Updated ${date.toLocaleString()}`;
+  return stale ? `${label} (stale)` : label;
 }
 
 function gameStorageKey(key) {
@@ -265,6 +338,7 @@ function buildGraph(pairs) {
   state.items.clear();
   state.itemPricesById.clear();
   state.edgesByFrom.clear();
+  state.snapshotPairs.clear();
 
   for (const pair of pairs) {
     const one = pair.CurrencyOne;
@@ -273,6 +347,12 @@ function buildGraph(pairs) {
     rememberItem(two);
     rememberItemPrice(one, pair.CurrencyOneData);
     rememberItemPrice(two, pair.CurrencyTwoData);
+
+    const volume = toNumber(pair.Volume);
+    if (one?.ApiId && two?.ApiId && volume > 0) {
+      state.snapshotPairs.set(`${one.ApiId}>${two.ApiId}`, { volume });
+      state.snapshotPairs.set(`${two.ApiId}>${one.ApiId}`, { volume });
+    }
 
     const edges = [
       makeEdge(pair, one, two, pair.CurrencyOneData, pair.CurrencyTwoData),
@@ -1027,7 +1107,7 @@ function renderHistoryPanel(cycle) {
   const chart = document.createElement("div");
   const legend = document.createElement("div");
   const seenPairs = new Set();
-  const series = cycle.edges
+  const edgeSeries = cycle.edges
     .filter((edge) => {
       const key = `${edge.from}>${edge.to}`;
       if (seenPairs.has(key)) return false;
@@ -1036,47 +1116,75 @@ function renderHistoryPanel(cycle) {
     })
     .map((edge) => ({
       name: `${itemLabel(edge.from)} > ${itemLabel(edge.to)}`,
-      points: pairRatePointsFor(edge.from, edge.to)
-    }))
-    .filter((entry) => entry.points.length);
+      fromId: edge.from,
+      toId: edge.to
+    }));
 
   panel.className = "history-panel";
   header.className = "history-header";
   title.textContent = "7 day price history";
-  meta.textContent = state.priceHistory.length
-    ? `${state.priceHistory.length} snapshots`
-    : "No snapshots";
+  meta.textContent = historySnapshotLabel();
   chart.className = "history-chart";
   legend.className = "history-legend";
   header.append(title, meta);
+  panel.append(header, chart, legend);
 
-  if (!series.length) {
-    const empty = document.createElement("p");
-    empty.className = "history-empty";
-    empty.textContent = "Historical prices will appear here after the snapshot workflow runs.";
-    panel.append(header, empty);
+  const renderSeries = (series) => {
+    legend.replaceChildren();
+    if (!series.length) {
+      chart.replaceChildren();
+      const empty = document.createElement("p");
+      empty.className = "history-empty";
+      empty.textContent = "Historical prices will appear here after the snapshot workflow runs.";
+      panel.querySelector(".history-empty")?.remove();
+      panel.append(empty);
+      return;
+    }
+
+    panel.querySelector(".history-empty")?.remove();
+    const chartApi = renderHistoryChart(chart, series);
+    for (const [index, entry] of series.entries()) {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "history-legend-chip";
+      chip.style.setProperty("--series-color", historyColor(index));
+      chip.setAttribute("aria-pressed", "true");
+      chip.title = "Toggle this line";
+      chip.textContent = `${entry.name} ${formatHistoryChange(entry.points)}`;
+      chip.addEventListener("click", () => {
+        const next = chip.getAttribute("aria-pressed") === "false";
+        chip.setAttribute("aria-pressed", String(next));
+        chip.classList.toggle("legend-hidden", !next);
+        chartApi.setSeriesVisible(index, next);
+      });
+      legend.append(chip);
+    }
+  };
+
+  if (!edgeSeries.length) {
+    renderSeries([]);
     return panel;
   }
 
-  const chartApi = renderHistoryChart(chart, series);
-  for (const [index, entry] of series.entries()) {
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.className = "history-legend-chip";
-    chip.style.setProperty("--series-color", historyColor(index));
-    chip.setAttribute("aria-pressed", "true");
-    chip.title = "Toggle this line";
-    chip.textContent = `${entry.name} ${formatHistoryChange(entry.points)}`;
-    chip.addEventListener("click", () => {
-      const next = chip.getAttribute("aria-pressed") === "false";
-      chip.setAttribute("aria-pressed", String(next));
-      chip.classList.toggle("legend-hidden", !next);
-      chartApi.setSeriesVisible(index, next);
-    });
-    legend.append(chip);
+  if (!USE_API) {
+    const series = edgeSeries
+      .map((entry) => ({
+        name: entry.name,
+        points: pairRatePointsFor(entry.fromId, entry.toId)
+      }))
+      .filter((entry) => entry.points.length);
+    renderSeries(series);
+    return panel;
   }
 
-  panel.append(header, chart, legend);
+  chart.textContent = "Loading history...";
+  Promise.all(
+    edgeSeries.map(async (entry) => ({
+      name: entry.name,
+      points: await fetchPairHistoryPoints(entry.fromId, entry.toId)
+    }))
+  ).then((series) => renderSeries(series.filter((entry) => entry.points.length)));
+
   return panel;
 }
 
@@ -1133,6 +1241,14 @@ function pairVolumeAt(snapshot, fromId, toId) {
 }
 
 function latestPairVolume(fromId, toId) {
+  if (USE_API) {
+    const direct = state.snapshotPairs.get(`${fromId}>${toId}`);
+    if (direct && Number.isFinite(direct.volume)) return direct.volume;
+    const reverse = state.snapshotPairs.get(`${toId}>${fromId}`);
+    if (reverse && Number.isFinite(reverse.volume)) return reverse.volume;
+    return NaN;
+  }
+
   for (let index = state.priceHistory.length - 1; index >= 0; index -= 1) {
     const volume = pairVolumeAt(state.priceHistory[index], fromId, toId);
     if (Number.isFinite(volume)) return volume;
@@ -1576,6 +1692,20 @@ function buildTrendEntries(startId) {
     const volume = latestPairVolume(item.id, startId);
     if (!(volume > TRENDS_MIN_DAILY_VOLUME)) continue;
 
+    const totalDifference = storedTotalDifference(item.id, startId);
+    if (USE_API) {
+      if (totalDifference === null) continue;
+      entries.push({
+        itemId: item.id,
+        name: item.name,
+        points: [],
+        change: null,
+        totalDifference,
+        volume
+      });
+      continue;
+    }
+
     const points = pairRatePointsFor(item.id, startId);
     if (!points.length) continue;
     entries.push({
@@ -1583,7 +1713,7 @@ function buildTrendEntries(startId) {
       name: item.name,
       points,
       change: historyChangeValue(points),
-      totalDifference: storedTotalDifference(item.id, startId) ?? historyTotalDifference(points),
+      totalDifference: totalDifference ?? historyTotalDifference(points),
       volume
     });
   }
@@ -1639,13 +1769,12 @@ function renderPriceTrends() {
     : search
       ? `No items match "${els.trendsSearch.value.trim()}"`
       : `No historical pairs found vs ${startName} with volume > ${TRENDS_MIN_DAILY_VOLUME}`;
-  els.trendsMeta.textContent = state.priceHistory.length
-    ? `${state.priceHistory.length} snapshots (7 day)`
-    : "No snapshots";
+  const snapshotLabel = historySnapshotLabel();
+  els.trendsMeta.textContent = snapshotLabel === "No snapshots" ? snapshotLabel : `${snapshotLabel} (7 day)`;
 
   if (!totalResults) {
     renderTrendsEmpty(
-      state.priceHistory.length
+      historySnapshotLabel() !== "No snapshots"
         ? "No matching items with price history and volume over 100 for the current filters."
         : "Historical prices will appear here after the snapshot workflow runs."
     );
@@ -1653,7 +1782,7 @@ function renderPriceTrends() {
   }
 
   const pageEntries = entries.slice((state.trendsPage - 1) * pageSize, state.trendsPage * pageSize);
-  const cards = pageEntries.map((entry) => makeTrendCard(entry, startName));
+  const cards = pageEntries.map((entry) => makeTrendCard(entry, startName, startId));
   els.trendsResults.replaceChildren(...cards);
   els.trendsPagination.replaceChildren();
   renderTrendsPagination(totalResults, totalPages, pageSize);
@@ -1667,38 +1796,20 @@ function renderTrendsEmpty(message) {
   els.trendsPagination.replaceChildren();
 }
 
-function makeTrendCard(entry, startName) {
-  const card = document.createElement("article");
-  const header = document.createElement("div");
-  const identity = document.createElement("div");
-  const icon = document.createElement("img");
-  const titleWrap = document.createElement("div");
-  const title = document.createElement("h2");
-  const subtitle = document.createElement("p");
-  const metrics = document.createElement("div");
+function renderTrendCardChart(card, chart, entry, startName, points) {
   const change = document.createElement("strong");
   const forecast = document.createElement("strong");
-  const chart = document.createElement("div");
-  const changeText = formatHistoryChange(entry.points);
-  const prediction = predictNextCheckpointPoints(entry.points);
+  const metrics = card.querySelector(".trends-card-metrics");
+  const changeText = formatHistoryChange(points);
+  const prediction = predictNextCheckpointPoints(points);
 
-  card.className = "trends-card";
-  header.className = "trends-card-header";
-  identity.className = "trends-card-identity";
-  icon.src = itemIcon(entry.itemId);
-  icon.alt = "";
-  icon.className = "trends-card-icon";
-  titleWrap.className = "trends-card-titles";
-  title.textContent = entry.name;
-  subtitle.className = "trends-card-subtitle";
-  subtitle.textContent = `Price in ${startName}`;
-  metrics.className = "trends-card-metrics";
   change.className = "trends-card-change";
-  if (entry.change !== null) {
+  if (points.length >= 2) {
+    const changeValue = historyChangeValue(points);
     change.textContent = changeText;
     change.title = "7 day change";
-    change.classList.toggle("down", entry.change < 0);
-    change.classList.toggle("up", entry.change > 0);
+    change.classList.toggle("down", changeValue < 0);
+    change.classList.toggle("up", changeValue > 0);
   } else {
     change.textContent = "n/a";
     change.classList.add("muted");
@@ -1715,18 +1826,12 @@ function makeTrendCard(entry, startName) {
     forecast.classList.add("muted");
   }
 
-  chart.className = "history-chart trends-card-chart";
-
-  titleWrap.append(title, subtitle);
-  identity.append(icon, titleWrap);
-  metrics.append(change, forecast);
-  header.append(identity, metrics);
-  card.append(header, chart);
+  metrics.replaceChildren(change, forecast);
 
   const chartSeries = [
     {
       name: `${entry.name} / ${startName}`,
-      points: entry.points
+      points
     }
   ];
 
@@ -1740,6 +1845,56 @@ function makeTrendCard(entry, startName) {
   }
 
   renderHistoryChart(chart, chartSeries);
+}
+
+function makeTrendCard(entry, startName, startId) {
+  const card = document.createElement("article");
+  const header = document.createElement("div");
+  const identity = document.createElement("div");
+  const icon = document.createElement("img");
+  const titleWrap = document.createElement("div");
+  const title = document.createElement("h2");
+  const subtitle = document.createElement("p");
+  const metrics = document.createElement("div");
+  const change = document.createElement("strong");
+  const forecast = document.createElement("strong");
+  const chart = document.createElement("div");
+
+  card.className = "trends-card";
+  header.className = "trends-card-header";
+  identity.className = "trends-card-identity";
+  icon.src = itemIcon(entry.itemId);
+  icon.alt = "";
+  icon.className = "trends-card-icon";
+  titleWrap.className = "trends-card-titles";
+  title.textContent = entry.name;
+  subtitle.className = "trends-card-subtitle";
+  subtitle.textContent = `Price in ${startName}`;
+  metrics.className = "trends-card-metrics";
+  change.className = "trends-card-change muted";
+  change.textContent = USE_API && !entry.points.length ? "Loading..." : "n/a";
+  forecast.className = "trends-card-forecast muted";
+  forecast.textContent = `+${FORECAST_CHECKPOINT_COUNT} n/a`;
+  chart.className = "history-chart trends-card-chart";
+
+  titleWrap.append(title, subtitle);
+  identity.append(icon, titleWrap);
+  metrics.append(change, forecast);
+  header.append(identity, metrics);
+  card.append(header, chart);
+
+  const renderPoints = (points) => {
+    entry.points = points;
+    entry.change = historyChangeValue(points);
+    renderTrendCardChart(card, chart, entry, startName, points);
+  };
+
+  if (entry.points.length) {
+    renderPoints(entry.points);
+  } else if (USE_API) {
+    chart.textContent = "Loading chart...";
+    fetchPairHistoryPoints(entry.itemId, startId).then(renderPoints);
+  }
 
   return card;
 }
@@ -2043,7 +2198,10 @@ function resetExchangeState() {
   state.items.clear();
   state.itemPricesById.clear();
   state.priceHistory = [];
+  state.historySnapshotCount = 0;
   state.totalDifferences = {};
+  state.snapshotPairs.clear();
+  state.pairHistoryCache.clear();
   state.goldCostsByName.clear();
   state.goldCostsByItem.clear();
   state.edgesByFrom.clear();
@@ -2103,6 +2261,7 @@ async function loadData() {
 
     state.rawPairs = loaded.pairs;
     state.priceHistory = history.snapshots || [];
+    state.historySnapshotCount = history.snapshotCount || history.snapshots?.length || 0;
     state.totalDifferences = history.totalDifferences || {};
     state.goldCostsByName = goldCosts.costsByName;
     state.lastLoadedAt = new Date();
@@ -2115,7 +2274,7 @@ async function loadData() {
     els.status.textContent = `${state.rawPairs.length.toLocaleString()} ${game.label} exchange pairs loaded`;
     const matchedGoldCosts = `${state.goldCostsByItem.size.toLocaleString()} gold costs matched`;
     els.snapshotMeta.textContent = loaded.updatedAt
-      ? `Snapshot ${new Date(loaded.updatedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} | ${matchedGoldCosts}`
+      ? `${formatSnapshotMeta(loaded.updatedAt)} | ${matchedGoldCosts}`
       : `Loaded ${state.lastLoadedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} | ${matchedGoldCosts}`;
   } catch (error) {
     if (requestedGameId !== state.gameId) return;
@@ -2166,8 +2325,20 @@ function normalizeTotalDifferences(payload) {
 }
 
 async function fetchPriceHistory() {
-  const empty = { snapshots: [], totalDifferences: {} };
+  const empty = { snapshots: [], totalDifferences: {}, snapshotCount: 0 };
   const game = currentGame();
+
+  if (USE_API) {
+    const response = await fetch(`/api/trends/${state.gameId}/totals`, { cache: "no-store" }).catch(() => null);
+    if (!response?.ok) return empty;
+    const payload = await response.json();
+    return {
+      snapshots: [],
+      snapshotCount: Number(payload.snapshotCount) || 0,
+      totalDifferences: normalizeTotalDifferences(payload)
+    };
+  }
+
   if (!game.historyUrl) return empty;
 
   const response = await fetch(game.historyUrl, { cache: "no-store" }).catch(() => null);
@@ -2186,6 +2357,7 @@ async function fetchPriceHistory() {
         return Number.isFinite(time) && time >= cutoff && (hasPrices || hasPairs);
       })
       .sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt)),
+    snapshotCount: snapshots.length,
     totalDifferences: normalizeTotalDifferences(payload)
   };
 }
@@ -2202,10 +2374,17 @@ async function fetchSnapshot() {
   const game = currentGame();
 
   if (game.localSnapshotUrl) {
-    const localResponse = await fetch(game.localSnapshotUrl, { cache: "no-store" });
-    if (localResponse.ok) {
-      return normalizeSnapshotPayload(await localResponse.json());
+    const localResponse = await fetch(game.localSnapshotUrl, { cache: "no-store" }).catch(() => null);
+    if (localResponse?.ok) {
+      const normalized = normalizeSnapshotPayload(await localResponse.json());
+      if (normalized.pairs.length) {
+        return normalized;
+      }
     }
+  }
+
+  if (!game.liveSnapshotUrl) {
+    throw new Error("Snapshot unavailable");
   }
 
   const liveResponse = await fetch(game.liveSnapshotUrl, {
@@ -2321,4 +2500,16 @@ loadTrendsSettings();
 updateGameControls();
 updateResetOverridesButton();
 window.CampaignModule?.initCampaign(els);
-loadData();
+
+async function bootstrap() {
+  try {
+    if (USE_API) {
+      await ensureGameConfigs();
+    }
+    await loadData();
+  } catch (error) {
+    els.status.textContent = error instanceof Error ? error.message : "Failed to initialize app";
+  }
+}
+
+bootstrap();

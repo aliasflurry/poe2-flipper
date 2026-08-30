@@ -2,8 +2,9 @@ name: Update poe2scout snapshots
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "*/30 * * * *"
+  # Disabled after Cloudflare migration — kept for rollback only.
+  # schedule:
+  #   - cron: "*/30 * * * *"
 
 permissions:
   contents: write

@@ -1,0 +1,17 @@
+node_modules/
+.git/
+.github/
+docs/
+migrations/
+scripts/
+src/
+test/
+api/
+*.md
+package.json
+package-lock.json
+wrangler.toml
+tsconfig.json
+vitest.config.ts
+.assetsignore
+.gitignore

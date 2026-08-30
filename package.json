@@ -1,0 +1,22 @@
+{
+  "name": "price-checker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "sync:data": "node scripts/sync-data.mjs",
+    "sync:data:dry": "node scripts/sync-data.mjs --dry-run",
+    "backfill:history": "node scripts/backfill-history.mjs",
+    "db:migrate:local": "wrangler d1 migrations apply price-checker --local",
+    "db:migrate:remote": "wrangler d1 migrations apply price-checker --remote"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250830.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.33.0"
+  }
+}

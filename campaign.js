@@ -1,5 +1,10 @@
 const CAMPAIGN_STORAGE_KEY = "poe2-campaign-v3";
-const CAMPAIGN_DATA_URL = "data/poe2_data/campaign-checklist.json";
+const CAMPAIGN_USE_API = new URLSearchParams(location.search).has("api")
+  ? new URLSearchParams(location.search).get("api") !== "0"
+  : !location.hostname.endsWith("github.io");
+const CAMPAIGN_DATA_URL = CAMPAIGN_USE_API
+  ? "/api/data/poe2/campaign-checklist"
+  : "data/poe2_data/campaign-checklist.json";
 
 const campaignState = {
   data: null,

@@ -1,56 +1,137 @@
-# PoE 2 Exchange Path Finder
+# PoE Exchange Path Finder
 
-A static GitHub Pages tool that reads poe2scout exchange snapshot data and ranks the best 2-trade or 3-trade loops for a selected starting currency.
+A static frontend with a Cloudflare Worker backend that reads poe2scout exchange snapshot data and ranks the best 2-trade or 3-trade loops for a selected starting currency.
 
-## How it works
+## Architecture
 
-- Each poe2scout pair contains two items and each item has a `RelativePrice` in Exalted Orb value.
-- The app converts every pair into two directed trades.
-- A route is profitable when multiplying the trade rates returns more of the starting currency than it began with.
-- Volume and stock filters help remove routes that are likely too thin to execute.
-- Gold costs are read from the selected game's data folder: `poe2_data/gold-costs.json` or `poe_data/gold-costs.json`.
-- Price history is read from the `snapshots` branch and appears when a result row is expanded.
+- **Frontend:** `index.html`, `app.js`, `campaign.js`, `styles.css`
+- **Backend:** Cloudflare Worker (`src/`) with D1 database and a 30-minute cron refresh
+- **Reference data:** gold costs and campaign checklist live in `data/` and sync into D1 via `npm run sync:data`
 
-## Deploy locally
+See [docs/cloudflare-migration-plan.md](docs/cloudflare-migration-plan.md) for the full migration plan.
 
-The app is static, but it should be served through a local HTTP server so the browser can fetch the selected game's local data files and the published snapshot files.
+**Setup:** step-by-step local and Cloudflare instructions are in [docs/setup-guide.md](docs/setup-guide.md).
 
-From the project root, run one of these commands:
+## Local development
 
-```bash
-python -m http.server 8000
-```
-
-or:
+Install dependencies:
 
 ```bash
-npx serve .
+npm install
 ```
 
-Then open `http://localhost:8000` in your browser. If port `8000` is already in use, choose another port, for example:
+Apply D1 migrations locally:
 
 ```bash
-python -m http.server 8080
+npm run db:migrate:local
 ```
 
-No build step is required.
+Seed reference data into local D1:
 
-## Publish on GitHub Pages
+```bash
+npm run sync:data
+```
 
-1. Create a GitHub repository.
-2. Push this folder to the repository.
-3. Push the `snapshots` branch.
-4. Open the **Actions** tab and run **Update poe2scout snapshot** once.
-5. In GitHub, open **Settings > Pages**.
-6. Set **Source** to **Deploy from a branch**.
-7. Choose your main branch and the root folder.
+Optionally backfill 7-day price history from the `snapshots` branch:
 
-The exchange path finder is fully static, so no build step is required.
+```bash
+npm run backfill:history
+```
 
-The browser cannot reliably fetch the poe2scout API directly because of CORS, so `.github/workflows/update-snapshot.yml` refreshes the snapshot JSON files and commits them to the `snapshots` branch. `main` keeps the app source clean, while the generated snapshot history lives separately. The workflow fetches live snapshot pairs every 30 minutes, but only appends a price-history snapshot every 3 hours. Each price-history snapshot records the per-pair price history (both currencies' relative prices and volume) alongside a flat item price map, and only the last 7 days are kept. The file also stores a `totalDifferences` map (`from>to` → sum of absolute consecutive rate changes) over that window, which Price trends uses for sorting.
+Start the Worker and static assets together:
 
-## Stash lookup proxy
+```bash
+npm run dev
+```
 
-The stash lookup calls the official trade API, which may be blocked by browser CORS. Deploy the app on a serverless host that supports Vercel-style API routes to enable `api/trade2/[...path].js`. The browser tries `/api/trade2` first and falls back to the direct trade API when the proxy is not available.
+Open the URL Wrangler prints (usually `http://127.0.0.1:8787`).
 
-GitHub Pages can still host the exchange tool, but it cannot run this proxy endpoint by itself.
+The frontend auto-uses `/api/...` when not hosted on GitHub Pages. Force legacy file/GitHub mode with `?api=0`.
+
+## Deploy to Cloudflare
+
+1. Create the D1 database:
+
+```bash
+npx wrangler d1 create price-checker
+```
+
+2. Copy the returned `database_id` into `wrangler.toml` if Wrangler does not fill it automatically.
+
+3. Apply migrations to production:
+
+```bash
+npm run db:migrate:remote
+```
+
+4. Set secrets:
+
+```bash
+npx wrangler secret put ADMIN_REFRESH_TOKEN
+```
+
+5. Sync reference data to production D1:
+
+```bash
+npm run sync:data -- --remote
+```
+
+6. Backfill history (first deploy only):
+
+```bash
+npm run backfill:history -- --remote
+```
+
+7. Deploy:
+
+```bash
+npm run deploy
+```
+
+Workers Paid ($5/month) is required for the cron refresh job CPU budget.
+
+Preview and production should use separate D1 databases.
+
+## API
+
+| Route | Purpose |
+| --- | --- |
+| `GET /api/health` | Refresh state and build version |
+| `GET /api/games` | Enabled games and labels |
+| `GET /api/snapshots/:game/current` | Current normalized snapshot |
+| `GET /api/items/:game` | Item labels and icons |
+| `GET /api/trends/:game/totals` | Precomputed `totalDifferences` |
+| `GET /api/trends/:game/pair/:pairKey` | Per-pair 7-day series |
+| `GET /api/data/:game/gold-costs` | Gold costs |
+| `GET /api/data/:game/campaign-checklist` | Campaign checklist (`poe2` only) |
+| `POST /api/admin/refresh` | Manual refresh (`Authorization: Bearer …`) |
+
+## Updating reference data
+
+Edit the JSON files under `data/`, then run:
+
+```bash
+npm run sync:data
+```
+
+For production:
+
+```bash
+npm run sync:data -- --remote
+```
+
+Gold costs are manual/on-demand only. League changes are live settings edits via D1 or `POST /api/admin/settings/:scope/:key`.
+
+## Tests
+
+```bash
+npm test
+```
+
+## Rollback
+
+The GitHub Action in `.github/workflows/update-snapshot.yml` is disabled but kept for one-league rollback. Re-enable its schedule and point the frontend back to GitHub raw URLs with `?api=0` if needed.
+
+## Legacy GitHub Pages mode
+
+GitHub Pages can still serve the static frontend from `main`, reading snapshots from the `snapshots` branch. That mode does not use the Worker API or D1.

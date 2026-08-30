@@ -1,3 +1,6 @@
+// Canonical implementation lives in src/lib/snapshot.ts (computeTotalDifferences).
+// This module remains for local scripts that have not been migrated yet.
+
 function pairRateAt(snapshot, fromId, toId) {
   const pairs = snapshot?.pairs;
   if (pairs) {

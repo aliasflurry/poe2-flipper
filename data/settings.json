@@ -1,0 +1,24 @@
+{
+  "global": {
+    "history_retention_days": 7,
+    "history_append_interval_hours": 2.5
+  },
+  "poe2": {
+    "label": "Path of Exile 2",
+    "enabled": true,
+    "sort_order": 1,
+    "default_start_currency": "exalted",
+    "upstream_base": "https://api.poe2scout.com",
+    "realm": "poe2",
+    "league": "runes"
+  },
+  "poe": {
+    "label": "Path of Exile",
+    "enabled": true,
+    "sort_order": 2,
+    "default_start_currency": "chaos",
+    "upstream_base": "https://api.poe2scout.com",
+    "realm": "pc",
+    "league": "allflame"
+  }
+}

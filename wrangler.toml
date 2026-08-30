@@ -1,0 +1,21 @@
+name = "price-checker"
+main = "src/index.ts"
+compatibility_date = "2025-08-30"
+
+[assets]
+directory = "."
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "price-checker"
+migrations_dir = "migrations"
+
+[triggers]
+crons = ["*/30 * * * *"]
+
+[vars]
+BUILD_VERSION = "dev"
+
+# Set via: wrangler secret put ADMIN_REFRESH_TOKEN
