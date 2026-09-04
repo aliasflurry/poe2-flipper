@@ -136,6 +136,7 @@ const els = {
   campaignStatus: document.querySelector("#campaignStatus"),
   campaignMeta: document.querySelector("#campaignMeta"),
   campaignResetButton: document.querySelector("#campaignResetButton"),
+  campaignFilters: document.querySelectorAll("[data-campaign-filter]"),
   workspace: document.querySelector(".workspace")
 };
 
