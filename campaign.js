@@ -1,4 +1,4 @@
-const CAMPAIGN_STORAGE_KEY = "poe2-campaign-v3";
+const CAMPAIGN_STORAGE_KEY = "poe2-campaign-v4";
 const CAMPAIGN_DATA_URL = "data/poe2_data/campaign-checklist.json";
 
 const campaignState = {
@@ -65,10 +65,15 @@ function toggleObj(actId, areaId, objId, checked) {
   saveCampaignProgress();
 }
 
+function isTrackableObjective(obj) {
+  return obj?.kind !== "note";
+}
+
 function countAreaProgress(act, area) {
   let total = 0;
   let done = 0;
   for (const obj of area.objectives) {
+    if (!isTrackableObjective(obj)) continue;
     total += 1;
     if (isObjCompleted(act.id, area.id, obj.id)) done += 1;
   }
@@ -207,9 +212,27 @@ function renderArea(act, area, els) {
   // Area progress bar
   areaEl.append(createAreaProgressBar(progress.done, progress.total));
 
-  // Separate required vs optional objectives
-  const required = area.objectives.filter(o => !o.optional);
-  const optional = area.objectives.filter(o => o.optional);
+  const notes = area.objectives.filter((o) => o.kind === "note");
+  const required = area.objectives.filter((o) => o.kind !== "note" && !o.optional);
+  const optional = area.objectives.filter((o) => o.kind !== "note" && o.optional);
+
+  function createGuideNote(obj) {
+    const note = document.createElement("div");
+    const style = obj.noteStyle || "info";
+    note.className = `campaign-guide-note campaign-guide-note-${style}`;
+
+    const label = document.createElement("div");
+    label.className = "campaign-guide-note-label";
+    label.textContent =
+      style === "warning" ? "Warning" : style === "tip" ? "Tip" : style === "system" ? "Note" : "Tip";
+
+    const body = document.createElement("div");
+    body.className = "campaign-guide-note-text";
+    body.textContent = obj.text;
+
+    note.append(label, body);
+    return note;
+  }
 
   function buildObjectiveList(objectives) {
     const list = document.createElement("ul");
@@ -217,7 +240,11 @@ function renderArea(act, area, els) {
 
     for (const obj of objectives) {
       const item = document.createElement("li");
-      item.className = `campaign-objective${obj.optional ? " optional" : ""}`;
+      const classes = ["campaign-objective"];
+      if (obj.optional) classes.push("optional");
+      if (obj.boss) classes.push("is-boss");
+      if (obj.waypoint) classes.push("is-waypoint");
+      item.className = classes.join(" ");
 
       const label = document.createElement("label");
 
@@ -229,10 +256,40 @@ function renderArea(act, area, els) {
       const textWrap = document.createElement("span");
       textWrap.className = "campaign-objective-content";
 
+      const textRow = document.createElement("span");
+      textRow.className = "campaign-objective-text-row";
+
       const text = document.createElement("span");
       text.className = "campaign-objective-text";
       text.textContent = obj.text;
-      textWrap.append(text);
+      textRow.append(text);
+
+      if (obj.boss || obj.waypoint) {
+        const badges = document.createElement("span");
+        badges.className = "campaign-objective-badges";
+        if (obj.boss) {
+          const b = document.createElement("span");
+          b.className = "campaign-badge campaign-badge-boss";
+          b.textContent = "Boss";
+          badges.append(b);
+        }
+        if (obj.waypoint) {
+          const b = document.createElement("span");
+          b.className = "campaign-badge campaign-badge-waypoint";
+          b.textContent = "WP";
+          badges.append(b);
+        }
+        textRow.append(badges);
+      }
+
+      textWrap.append(textRow);
+
+      if (obj.note) {
+        const tip = document.createElement("span");
+        tip.className = "campaign-objective-note";
+        tip.textContent = obj.note;
+        textWrap.append(tip);
+      }
 
       if (obj.rewards?.length) {
         const rewardRow = document.createElement("span");
@@ -247,7 +304,6 @@ function renderArea(act, area, els) {
         toggleObj(act.id, area.id, obj.id, checkbox.checked);
         item.classList.toggle("done", checkbox.checked);
 
-        // Update area header count and progress bar
         const newProgress = countAreaProgress(act, area);
         countEl.textContent = `${newProgress.done}/${newProgress.total}`;
         const newPercent = newProgress.total > 0
@@ -267,6 +323,10 @@ function renderArea(act, area, els) {
     }
 
     return list;
+  }
+
+  for (const noteObj of notes) {
+    areaEl.append(createGuideNote(noteObj));
   }
 
   if (required.length > 0) {
@@ -347,7 +407,19 @@ function renderCampaignActs(els) {
     count.textContent = `${progress.done} / ${progress.total}`;
 
     titleRow.append(title, count);
-    titleGroup.append(titleRow, createActProgressBar(progress.done, progress.total));
+    titleGroup.append(titleRow);
+
+    if (act.subtitle) {
+      const subtitle = document.createElement("p");
+      subtitle.className = "campaign-act-subtitle";
+      subtitle.textContent = act.subtitle.split("\n")[0].trim();
+      if (act.subtitle.includes("\n")) {
+        subtitle.title = act.subtitle.replace(/\n+/g, " · ");
+      }
+      titleGroup.append(subtitle);
+    }
+
+    titleGroup.append(createActProgressBar(progress.done, progress.total));
     header.append(toggle, titleGroup);
 
     // Act body

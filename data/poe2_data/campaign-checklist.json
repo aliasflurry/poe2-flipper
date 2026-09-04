@@ -1,49 +1,84 @@
 {
-  "version": 3,
-  "updated": "2026-07-07",
+  "version": 4,
+  "updated": "2026-09-04",
+  "source": "https://pathofbuild.io.vn/leveling/ (translated to English)",
   "acts": [
     {
       "id": "act1",
       "num": 1,
-      "title": "Act I — The Unwanted Dead",
+      "title": "Act 1 — Clearfell → Ogham Manor",
       "areas": [
         {
-          "id": "G1_1",
-          "name": "The Riverbank",
+          "id": "act1_z0",
+          "name": "Riverbank",
           "objectives": [
             {
-              "id": "kill-bloated-miller",
-              "text": "Kill Bloated Miller"
+              "id": "s0",
+              "text": "Speak to Wounded Man, equip starting weapon."
             },
             {
-              "id": "enter-town",
-              "text": "Enter Clearfell Encampment"
+              "id": "s1",
+              "text": "Open Large Chests, equip looted items and skills."
+            },
+            {
+              "id": "s2",
+              "text": "Defeat The Bloated Miller.",
+              "boss": true
+            },
+            {
+              "id": "s3",
+              "text": "Enter Clearfell Encampment behind the boss."
             }
           ]
         },
         {
-          "id": "G1_town",
+          "id": "act1_z1",
           "name": "Clearfell Encampment",
-          "type": "town",
           "objectives": [
             {
-              "id": "speak-to-renly",
-              "text": "Speak to Renly → Go to Clearfell"
+              "id": "s0",
+              "text": "Speak to Renly.",
+              "note": "Receive Skill Gem Lv1.",
+              "rewards": [
+                {
+                  "text": "Skill Gem Lv1",
+                  "type": "item"
+                }
+              ]
             },
             {
-              "id": "after-red-vale",
-              "text": "After The Red Vale: Speak to Renly → Return to The Grelwood"
+              "id": "s1",
+              "text": "Enter Clearfell."
             }
-          ]
+          ],
+          "type": "town"
         },
         {
-          "id": "G1_2",
+          "id": "act1_z2",
           "name": "Clearfell",
           "objectives": [
             {
-              "id": "kill-beira",
-              "text": "Kill Beira",
-              "optional": true,
+              "id": "s0",
+              "text": "Speak to Farrow to start the quest The Runeseeker.",
+              "note": "Patch 0.5: starts the Runeseeker chain; end of Act 1 unlocks the Verisium Anvil."
+            },
+            {
+              "id": "s1",
+              "text": "Farrow is the league's new NPC. Meeting Farrow here only starts The Runeseeker. The quest chain continues through 3 Runestone → Lost Catacombs → return to Clearfell; end of the Act 1 chain unlocks Verisium Anvil. Runeforging allows you to use Verisium to add Runic Ward — a regenerating defense layer that recovers after taking no damage.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s2",
+              "text": "Runeforging Route: Act 1 opens Armour Runeforging → Act 2 Runic Inscriptions → Act 3 Unique Runeforging → Act 4 Ancient Runes.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s3",
+              "text": "Defeat Beira of the Rotten Pack in the north.",
+              "boss": true,
+              "note": "+10% Cold Resistance.",
               "rewards": [
                 {
                   "text": "+10% Cold Resistance",
@@ -52,908 +87,1266 @@
               ]
             },
             {
-              "id": "clear-mud-burrow",
-              "text": "Clear Mud Burrow",
+              "id": "s4",
+              "text": "Mud Burrow → defeat The Devourer.",
               "optional": true,
+              "boss": true,
+              "note": "Skill Gem Lv2.",
               "rewards": [
                 {
-                  "text": "Support Gem (1)",
+                  "text": "Skill Gem Lv2",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "search-campsite",
-              "text": "Search for Campsite",
-              "optional": true,
+              "id": "s5",
+              "text": "Take Waypoint near Mud Burrow; the bridge ahead leads to The Grelwood.",
+              "waypoint": true
+            },
+            {
+              "id": "s6",
+              "text": "After defeating Beira, speak to Renly in town.",
+              "note": "Support Gem Lv1.",
               "rewards": [
                 {
-                  "text": "Skill Gem (1)",
+                  "text": "Support Gem Lv1",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "go-to-grelwood",
-              "text": "Go to The Grelwood"
-            }
-          ]
-        },
-        {
-          "id": "G1_3",
-          "name": "Mud Burrow",
-          "note": "Skip unless you want the gem reward",
-          "objectives": [
-            {
-              "id": "kill-devourer",
-              "text": "Kill Devourer",
+              "id": "s7",
+              "text": "Abandoned Stash in Mysterious Campsite.",
               "optional": true,
+              "note": "Skill Gem Lv1.",
               "rewards": [
                 {
-                  "text": "Support Gem (1)",
+                  "text": "Skill Gem Lv1",
                   "type": "item"
                 }
               ]
+            },
+            {
+              "id": "s8",
+              "text": "Enter The Grelwood."
             }
           ]
         },
         {
-          "id": "G1_4",
+          "id": "act1_z3",
           "name": "The Grelwood",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Lesser Rune",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "Find / summon / speak to Una."
             },
             {
-              "id": "kill-brambleghast",
-              "text": "Kill Brambleghast",
+              "id": "s1",
+              "text": "Take Waypoint.",
+              "waypoint": true
+            },
+            {
+              "id": "s2",
+              "text": "Enter Grim Tangle → take Waypoint → return.",
+              "waypoint": true
+            },
+            {
+              "id": "s3",
+              "text": "Enter The Red Vale → take Waypoint → return.",
+              "waypoint": true
+            },
+            {
+              "id": "s4",
+              "text": "Defeat Gerung, the Brambleghast.",
               "optional": true,
+              "boss": true,
+              "note": "Skill Gem Lv2.",
               "rewards": [
                 {
-                  "text": "Skill Gem (1)",
+                  "text": "Skill Gem Lv2",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "kill-forgotten-witch",
-              "text": "Kill Forgotten Witch",
+              "id": "s5",
+              "text": "Hut with Cauldron → defeat Areagne.",
               "optional": true,
+              "boss": true,
+              "note": "Medium Life + Mana Flasks, Support Gem Lv1.",
               "rewards": [
                 {
-                  "text": "Support Gem (1)",
+                  "text": "Support Gem Lv1",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "go-to-red-vale",
-              "text": "Go to The Red Vale"
+              "id": "s6",
+              "text": "Areagne was one of the tough games at the beginning of the game. Beware of Frost Bombs; keep your distance and dodge the damage zone first.",
+              "kind": "note",
+              "noteStyle": "warning"
             },
             {
-              "id": "visit-tree-of-souls",
-              "text": "Visit Tree of Souls → Place Runed Spikes"
-            },
-            {
-              "id": "go-to-grim-tangle",
-              "text": "Go to The Grim Tangle"
+              "id": "s7",
+              "text": "Enter The Red Vale."
             }
           ]
         },
         {
-          "id": "G1_5",
+          "id": "act1_z4",
           "name": "The Red Vale",
           "objectives": [
             {
-              "id": "activate-obelisks",
-              "text": "Activate 3 Obelisks of Rust"
+              "id": "s0",
+              "text": "Find 3 Obelisks of Rust, get Runed Girdle at each obelisk."
             },
             {
-              "id": "kill-rust-king",
-              "text": "Kill Rust King"
+              "id": "s1",
+              "text": "The Rust King appears at the final obelisk; defeat boss.",
+              "boss": true,
+              "note": "Skill Gem Lv3.",
+              "rewards": [
+                {
+                  "text": "Skill Gem Lv3",
+                  "type": "item"
+                }
+              ]
             },
             {
-              "id": "return-to-town",
-              "text": "Return to town"
+              "id": "s2",
+              "text": "Tips for hitting The Rust King: keep moving around the boss and avoid standing for a long time in the AoE zone to maintain a safe damage rhythm.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s3",
+              "text": "Teleport to town."
             }
           ]
         },
         {
-          "id": "G1_6",
-          "name": "The Grim Tangle",
+          "id": "act1_z5",
+          "name": "Clearfell Encampment (Return)",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Skill Gem (3)",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "Speak to Renly, receive Runed Spikes."
             },
             {
-              "id": "kill-ervig",
-              "text": "Kill Ervig",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Support Gem (1)",
-                  "type": "item"
-                }
-              ]
+              "id": "s1",
+              "text": "Teleport to The Grelwood."
+            }
+          ],
+          "type": "town"
+        },
+        {
+          "id": "act1_z6",
+          "name": "The Grelwood (Return)",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Activate 3 Runic Seals."
             },
             {
-              "id": "go-to-cemetery",
-              "text": "Go to Cemetery of the Eternals"
+              "id": "s1",
+              "text": "Speak to Una."
+            },
+            {
+              "id": "s2",
+              "text": "Teleport to town."
             }
           ]
         },
         {
-          "id": "G1_7",
+          "id": "act1_z7",
+          "name": "Clearfell Encampment (2)",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Speak to Una."
+            },
+            {
+              "id": "s1",
+              "text": "Teleport to Grim Tangle."
+            }
+          ],
+          "type": "town"
+        },
+        {
+          "id": "act1_z8",
+          "name": "Grim Tangle",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Runeseeker: take Runestone 1/3 in the main path."
+            },
+            {
+              "id": "s1",
+              "text": "Runeseeker — Runestone 1/3: The first stone is on the main path in Grim Tangle, so it is hard to miss if you follow the campaign route.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s2",
+              "text": "Defeat Ervig, the Rotted Druid.",
+              "optional": true,
+              "boss": true,
+              "note": "Support Gem.",
+              "rewards": [
+                {
+                  "text": "Support Gem",
+                  "type": "item"
+                }
+              ]
+            },
+            {
+              "id": "s3",
+              "text": "Enter Cemetery of the Eternals."
+            }
+          ]
+        },
+        {
+          "id": "act1_z9",
           "name": "Cemetery of the Eternals",
           "objectives": [
             {
-              "id": "search-ancient-ruins",
-              "text": "Search edges for Ancient Ruins",
+              "id": "s0",
+              "text": "Speak to Lachlann the Lost."
+            },
+            {
+              "id": "s1",
+              "text": "Ancient Ruins near the checkpoint.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "Iron Ring or Lazuli Ring",
-                  "type": "item"
-                }
-              ]
+              "note": "Iron or Lazuli Ring."
             },
             {
-              "id": "clear-mausoleum-tomb",
-              "text": "Clear Mausoleum of the Praetor and Tomb of the Consort"
+              "id": "s2",
+              "text": "Mausoleum of the Praetor → defeat Draven → take Key Piece → Teleport back.",
+              "boss": true
             },
             {
-              "id": "kill-lachlann",
-              "text": "Kill Lachlann"
-            },
-            {
-              "id": "go-to-hunting-grounds",
-              "text": "Go to Hunting Grounds"
-            }
-          ]
-        },
-        {
-          "id": "G1_8",
-          "name": "Mausoleum of the Praetor",
-          "objectives": [
-            {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Regal",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "kill-draven",
-              "text": "Kill Draven"
-            },
-            {
-              "id": "return-to-cemetery",
-              "text": "Return to Cemetery of the Eternals"
-            }
-          ]
-        },
-        {
-          "id": "G1_9",
-          "name": "Tomb of the Consort",
-          "objectives": [
-            {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Artificer's Orb",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "search-haunted-treasure",
-              "text": "Search for Haunted Treasure",
+              "id": "s3",
+              "text": "Forgotten Riches hidden cache in Mausoleum of the Praetor.",
               "optional": true,
+              "note": "Support Gem Lv1 + Gold.",
               "rewards": [
                 {
-                  "text": "Support Gem (1)",
+                  "text": "Support Gem Lv1 + Gold",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "kill-asinia",
-              "text": "Kill Asinia"
+              "id": "s4",
+              "text": "Forgotten Riches: find the hidden switch in the Mausoleum of the Praetor to open the secret area.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "return-to-cemetery",
-              "text": "Return to Cemetery of the Eternals"
+              "id": "s5",
+              "text": "Tomb of the Consort → defeat Asinia → take Key Piece → Teleport back.",
+              "boss": true
+            },
+            {
+              "id": "s6",
+              "text": "Haunted Treasure secret.",
+              "optional": true,
+              "note": "Support Gem Lv1.",
+              "rewards": [
+                {
+                  "text": "Support Gem Lv1",
+                  "type": "item"
+                }
+              ]
+            },
+            {
+              "id": "s7",
+              "text": "Open Memorial Gate near Lachlann."
+            },
+            {
+              "id": "s8",
+              "text": "Defeat Lachlann, take Ring.",
+              "boss": true,
+              "note": "Skill Gem Lv3.",
+              "rewards": [
+                {
+                  "text": "Skill Gem Lv3",
+                  "type": "item"
+                }
+              ]
+            },
+            {
+              "id": "s9",
+              "text": "Exit to Hunting Grounds → take Waypoint → Teleport to town.",
+              "waypoint": true
             }
           ]
         },
         {
-          "id": "G1_11",
+          "id": "act1_z10",
           "name": "Hunting Grounds",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Exalted",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "Speak to Finn, Una and The Hooded One in town before going; Hooded One is revived and opens Identify."
             },
             {
-              "id": "kill-crowbell",
-              "text": "Kill Crowbell",
-              "optional": true,
+              "id": "s1",
+              "text": "REVIVAL: The Hooded One revives when you return to town. From now on, the Identify function can be used.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
+            {
+              "id": "s2",
+              "text": "Farrow → take Runestone 2/3."
+            },
+            {
+              "id": "s3",
+              "text": "Runeseeker — Runestone 2/3 is located in Hunting Grounds. Farrow comes first; Delwyn is usually a little deeper in the area.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s4",
+              "text": "Speak to Delwyn."
+            },
+            {
+              "id": "s5",
+              "text": "Delwyn is a little deeper than Farrow. If you haven't met Delwyn yet, keep diving into the Hunting Grounds.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s6",
+              "text": "Defeat The Crowbell.",
+              "boss": true,
+              "note": "+2 Weapon Set Skill Points.",
               "rewards": [
                 {
-                  "text": "2 Passives",
+                  "text": "Skill Points",
                   "type": "points"
                 }
               ]
             },
             {
-              "id": "search-dryadic-ritual",
-              "text": "Search edges for Dryadic Ritual",
+              "id": "s7",
+              "text": "Enter Freythorn → take Waypoint → return.",
+              "waypoint": true
+            },
+            {
+              "id": "s8",
+              "text": "Enter Ogham Farmlands → take Waypoint → return.",
+              "waypoint": true
+            },
+            {
+              "id": "s9",
+              "text": "Small ritual event.",
               "optional": true,
+              "note": "Support Gem Lv1.",
               "rewards": [
                 {
-                  "text": "Support Gem (1)",
+                  "text": "Support Gem Lv1",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "go-to-freythorn",
-              "text": "Go to Freythorn"
-            },
-            {
-              "id": "go-to-ogham-farmlands",
-              "text": "After Freythorn: Go to Ogham Farmlands"
+              "id": "s10",
+              "text": "Teleport to Freythorn."
             }
           ]
         },
         {
-          "id": "G1_12",
+          "id": "act1_z11",
           "name": "Freythorn",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Support Gem (1)",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "Activate 3 Small Ritual Altars."
             },
             {
-              "id": "activate-ritual-altars",
-              "text": "Activate 3 Ritual Altars"
+              "id": "s1",
+              "text": "The smoke from the Big Ritual Altar will point to the remaining Small Ritual Altars — just follow the smoke to find it quickly.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "kill-king-in-the-mists",
-              "text": "Kill King in the Mists",
+              "id": "s2",
+              "text": "Follow the smoke strips from the Big Ritual Altar to find the small altar."
+            },
+            {
+              "id": "s3",
+              "text": "Big Ritual Altar → defeat The King in the Mists.",
+              "boss": true,
+              "note": "+30 Spirit + Spirit Gem Lv4 (Persistent Buff).",
               "rewards": [
                 {
                   "text": "+30 Spirit",
                   "type": "permanent"
-                },
-                {
-                  "text": "Spirit Gem (4)",
-                  "type": "item"
                 }
               ]
             },
             {
-              "id": "return-to-hunting-grounds",
-              "text": "Return to Hunting Grounds"
+              "id": "s4",
+              "text": "The King in the Mists: after winning, remember to check the Spirit reward. In phase 2, it is preferred to dodge the mechanism first and then continue to deal damage.",
+              "kind": "note",
+              "noteStyle": "warning"
+            },
+            {
+              "id": "s5",
+              "text": "Ominous Altars → cleanse and get Charm from Finn in town.",
+              "optional": true,
+              "note": "Ruby/Sapphire/Topaz Charm."
+            },
+            {
+              "id": "s6",
+              "text": "Teleport to Ogham Farmlands."
             }
           ]
         },
         {
-          "id": "G1_13_1",
+          "id": "act1_z12",
           "name": "Ogham Farmlands",
-          "note": "Complete Freythorn first",
           "objectives": [
             {
-              "id": "search-lost-lute",
-              "text": "Search for Lost Lute",
-              "optional": true,
+              "id": "s0",
+              "text": "Find Una's Lute Box in the house near checkpoint.",
+              "note": "Una's Lute +2 Weapon Set Skill Points.",
               "rewards": [
                 {
-                  "text": "2 Passives",
+                  "text": "Skill Points",
                   "type": "points"
                 }
               ]
             },
             {
-              "id": "go-to-ogham-village",
-              "text": "Go to Ogham Village"
+              "id": "s1",
+              "text": "Bring Una's Lute back to Una for a reward."
+            },
+            {
+              "id": "s2",
+              "text": "Runeseeker: take Runestone 3/3 in the fields."
+            },
+            {
+              "id": "s3",
+              "text": "Runeseeker — Runestone 3/3: after collecting all 3, return to The Grelwood and summon Farrow at Tree of Souls → enter Lost Catacombs → take Liquid Verisium at the end → return to Clearfell to unlock the Verisium Anvil.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s4",
+              "text": "Rare dogs in crop circle.",
+              "optional": true,
+              "note": "Skill Gem Lv4.",
+              "rewards": [
+                {
+                  "text": "Skill Gem Lv4",
+                  "type": "item"
+                }
+              ]
+            },
+            {
+              "id": "s5",
+              "text": "Enter Ogham Village."
             }
           ]
         },
         {
-          "id": "G1_13_2",
+          "id": "act1_z13",
           "name": "Ogham Village",
           "objectives": [
             {
-              "id": "search-smithing-tools",
-              "text": "Search for Smithing Tools",
+              "id": "s0",
+              "text": "(First character) Take Smithing Tools in the house.",
               "optional": true,
+              "note": "Open Salvage Bench."
+            },
+            {
+              "id": "s1",
+              "text": "Following the path/water flow is the easiest way to get to the Smithing Tools property.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s2",
+              "text": "Follow the rock road to the smithing house."
+            },
+            {
+              "id": "s3",
+              "text": "Blacksmith's Chest in the same house.",
+              "optional": true,
+              "note": "Blank Rune + Artificer's Orb."
+            },
+            {
+              "id": "s4",
+              "text": "Defeat The Executioner.",
+              "boss": true,
+              "note": "Support Gem Lv1.",
               "rewards": [
                 {
-                  "text": "Unlocks Salvage Bench",
-                  "type": "unlocks"
-                },
-                {
-                  "text": "Artificer's Orb",
-                  "type": "item"
-                },
-                {
-                  "text": "Blank Rune",
+                  "text": "Support Gem Lv1",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "kill-executioner",
-              "text": "Kill Executioner"
+              "id": "s5",
+              "text": "The Executioner is usually north in Ogham Village.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "go-to-manor-ramparts",
-              "text": "Go to The Manor Ramparts"
+              "id": "s6",
+              "text": "Go upstairs → pull the Lever → speak to Leitis."
+            },
+            {
+              "id": "s7",
+              "text": "Enter The Manor Ramparts."
             }
           ]
         },
         {
-          "id": "G1_14",
+          "id": "act1_z14",
           "name": "The Manor Ramparts",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Skill Gem (5)",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "return-to-town-leitis",
-              "text": "Return to town → Speak to Leitis",
-              "optional": true
-            },
-            {
-              "id": "search-gallows",
-              "text": "Search edges for Gallows",
+              "id": "s0",
+              "text": "Gallows secret near the checkpoint.",
               "optional": true,
+              "note": "Support Gem Lv1.",
               "rewards": [
                 {
-                  "text": "Support Gem (1)",
+                  "text": "Support Gem Lv1",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "go-to-ogham-manor",
-              "text": "Go to Ogham Manor"
+              "id": "s1",
+              "text": "Before enter Ogham Manor, aim for Flask around Lv10–11 and chest around Lv11 for more safety.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s2",
+              "text": "Enter Ogham Manor."
             }
           ]
         },
         {
-          "id": "G1_15",
+          "id": "act1_z15",
           "name": "Ogham Manor",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
+              "id": "s0",
+              "text": "Defeat Candlemass on floor 1.",
+              "boss": true,
+              "note": "+20 Maximum Life.",
               "rewards": [
                 {
-                  "text": "Alch",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "kill-candlemass",
-              "text": "Kill Candlemass (first floor)",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "+20 to Maximum Life",
+                  "text": "+20 Maximum Life",
                   "type": "permanent"
                 }
               ]
             },
             {
-              "id": "kill-geonor",
-              "text": "Kill Count Geonor"
+              "id": "s1",
+              "text": "Sau Candlemass, keep going deeper downstairs to find Geonor. The Manor has winding paths — stick to the downward route.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "return-to-town",
-              "text": "Return to town → Speak to Hooded One"
+              "id": "s2",
+              "text": "Geonor: in phase 2, priority is given to dodging damage/mechanisms first; do not try to stand still DPS when the danger zone is covering the floor.",
+              "kind": "note",
+              "noteStyle": "warning"
+            },
+            {
+              "id": "s3",
+              "text": "Go downstairs → defeat Geonor, Act finale boss 1.",
+              "boss": true
+            },
+            {
+              "id": "s4",
+              "text": "Teleport to town."
             }
           ]
+        },
+        {
+          "id": "act1_z16",
+          "name": "Clearfell Encampment (End of Act)",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Speak to all NPCs."
+            },
+            {
+              "id": "s1",
+              "text": "Speak to The Hooded One → “Follow the Beast's Trail”."
+            },
+            {
+              "id": "s2",
+              "text": "Complete Act 1 → go to Act 2."
+            }
+          ],
+          "type": "town"
+        },
+        {
+          "id": "act1_z17",
+          "name": "Tomb of the Consort",
+          "objectives": []
+        },
+        {
+          "id": "act1_z18",
+          "name": "Mausoleum of the Praetor",
+          "objectives": []
+        },
+        {
+          "id": "act1_z19",
+          "name": "The Grim Tangle",
+          "objectives": []
         }
       ]
     },
     {
       "id": "act2",
       "num": 2,
-      "title": "Act II — The Vastiri Sands",
+      "title": "Act 2 — Vastiri Desert → Dreadnought",
       "areas": [
         {
-          "id": "G2_1",
+          "id": "act2_z0",
           "name": "Vastiri Outskirts",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
+              "id": "s0",
+              "text": "Speak to The Hooded One."
+            },
+            {
+              "id": "s1",
+              "text": "Defeat Rathbreaker.",
+              "boss": true
+            },
+            {
+              "id": "s2",
+              "text": "Teleport to the beginning of the zone."
+            },
+            {
+              "id": "s3",
+              "text": "Speak to Zarka.",
+              "note": "Uncut Skill Gem Lv5.",
               "rewards": [
                 {
-                  "text": "Spirit Gem (5)",
+                  "text": "Uncut Skill Gem Lv5",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "kill-rathbreaker",
-              "text": "Kill Rathbreaker",
-              "rewards": [
-                {
-                  "text": "Skill Gem (5)",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "return-to-camp",
-              "text": "Return to Camp → Speak to Zarka"
-            },
-            {
-              "id": "go-to-ardura-caravan",
-              "text": "Enter The Ardura Caravan"
+              "id": "s4",
+              "text": "Enter The Ardura Caravan."
             }
           ]
         },
         {
-          "id": "G2_town",
+          "id": "act2_z1",
           "name": "The Ardura Caravan",
-          "type": "town",
-          "note": "Route overview",
           "objectives": [
             {
-              "id": "mawdun-route",
-              "text": "Mawdun Quarry → Mawdun Mine"
+              "id": "s0",
+              "text": "Speak to Hooded One + Sekhema Asala (2 times)."
             },
             {
-              "id": "traitors-passage-route",
-              "text": "Traitor's Passage → The Halani Gates"
+              "id": "s1",
+              "text": "PATCH 0.5 — Runes of Aldur: Farrow has appeared since Act 1. There are no Runic Alloy quests left in Caravan. Each zone has Ezomyte Remnant; some zones have Runestone to call Farrow and open a new formula.",
+              "kind": "note",
+              "noteStyle": "system"
             },
             {
-              "id": "mastodon-badlands-route",
-              "text": "Mastodon Badlands → The Bone Pits"
+              "id": "s2",
+              "text": "RUNEFORGING: each Act open 1 tier — Act 1 Armour Runeforging → Act 2 Runic Inscriptions → Act 3 Unique Runeforging → Act 4 Ancient Runes.",
+              "kind": "note",
+              "noteStyle": "system"
             },
             {
-              "id": "keth-route",
-              "text": "Keth → Buried Shrines"
+              "id": "s3",
+              "text": "Use Desert Map → to Halani Gates."
             },
             {
-              "id": "titans-route",
-              "text": "Valley of the Titans → The Titan Grotto"
+              "id": "s4",
+              "text": "Enter Halani Gates to → talk Sekhema Asala → back to the Caravan to → tell Asala."
             },
             {
-              "id": "deshar-route",
-              "text": "Deshar → The Spires of Deshar"
-            },
-            {
-              "id": "dreadnought-route",
-              "text": "The Dreadnought → Act III"
+              "id": "s5",
+              "text": "Go to Mawdun Quarry."
             }
-          ]
+          ],
+          "type": "town"
         },
         {
-          "id": "G2_10_1",
+          "id": "act2_z2",
           "name": "Mawdun Quarry",
           "objectives": [
             {
-              "id": "search-faridun-war-cache",
-              "text": "Search for Faridun War Cache",
+              "id": "s0",
+              "text": "Faridun War Cache near the checkpoint.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "Artificer's Orb",
-                  "type": "item"
-                }
-              ]
+              "note": "Artificer's Orb."
             },
             {
-              "id": "go-to-mawdun-mine",
-              "text": "Go to Mawdun Mine"
+              "id": "s1",
+              "text": "Enter Mawdun Mine following checkpoints."
             }
           ]
         },
         {
-          "id": "G2_10_2",
+          "id": "act2_z3",
           "name": "Mawdun Mine",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
+              "id": "s0",
+              "text": "PATHING TIP: follow the rail tracks. At each junction, take the branch that continues the rails to stay on the main route.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s1",
+              "text": "Follow the track; at the intersection choose the branch connecting the track."
+            },
+            {
+              "id": "s2",
+              "text": "Defeat Rudja.",
+              "boss": true,
+              "note": "Uncut Skill Gem Lv6.",
               "rewards": [
                 {
-                  "text": "Exalted",
+                  "text": "Uncut Skill Gem Lv6",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "kill-rudja",
-              "text": "Kill Rudja"
+              "id": "s3",
+              "text": "Speak to Risu in the cage."
             },
             {
-              "id": "free-risu",
-              "text": "Free Risu"
-            },
-            {
-              "id": "return-to-ardura-caravan",
-              "text": "Return to The Ardura Caravan → Speak to Risu"
+              "id": "s4",
+              "text": "Teleport to town."
             }
           ]
         },
         {
-          "id": "G2_2",
+          "id": "act2_z4",
+          "name": "The Ardura Caravan (Return)",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Speak to Risu + Sekhema Asala."
+            },
+            {
+              "id": "s1",
+              "text": "Go to Traitor's Passage."
+            }
+          ],
+          "type": "town"
+        },
+        {
+          "id": "act2_z5",
           "name": "Traitor's Passage",
           "objectives": [
             {
-              "id": "kill-balbala",
-              "text": "Kill Balbala",
+              "id": "s0",
+              "text": "PATCH 0.5 PATHING: after rescuing Risu, no longer need to go back through Halani Gates to enter Traitor's Passage anymore; the current route already uses the new shortcut.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s1",
+              "text": "Interact with Ancient Seal door + Runic Seals."
+            },
+            {
+              "id": "s2",
+              "text": "Defeat Balbala, the Traitor.",
               "optional": true,
+              "boss": true,
+              "note": "Djinn Barya + Uncut Skill Gem Lv6. Barya Lv28 can be skipped and taken in Deshar.",
               "rewards": [
                 {
-                  "text": "Djinn Barya",
+                  "text": "Uncut Skill Gem Lv6",
+                  "type": "item"
+                }
+              ]
+            },
+            {
+              "id": "s3",
+              "text": "Most builders can leave Balbala at this time; taking backup Djinn Barya from 2 Vulture in Deshar will be easier and give a better Lv28 trial.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s4",
+              "text": "Bell Chest in a dead end.",
+              "optional": true,
+              "note": "Random loot."
+            },
+            {
+              "id": "s5",
+              "text": "Go up the stairs enter The Halani Gates."
+            }
+          ]
+        },
+        {
+          "id": "act2_z6",
+          "name": "The Halani Gates",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Summon Asala to open the gate."
+            },
+            {
+              "id": "s1",
+              "text": "Advance to command tents to loot before opening the gate.",
+              "optional": true
+            },
+            {
+              "id": "s2",
+              "text": "Defeat Jamanra the first time.",
+              "boss": true
+            },
+            {
+              "id": "s3",
+              "text": "Go downstairs, find the checkpoint and then Teleport back to town."
+            },
+            {
+              "id": "s4",
+              "text": "If Asala is stuck behind the terracotta soldiers, reset the checkpoint so that the NPC moves closer to you.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s5",
+              "text": "Can push to the command tent to pick up loot before opening the gate.",
+              "kind": "note",
+              "noteStyle": "tip"
+            }
+          ]
+        },
+        {
+          "id": "act2_z7",
+          "name": "The Ardura Caravan (2)",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Speak to Shambrin, Zarka, Sekhema Asala."
+            },
+            {
+              "id": "s1",
+              "text": "Go to the Trial of → Sekhemas to get Waypoint, to do it later in Lv28.",
+              "waypoint": true
+            },
+            {
+              "id": "s2",
+              "text": "Teleport → to Mastodon Badlands."
+            }
+          ],
+          "type": "town"
+        },
+        {
+          "id": "act2_z8",
+          "name": "Mastodon Badlands",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "PATCH 0.5 pathing: find cracks in the ground and follow them to Lightless Passage / Well of Souls.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s1",
+              "text": "It is recommended to make this zone BEFORE Keth so that Kabala falls to gem Lv7."
+            },
+            {
+              "id": "s2",
+              "text": "Shrine of Bones near the checkpoint.",
+              "optional": true,
+              "note": "Support Gem Lv2.",
+              "rewards": [
+                {
+                  "text": "Support Gem Lv2",
+                  "type": "item"
+                }
+              ]
+            },
+            {
+              "id": "s3",
+              "text": "It is RECOMMENDED TO RUN THIS AREA BEFORE KETH to push Keth level up; Kabala will fall gem Lv7, useful for all classes.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s4",
+              "text": "Enter The Bone Pits."
+            }
+          ]
+        },
+        {
+          "id": "act2_z9",
+          "name": "The Bone Pits",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "RUNESTONE: Runestone interaction here will call Farrow and open more recipes.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s1",
+              "text": "Runestone Patch 0.5: interact to summon Farrow and open new recipes.",
+              "optional": true
+            },
+            {
+              "id": "s2",
+              "text": "Loot Effigy at checkpoint.",
+              "optional": true
+            },
+            {
+              "id": "s3",
+              "text": "Kill hyena until the Sun Clan Relic falls."
+            },
+            {
+              "id": "s4",
+              "text": "Defeat Iktab & Ekbab → take Mastodon Tusks.",
+              "boss": true
+            },
+            {
+              "id": "s5",
+              "text": "Preserved Witness (abyss) is an optional survival/escort target via gauntlet, often appearing near Lightless Passage / Well of Souls; the reward is good but depends on the build.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
+            {
+              "id": "s6",
+              "text": "Preserved Witness / Well of Souls.",
+              "optional": true,
+              "note": "High-tier loot."
+            },
+            {
+              "id": "s7",
+              "text": "Teleport to town."
+            },
+            {
+              "id": "s8",
+              "text": "On the way, remember to loot Effigy at checkpoint.",
+              "kind": "note",
+              "noteStyle": "tip"
+            }
+          ]
+        },
+        {
+          "id": "act2_z10",
+          "name": "The Ardura Caravan (3)",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Speak to Zarka."
+            },
+            {
+              "id": "s1",
+              "text": "Go to Keth."
+            }
+          ],
+          "type": "town"
+        },
+        {
+          "id": "act2_z11",
+          "name": "Keth",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "RUNESTONE: interact with Runestone in Keth to call Farrow and open the recipe.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s1",
+              "text": "Runestone Patch 0.5: summon Farrow and open a new recipe.",
+              "optional": true
+            },
+            {
+              "id": "s2",
+              "text": "Kill the snake until it drops Kabala Clan Relic."
+            },
+            {
+              "id": "s3",
+              "text": "Abandoned Prayer.",
+              "optional": true,
+              "note": "Magic Amulet."
+            },
+            {
+              "id": "s4",
+              "text": "Lower Kabala, Constrictor Queen at Venom Pit.",
+              "boss": true,
+              "note": "+2 Weapon Set Skill Points; if you make Mastodon first, you will fall Skill Gem Lv7.",
+              "rewards": [
+                {
+                  "text": "Skill Gem Lv7",
+                  "type": "item"
+                },
+                {
+                  "text": "Skill Points",
+                  "type": "points"
+                }
+              ]
+            },
+            {
+              "id": "s5",
+              "text": "If you have done Mastodon Badlands first, Kabala will fall Skill Gem Lv7.",
+              "kind": "note",
+              "noteStyle": "tip",
+              "rewards": [
+                {
+                  "text": "Skill Gem Lv7",
+                  "type": "item"
+                }
+              ]
+            },
+            {
+              "id": "s6",
+              "text": "Enter The Lost City."
+            }
+          ]
+        },
+        {
+          "id": "act2_z12",
+          "name": "The Lost City",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Lower Ninth Treasure of Keth at Galleria.",
+              "optional": true,
+              "boss": true,
+              "note": "Jewel."
+            },
+            {
+              "id": "s1",
+              "text": "Golden Tomb.",
+              "optional": true,
+              "note": "Spirit Gem Lv7."
+            },
+            {
+              "id": "s2",
+              "text": "Enter Buried Shrines."
+            }
+          ]
+        },
+        {
+          "id": "act2_z13",
+          "name": "Buried Shrines",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Guarded sarcophagus.",
+              "optional": true,
+              "note": "Support Gem / Lesser Jeweller's Orb.",
+              "rewards": [
+                {
+                  "text": "Support Gem / Lesser Jewell",
+                  "type": "item"
+                }
+              ]
+            },
+            {
+              "id": "s1",
+              "text": "Select Offering fire/water/lightning.",
+              "optional": true,
+              "note": "Resist Ring."
+            },
+            {
+              "id": "s2",
+              "text": "Enter The Heart of Keth."
+            }
+          ]
+        },
+        {
+          "id": "act2_z14",
+          "name": "The Heart of Keth",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "ACCESS: go through Vestibule with the floor collapsed and acid monster down to Halani Shrine at the bottom; Azarian is located here.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s1",
+              "text": "Go down through The Vestibule to Halani Shrine."
+            },
+            {
+              "id": "s2",
+              "text": "Defeat Azarian.",
+              "boss": true
+            },
+            {
+              "id": "s3",
+              "text": "Speak to Water Goddess (Halani) → take Everburning Cinders → ignite Goddess Essence of Water."
+            },
+            {
+              "id": "s4",
+              "text": "Teleport to town."
+            }
+          ]
+        },
+        {
+          "id": "act2_z15",
+          "name": "Valley of the Titans",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Find 3 Ancient Seals around the edge of the zone."
+            },
+            {
+              "id": "s1",
+              "text": "Find Medallion / Relic Altar, set both relics.",
+              "note": "+1 Charm Slot + select 30% increased Charm Charges gained OR 30% increased Charm Effect Duration; can be changed later."
+            },
+            {
+              "id": "s2",
+              "text": "Bonus: +1 Charm Slot and choose 1 of 2 buffs: +30% Charm Charges gained or +30% Charm Effect Duration. Can be redeemed later.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
+            {
+              "id": "s3",
+              "text": "Relic Altar is located on a sub-branch of the route to Ancient Seals.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s4",
+              "text": "Enter The Titan Grotto."
+            }
+          ]
+        },
+        {
+          "id": "act2_z16",
+          "name": "The Titan Grotto",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Defeat Zalmarath, the Colossus → take Flame Ruby.",
+              "boss": true
+            },
+            {
+              "id": "s1",
+              "text": "Teleport to town."
+            }
+          ]
+        },
+        {
+          "id": "act2_z17",
+          "name": "Deshar",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "PATCH 0.5 — Act 2 RUNIC VAULT: interact with Runestone to call Farrow to → caravan to Skull of the Titan (Runeseeker) to → find the cave entrance to Runic Vault to → call Farrow to → open Runic Inscriptions.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s1",
+              "text": "Runic Vault Act 2 sequence: Runestone interaction → summons Farrow; caravan to Skull of the Titan → into Runic Vault → summons Farrow to open Runic Inscriptions."
+            },
+            {
+              "id": "s2",
+              "text": "Find Fallen Dekhara near tower.",
+              "note": "+2 Weapon Set Skill Points.",
+              "rewards": [
+                {
+                  "text": "Skill Points",
+                  "type": "points"
+                }
+              ]
+            },
+            {
+              "id": "s3",
+              "text": "Take Letter from Lihl Lima → giao Shambrin in town."
+            },
+            {
+              "id": "s4",
+              "text": "Lower 2 Vultures in the side area.",
+              "note": "Backup Djinn Barya Lv28 — Ascendancy road is easier than Balbala.",
+              "rewards": [
+                {
+                  "text": "Ascendancy",
                   "type": "ascendancy"
                 }
               ]
             },
             {
-              "id": "go-to-halani-gates",
-              "text": "Go to The Halani Gates"
-            }
-          ]
-        },
-        {
-          "id": "G2_3",
-          "name": "The Halani Gates",
-          "objectives": [
-            {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
+              "id": "s5",
+              "text": "This is an easy Ascendancy: Djinn Barya Lv28 from Vulture is usually much easier than Balbala.",
+              "kind": "note",
+              "noteStyle": "tip",
               "rewards": [
                 {
-                  "text": "Gemcutter's",
-                  "type": "item"
+                  "text": "Ascendancy",
+                  "type": "ascendancy"
                 }
               ]
             },
             {
-              "id": "escort-asala",
-              "text": "Escort Asala through 3 gates"
-            },
-            {
-              "id": "fight-jamanra",
-              "text": "Fight Jamanra → Take Stairs",
-              "rewards": [
-                {
-                  "text": "Skill Gem (7)",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "return-to-ardura-caravan",
-              "text": "Return to The Ardura Caravan → Speak to Zarka and Asala"
-            }
-          ]
-        },
-        {
-          "id": "G2_5_1",
-          "name": "Mastodon Badlands",
-          "objectives": [
-            {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Lesser Jeweller's",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "search-effigy",
-              "text": "Search edges for Effigy",
+              "id": "s6",
+              "text": "The Unremembered near the checkpoint.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "Support Gem (2)",
-                  "type": "item"
-                }
-              ]
+              "note": "Artificer's Orb."
             },
             {
-              "id": "go-to-bone-pits",
-              "text": "Go to The Bone Pits"
+              "id": "s7",
+              "text": "Enter Path of Mourning."
             }
           ]
         },
         {
-          "id": "G2_5_2",
-          "name": "The Bone Pits",
-          "objectives": [
-            {
-              "id": "clear-for-sun-clan-relic",
-              "text": "Clear until Sun Clan Relic drops",
-              "optional": true
-            },
-            {
-              "id": "kill-iktab-ekbab",
-              "text": "Kill Iktab & Ekbab",
-              "rewards": [
-                {
-                  "text": "Support Gem (2)",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "return-to-ardura-caravan",
-              "text": "Return to The Ardura Caravan → Speak to Zarka"
-            }
-          ]
-        },
-        {
-          "id": "G2_4_1",
-          "name": "Keth",
-          "objectives": [
-            {
-              "id": "kill-kabala",
-              "text": "Kill Kabala",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "2 Passives",
-                  "type": "points"
-                }
-              ]
-            },
-            {
-              "id": "search-abandoned-prayer",
-              "text": "Search for Abandoned Prayer",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Magic Amulet",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "go-to-lost-city",
-              "text": "Go to The Lost City"
-            }
-          ]
-        },
-        {
-          "id": "G2_4_2",
-          "name": "The Lost City",
-          "note": "Kabala Clan Relic also drops in Buried Shrines",
-          "objectives": [
-            {
-              "id": "clear-for-kabala-clan-relic",
-              "text": "Clear until Kabala Clan Relic drops",
-              "optional": true
-            },
-            {
-              "id": "search-for-golden-tomb",
-              "text": "Search for Golden Tomb",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Spirit Gem (6)",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "go-to-buried-shrines",
-              "text": "Go to Buried Shrines"
-            }
-          ]
-        },
-        {
-          "id": "G2_4_3",
-          "name": "Buried Shrines",
-          "note": "Pick a Fire Resistance Ring (Azarian deals Fire Damage)",
-          "objectives": [
-            {
-              "id": "clear-for-kabala-clan-relic",
-              "text": "Clear until Kabala Clan Relic drops",
-              "optional": true
-            },
-            {
-              "id": "search-elemental-shrine",
-              "text": "Search for Elemental Shrine",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Resistance Ring",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "kill-azarian",
-              "text": "Kill Azarian → Speak to Water Goddess",
-              "rewards": [
-                {
-                  "text": "Support Gem (2)",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "return-to-ardura-caravan",
-              "text": "Return to The Ardura Caravan → Speak to Zarka"
-            }
-          ]
-        },
-        {
-          "id": "G2_6",
-          "name": "Valley of the Titans",
-          "objectives": [
-            {
-              "id": "find-relic-altar",
-              "text": "Find Relic Altar (Kabala + Sun Clan Relics) → +1 Charm Slot",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "+1 Charm Slot",
-                  "type": "permanent"
-                }
-              ]
-            },
-            {
-              "id": "activate-ancient-seals",
-              "text": "Activate 3 Ancient Seals"
-            },
-            {
-              "id": "go-to-titan-grotto",
-              "text": "Go to The Titan Grotto"
-            }
-          ]
-        },
-        {
-          "id": "G2_7",
-          "name": "The Titan Grotto",
-          "objectives": [
-            {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Support Gem (2)",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "search-titans-sword",
-              "text": "Search for Titan's Sword",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Lesser Rune",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "kill-zalmarath",
-              "text": "Kill Zalmarath → Pick Flame Ruby",
-              "rewards": [
-                {
-                  "text": "Support Gem (2)",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "return-to-ardura-caravan",
-              "text": "Return to The Ardura Caravan → Speak to Zarka"
-            }
-          ]
-        },
-        {
-          "id": "G2_8",
-          "name": "Deshar",
-          "objectives": [
-            {
-              "id": "search-unremembered-skeleton",
-              "text": "Search for Unremembered Skeleton",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Artificer's Orb",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "find-fallen-dekhara",
-              "text": "Find Fallen Dekhara",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "2 Passives",
-                  "type": "points"
-                }
-              ]
-            },
-            {
-              "id": "go-to-path-of-mourning",
-              "text": "Go to Path of Mourning"
-            }
-          ]
-        },
-        {
-          "id": "G2_9_1",
+          "id": "act2_z18",
           "name": "Path of Mourning",
           "objectives": [
             {
-              "id": "search-hushed-urn",
-              "text": "Search for Hushed Urn",
+              "id": "s0",
+              "text": "PATH: believe in overworld map; the exit of the zone is quite straight, no need to find layout round.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s1",
+              "text": "Follow overworld map to the exit."
+            },
+            {
+              "id": "s2",
+              "text": "Shifting Vases / Hushed Urn.",
               "optional": true,
+              "note": "4 rares + Support Gem Lv2.",
               "rewards": [
                 {
-                  "text": "Support Gem (2)",
+                  "text": "Support Gem Lv2",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "go-to-spires-of-deshar",
-              "text": "Go to The Spires of Deshar"
+              "id": "s3",
+              "text": "Enter The Spires of Deshar."
             }
           ]
         },
         {
-          "id": "G2_9_2",
+          "id": "act2_z19",
           "name": "The Spires of Deshar",
           "objectives": [
             {
-              "id": "find-sisters-of-garukhan",
-              "text": "Find Sisters of Garukhan",
-              "optional": true,
+              "id": "s0",
+              "text": "Interact with Sisters of Garukhan shrine.",
+              "note": "+10% Lightning Resistance.",
               "rewards": [
                 {
                   "text": "+10% Lightning Resistance",
@@ -962,264 +1355,557 @@
               ]
             },
             {
-              "id": "kill-tor-gul",
-              "text": "Kill Tor Gul"
+              "id": "s1",
+              "text": "Defeat Tor Gul.",
+              "boss": true
             },
             {
-              "id": "return-to-ardura-caravan",
-              "text": "Return to The Ardura Caravan → Speak to Asala"
+              "id": "s2",
+              "text": "Tor Gul is one of the most difficult Act 2 fights: prioritizing Lightning Resistance and avoiding Defiler's attacks.",
+              "kind": "note",
+              "noteStyle": "warning"
+            },
+            {
+              "id": "s3",
+              "text": "Teleport to town → said Sekhema Asala 2 times."
             }
           ]
         },
         {
-          "id": "G2_12",
-          "name": "Dreadnought",
-          "note": "Good area to farm XP / Gear",
+          "id": "act2_z20",
+          "name": "Trial of the Sekhemas",
           "objectives": [
             {
-              "id": "kill-jamanra",
-              "text": "Kill Jamanra"
+              "id": "s0",
+              "text": "PATCH 0.5 QoL: Reforging Bench is located at the Trial door; Max Runic Ward is added to Starting Honour.",
+              "kind": "note",
+              "noteStyle": "system"
             },
             {
-              "id": "return-to-ardura-caravan",
-              "text": "Return to The Ardura Caravan → Speak to Hooded One"
+              "id": "s1",
+              "text": "Made at about Lv28; when manually selecting Djinn Barya Lv28 from Deshar, do not use the default Barya Lv22."
+            },
+            {
+              "id": "s2",
+              "text": "Trial room priority: Ritual > Chalice > Hourglass > Gauntlet. Hourglass: kill rare to reduce timer; Chalice: point to rare position.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s3",
+              "text": "Room priority: Ritual > Chalice > Hourglass > Gauntlet.",
+              "optional": true
+            },
+            {
+              "id": "s4",
+              "text": "Complete Trial.",
+              "note": "First Ascendancy.",
+              "rewards": [
+                {
+                  "text": "Ascendancy",
+                  "type": "ascendancy"
+                }
+              ]
+            },
+            {
+              "id": "s5",
+              "text": "Smith of Kitava: white chest should be stored before ascend.",
+              "optional": true
+            },
+            {
+              "id": "s6",
+              "text": "Smith of Kitava (Warrior): a white chest piece should be stored before ascend because this ascendancy may prevent you from using magic/rare chest.",
+              "kind": "note",
+              "noteStyle": "warning",
+              "rewards": [
+                {
+                  "text": "Ascendancy",
+                  "type": "ascendancy"
+                }
+              ]
             }
           ]
+        },
+        {
+          "id": "act2_z21",
+          "name": "The Dreadnought",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Go to The Dreadnought."
+            },
+            {
+              "id": "s1",
+              "text": "Defeat Jamanra, the Abomination — Act finale boss 2.",
+              "boss": true
+            },
+            {
+              "id": "s2",
+              "text": "PATCH 0.5 pathing: the second Dreadnought has been abandoned; Jamanra, the Abomination is now directly hit in The Dreadnought.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s3",
+              "text": "Jamanra, the Abomination begins in armor-broken state; a large physical burst can stun the boss before the lightning fence phase.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s4",
+              "text": "Patch 0.5: the second Dreadnought area has been abandoned; Jamanra, the Abomination fights directly here."
+            },
+            {
+              "id": "s5",
+              "text": "Teleport to town."
+            }
+          ]
+        },
+        {
+          "id": "act2_z22",
+          "name": "The Ardura Caravan (End of Act)",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Get out of the caravan at the top left and → say Hooded One to → wait for the animation."
+            },
+            {
+              "id": "s1",
+              "text": "Return → speak to Sekhema Asala → “Travel to the Sandswept Marsh”."
+            },
+            {
+              "id": "s2",
+              "text": "Complete Act 2 → go to Act 3."
+            }
+          ],
+          "type": "town"
+        },
+        {
+          "id": "act2_z23",
+          "name": "Halani Shrine",
+          "objectives": []
+        },
+        {
+          "id": "act2_z24",
+          "name": "Vestibule",
+          "objectives": []
+        },
+        {
+          "id": "act2_z25",
+          "name": "The Heart of Keth.",
+          "objectives": []
+        },
+        {
+          "id": "act2_z26",
+          "name": "Trial of Sekhemas",
+          "objectives": []
+        },
+        {
+          "id": "act2_z27",
+          "name": "Skull of the Titan",
+          "objectives": []
+        },
+        {
+          "id": "act2_z28",
+          "name": "Halani Gates",
+          "objectives": []
         }
-      ]
+      ],
+      "subtitle": "Act 2 uses the Ardura Caravan and Desert Map to travel between many areas. Follow the order below to avoid backtracking."
     },
     {
       "id": "act3",
       "num": 3,
-      "title": "Act III — The Vaal Ruins",
+      "title": "Act 3 — Sandswept Marsh → Ziggurat",
       "areas": [
         {
-          "id": "G3_1",
+          "id": "act3_z0",
           "name": "Sandswept Marsh",
           "objectives": [
             {
-              "id": "kill-rootdredge",
-              "text": "Kill Rootdredge",
+              "id": "s0",
+              "text": "Speak to The Hooded One."
+            },
+            {
+              "id": "s1",
+              "text": "Defeat Rootdredge.",
               "optional": true,
+              "boss": true,
+              "note": "Skill Gem Lv9.",
               "rewards": [
                 {
-                  "text": "Skill Gem (9)",
+                  "text": "Skill Gem Lv9",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "search-orok-campfire",
-              "text": "Search for Orok Campfire",
+              "id": "s2",
+              "text": "Basket at Orok Campsite.",
               "optional": true,
+              "note": "Lesser Jeweller's Orb."
+            },
+            {
+              "id": "s3",
+              "text": "Hanging tree corpse.",
+              "optional": true,
+              "note": "Magic Ring + Skill Gem Lv9.",
               "rewards": [
                 {
-                  "text": "Lesser Jeweller's",
+                  "text": "Skill Gem Lv9",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "find-corpse-at-hanging-tree",
-              "text": "Find Corpse at Hanging Tree",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Magic Ring",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "go-to-ziggurat-encampment",
-              "text": "Enter Ziggurat Encampment"
+              "id": "s4",
+              "text": "Enter Ziggurat Encampment."
             }
           ]
         },
         {
-          "id": "G3_town",
+          "id": "act3_z1",
           "name": "Ziggurat Encampment",
-          "type": "town",
-          "note": "Route overview",
           "objectives": [
             {
-              "id": "jungle-ruins-route",
-              "text": "Speak to NPCs → Go to Jungle Ruins"
+              "id": "s0",
+              "text": "Speak to Alva, Oswald, The Hooded One."
             },
             {
-              "id": "matlan-waterways-route",
-              "text": "After The Matlan Waterways: Speak to Alva → Go to The Drowned City"
+              "id": "s1",
+              "text": "Flask Lv30 can be lifted from vendor Servi.",
+              "optional": true
             },
             {
-              "id": "apex-of-filth-route",
-              "text": "After Apex of Filth: Speak to Alva → Go to Temple of Kopec"
+              "id": "s2",
+              "text": "Servi's PERMANENT SELECTION, irreversible: +25% Stun Threshold (popular) / +30% Elemental Ailment Threshold / +25% Mana Regeneration.",
+              "kind": "note",
+              "noteStyle": "warning"
             },
             {
-              "id": "utzaal-route",
-              "text": "After Temple of Kopec: Follow Alva in the past → Go to Utzaal"
+              "id": "s3",
+              "text": "Take the Jungle Ruins by the upper exit."
             }
-          ]
+          ],
+          "type": "town"
         },
         {
-          "id": "G3_3",
+          "id": "act3_z2",
           "name": "Jungle Ruins",
-          "note": "Make sure to get waypoint",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Support Gem (3)",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "PATCH 0.5 pathing: the explorer camp is now only heading to the next area and the destination is shown on minimap; greatly reducing the time it takes to find the way.",
+              "kind": "note",
+              "noteStyle": "system"
             },
             {
-              "id": "find-troubled-camp",
-              "text": "Find Troubled Camp",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Vendor",
-                  "type": "item"
-                },
-                {
-                  "text": "Rare Items",
-                  "type": "item"
-                }
-              ]
+              "id": "s1",
+              "text": "RUNES OF ALDUR: Act 3 has 3 Runestone — Jungle Ruins, Venom Crypts, Azak Bog. Grab all 3 and shoot Infested Barrens → Mystic Refuge → clear and say Farrow to open Unique Verisium Runeforging.",
+              "kind": "note",
+              "noteStyle": "system"
             },
             {
-              "id": "kill-mighty-silverfist",
-              "text": "Kill Mighty Silverfist",
-              "optional": true,
+              "id": "s2",
+              "text": "Unique RUNEFORGING: unique Lv55 or less is increased base damage/defense or Runic Ward without trade-off base stat; the best value is usually on Kalguuran uniques.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
+            {
+              "id": "s3",
+              "text": "FATE OF THE VAAL: Jungle Ruins has the first Vaal Beacon (1/6). Clear pack around beacon to activate crystal.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
+            {
+              "id": "s4",
+              "text": "Speak to Farrow at the top of the → Runes of Aldur /Runeseeker zone."
+            },
+            {
+              "id": "s5",
+              "text": "Patch 0.5: this is Runestone 1/3; enough 3 Runestones unlocks Unique Verisium Runeforging."
+            },
+            {
+              "id": "s6",
+              "text": "Fate of the Vaal: complete Vaal Beacon 1/6.",
+              "optional": true
+            },
+            {
+              "id": "s7",
+              "text": "Defeat Mighty Silverfist.",
+              "boss": true,
+              "note": "+2 Weapon Set Skill Points.",
               "rewards": [
                 {
-                  "text": "2 Passives",
+                  "text": "Skill Points",
                   "type": "points"
                 }
               ]
             },
             {
-              "id": "go-to-infested-barrens",
-              "text": "Go to Infested Barrens"
+              "id": "s8",
+              "text": "Boss tip: dodge the slam ACROSS, not straight back; wave in the attack direction.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "activate-stone-altar",
-              "text": "After Jiquani's Sanctum: Activate Stone Altar → Go to The Matlan Waterways"
+              "id": "s9",
+              "text": "Jungle Grave / ravaged corpse → Servi for Rare Belt selection."
+            },
+            {
+              "id": "s10",
+              "text": "Troubled Camp (Gwendolyn Albright).",
+              "optional": true,
+              "note": "Guaranteed Rare Gloves."
+            },
+            {
+              "id": "s11",
+              "text": "Activate Jungle Ruins Runestone.",
+              "optional": true
+            },
+            {
+              "id": "s12",
+              "text": "Find WP near Venom Crypts → enter The Venom Crypts.",
+              "waypoint": true
             }
           ]
         },
         {
-          "id": "G3_4",
+          "id": "act3_z3",
           "name": "The Venom Crypts",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Skill Gem (9)",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "FATE OF THE VAAL: Vaal Beacon 2/6 is located here.",
+              "kind": "note",
+              "noteStyle": "info"
             },
             {
-              "id": "search-corpse-snake-venom",
-              "text": "Search for Corpse-snake Venom (choose a stat buff)",
+              "id": "s1",
+              "text": "Fate of the Vaal: Vaal Beacon 2/6.",
+              "optional": true
+            },
+            {
+              "id": "s2",
+              "text": "Sarcophagus event.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "Artificer's Orb",
-                  "type": "item"
-                },
-                {
-                  "text": "Choose one:",
-                  "type": "permanent"
-                },
-                {
-                  "text": "25% Stun Threshold",
-                  "type": "permanent"
-                },
-                {
-                  "text": "30% Mana Regeneration Rate",
-                  "type": "permanent"
-                },
-                {
-                  "text": "25% Elemental Ailment Threshold",
-                  "type": "permanent"
-                }
-              ]
+              "note": "Guaranteed Lv3 Support."
             },
             {
-              "id": "return-to-jungle-ruins",
-              "text": "Return to Jungle Ruins"
+              "id": "s3",
+              "text": "Find corpse → and take Orok Poison → to safe zone A Reprieve."
+            },
+            {
+              "id": "s4",
+              "text": "PATCH 0.5: activates Venom Crypts Runestone if encountered — this is 1 of 3 Runestone of Act 3.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s5",
+              "text": "Activate Venom Crypts Runestone — Runestone 2/3.",
+              "optional": true
+            },
+            {
+              "id": "s6",
+              "text": "Teleport to town."
             }
           ]
         },
         {
-          "id": "G3_2_1",
+          "id": "act3_z4",
+          "name": "Ziggurat Encampment — Servi Choice",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Giao Orok Poison cho Servi.",
+              "note": "PERMANENT, irreversible selection."
+            },
+            {
+              "id": "s1",
+              "text": "Select one: +25% Stun Threshold / +30% Elemental Ailment Threshold / +25% Mana Regeneration."
+            },
+            {
+              "id": "s2",
+              "text": "Go to Infested Barrens (currently via Jungle Ruins)."
+            }
+          ],
+          "type": "town"
+        },
+        {
+          "id": "act3_z5",
           "name": "Infested Barrens",
           "objectives": [
             {
-              "id": "find-troubled-camp",
-              "text": "Find Troubled Camp",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Vendor",
-                  "type": "item"
-                },
-                {
-                  "text": "Rare Items",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "PATCH 0.5 ROUTING: currently entering Infested Barrens from Jungle Ruins; transitions can still change with live build.",
+              "kind": "note",
+              "noteStyle": "system"
             },
             {
-              "id": "go-to-chimeral-wetlands",
-              "text": "Go to Chimeral Wetlands"
+              "id": "s1",
+              "text": "FATE OF THE VAAL: Vaal Beacon 3/6 is located here.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
+            {
+              "id": "s2",
+              "text": "Fate of the Vaal: Vaal Beacon 3/6.",
+              "optional": true
+            },
+            {
+              "id": "s3",
+              "text": "Find/Speak to Alva, get Waypoint near her.",
+              "waypoint": true
+            },
+            {
+              "id": "s4",
+              "text": "Troubled Camp (Sebastian Carroway).",
+              "optional": true,
+              "note": "Guaranteed Rare Boots."
+            },
+            {
+              "id": "s5",
+              "text": "Enter Chimeral Wetlands."
             }
           ]
         },
         {
-          "id": "G3_5",
+          "id": "act3_z6",
           "name": "Chimeral Wetlands",
           "objectives": [
             {
-              "id": "kill-xyclucian",
-              "text": "Kill Xyclucian"
+              "id": "s0",
+              "text": "FATE OF THE VAAL: Vaal Beacon 4/6 is located here.",
+              "kind": "note",
+              "noteStyle": "info"
             },
             {
-              "id": "loot-ultimatum-quest-item",
-              "text": "Loot Ultimatum Quest Item"
+              "id": "s1",
+              "text": "Fate of the Vaal: Vaal Beacon 4/6.",
+              "optional": true
             },
             {
-              "id": "go-to-jiquani-machinarium",
-              "text": "Go to Jiquani's Machinarium"
-            }
-          ]
-        },
-        {
-          "id": "G3_6_1",
-          "name": "Jiquani's Machinarium",
-          "note": "Need 2 Small Soul Cores",
-          "objectives": [
+              "id": "s2",
+              "text": "Ravaged Camp → Lost Temple Logbook + gold chest.",
+              "optional": true,
+              "note": "Guaranteed Rare Armour."
+            },
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
+              "id": "s3",
+              "text": "Toxic Bloom / Noxious Behemoth.",
+              "optional": true,
+              "note": "Magic Amulet."
+            },
+            {
+              "id": "s4",
+              "text": "League mechanic.",
+              "optional": true,
+              "note": "Skill Gem Lv9.",
               "rewards": [
                 {
-                  "text": "Artificer's Orb",
+                  "text": "Skill Gem Lv9",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "kill-blackjaw",
-              "text": "Kill Blackjaw",
-              "optional": true,
+              "id": "s5",
+              "text": "Enter Temple of Chaos → take WP → return.",
+              "waypoint": true,
+              "note": "Open the Second Ascendancy.",
+              "rewards": [
+                {
+                  "text": "Ascendancy",
+                  "type": "ascendancy"
+                }
+              ]
+            },
+            {
+              "id": "s6",
+              "text": "Defeat Xyclucian, the Chimera → take Inscribed Ultimatum.",
+              "boss": true,
+              "rewards": [
+                {
+                  "text": "Inscribed Ultimatum of Chimeral (Ascendancy quest)",
+                  "type": "ascendancy"
+                }
+              ]
+            },
+            {
+              "id": "s7",
+              "text": "Enter Jiquani's Machinarium behind the boss."
+            }
+          ]
+        },
+        {
+          "id": "act3_z7",
+          "name": "Trial of Chaos",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Use Inscribed Ultimatum at the Trial door."
+            },
+            {
+              "id": "s1",
+              "text": "Choose convenient mods; avoid lightning runes if Lightning Res is low.",
+              "optional": true
+            },
+            {
+              "id": "s2",
+              "text": "Soul Core skip: the dodge roll between the slam and twist of the animation places the core to duplicate the core into the socket.",
+              "optional": true
+            },
+            {
+              "id": "s3",
+              "text": "Complete Trial.",
+              "note": "Second Ascendancy.",
+              "rewards": [
+                {
+                  "text": "Ascendancy",
+                  "type": "ascendancy"
+                }
+              ]
+            },
+            {
+              "id": "s4",
+              "text": "SOUL CORE SKIP: dodge roll in time between slam and animation puts the core that can multiply the core into sockets.",
+              "kind": "note",
+              "noteStyle": "tip"
+            }
+          ]
+        },
+        {
+          "id": "act3_z8",
+          "name": "Jiquani's Machinarium",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "LAYOUT: this area is in square U shape, generators are located at opposite ends.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s1",
+              "text": "Square U-shaped layouts; generators at opposite ends."
+            },
+            {
+              "id": "s2",
+              "text": "Summon/speak to Alva."
+            },
+            {
+              "id": "s3",
+              "text": "Get Small Soul Core → to use on Stone Altar next to Alva."
+            },
+            {
+              "id": "s4",
+              "text": "Take the remaining Small Soul Cores (4 in total): 1 for Sanctum, 2 for Blackjaw/secret loot."
+            },
+            {
+              "id": "s5",
+              "text": "Open the Blackjaw door → to defeat Blackjaw, the Remnant → uses Flame Core.",
+              "boss": true,
+              "note": "+10% Fire Resistance.",
               "rewards": [
                 {
                   "text": "+10% Fire Resistance",
@@ -1228,1369 +1914,1411 @@
               ]
             },
             {
-              "id": "unlock-areas-with-soul-cores",
-              "text": "Unlock areas using Soul Cores"
-            },
-            {
-              "id": "go-to-jiquani-sanctum",
-              "text": "Go to Jiquani's Sanctum"
+              "id": "s6",
+              "text": "Open another door → into Jiquani's Sanctum."
             }
           ]
         },
         {
-          "id": "G3_6_2",
+          "id": "act3_z9",
           "name": "Jiquani's Sanctum",
           "objectives": [
             {
-              "id": "activate-generators",
-              "text": "Activate 2 Generators using Medium Soul Cores"
+              "id": "s0",
+              "text": "Summon/speak to Alva."
             },
             {
-              "id": "kill-zicoatl",
-              "text": "Kill Zicoatl"
+              "id": "s1",
+              "text": "Take 2 Medium Soul Cores, place enter Generators."
             },
             {
-              "id": "loot-large-soul-core",
-              "text": "Loot Large Soul Core"
+              "id": "s2",
+              "text": "Back to the top of the zone, → click Large Soul Core → to beat Zicoatl, Warden of the Core → to get the core.",
+              "boss": true
             },
             {
-              "id": "return-to-jungle-ruins",
-              "text": "Return to Jungle Ruins"
+              "id": "s3",
+              "text": "FATE OF THE vaal: Vaal Beacon 5/6 is located in the Sanctum.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
+            {
+              "id": "s4",
+              "text": "Paquate's Mechanism is a corruption altar in Sanctum, using Vaal Orb style to corrupt items while clear.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
+            {
+              "id": "s5",
+              "text": "Fate of the Vaal: Vaal Beacon 5/6.",
+              "optional": true
+            },
+            {
+              "id": "s6",
+              "text": "Paquate's Mechanism: altar corruption Vaal Orb style.",
+              "optional": true
+            },
+            {
+              "id": "s7",
+              "text": "Teleport to Jungle Ruins."
             }
           ]
         },
         {
-          "id": "G3_2_2",
+          "id": "act3_z10",
+          "name": "Jungle Ruins (Return)",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "PATCH 0.5 ROUTING: after Sanctum returns to Jungle Ruins, use Large Soul Core on Stone Altar to reveal Matlan Waterways entrance.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s1",
+              "text": "Use Large Soul Core on Stone Altar to make Matlan Waterways entrance appear."
+            },
+            {
+              "id": "s2",
+              "text": "Enter The Matlan Waterways."
+            }
+          ]
+        },
+        {
+          "id": "act3_z11",
           "name": "The Matlan Waterways",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Spirit Gem (10)",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "find-narags-hut",
-              "text": "Find Narag's Hut (Rare Weapon)",
+              "id": "s0",
+              "text": "Narag's Hut → defeat Narag of the Vile Word.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "Rare Weapon",
-                  "type": "item"
-                }
-              ]
+              "boss": true,
+              "note": "Rare Weapon + Blacksmith's Whetstone."
             },
             {
-              "id": "drain-water-filled-sections",
-              "text": "Drain water-filled sections"
+              "id": "s1",
+              "text": "Passes through pressure pads (6–8 per layout), activates on touch."
             },
             {
-              "id": "clear-azak-bog",
-              "text": "Clear The Azak Bog (XP / Gear)",
+              "id": "s2",
+              "text": "PATCH 0.5 QoL: lever has become a pressure pad to activate; the last canal is drained, no need for old portal-skip.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s3",
+              "text": "FATE OF THE VAAL: 6/6 Beacon is here. Activation unlocks the Vaal Ruins portal; so enter early because the entrance may disappear.",
+              "kind": "note",
+              "noteStyle": "warning"
+            },
+            {
+              "id": "s4",
+              "text": "Go to the end of the zone; the last canal has been drained already in 0.5."
+            },
+            {
+              "id": "s5",
+              "text": "Fate of the Vaal: Vaal Beacon 6/6; completed unlocks a portal to Vaal Ruins.",
+              "optional": true
+            },
+            {
+              "id": "s6",
+              "text": "Ravaged Corpse at Azak Bog path to → summon Servi.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "+30 Spirit",
-                  "type": "permanent"
-                },
-                {
-                  "text": "Spirit Gem (10)",
-                  "type": "item"
-                }
-              ]
+              "note": "Unidentified Rare Belt."
             },
             {
-              "id": "return-to-ziggurat-encampment",
-              "text": "Return to Ziggurat Encampment"
+              "id": "s7",
+              "text": "Servi only appears at the entrance; inside Azak Bog is Farrow holding Runestone.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s8",
+              "text": "Go side entrance to Azak Bog."
             }
           ]
         },
         {
-          "id": "G3_7",
-          "name": "The Azak Bog",
-          "note": "Good area to farm XP / Gear",
+          "id": "act3_z12",
+          "name": "Azak Bog",
           "objectives": [
             {
-              "id": "kill-ignagduk",
-              "text": "Kill Ignagduk",
+              "id": "s0",
+              "text": "PATCH 0.5 ROUTING: Azak Bog is the side zone from Matlan Waterways, no longer traveling from Drowned City. This is the 3rd Runestone of Act 3.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s1",
+              "text": "After having enough 3 Runestone, spin Infested Barrens → Mystic Refuge → clear → say Farrow to open Unique Verisium Runeforging.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s2",
+              "text": "Speak to Farrow at the beginning of the zone."
+            },
+            {
+              "id": "s3",
+              "text": "Flameskin rituals / Ignagduk's Harvest.",
               "optional": true,
+              "note": "Fire Res + Rarity.",
+              "rewards": [
+                {
+                  "text": "Spirit +30/Lv.10 Spirit Gem",
+                  "type": "permanent"
+                }
+              ]
+            },
+            {
+              "id": "s4",
+              "text": "Boss arena is always in the upper-right corner; the direction of rotation depends on the entrance. Can reset and farm magic packs around fire shrine to get XP.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s5",
+              "text": "Defeat Ignagduk, the Bog Witch → use Gemrot Skull.",
+              "boss": true,
+              "note": "+30 Spirit + Uncut Spirit Gem Lv10.",
               "rewards": [
                 {
                   "text": "+30 Spirit",
                   "type": "permanent"
-                },
-                {
-                  "text": "Spirit Gem (10)",
-                  "type": "item"
                 }
               ]
+            },
+            {
+              "id": "s6",
+              "text": "Activate Azak Bog Runestone — Runestone 3/3.",
+              "optional": true
+            },
+            {
+              "id": "s7",
+              "text": "All 3 Runestones: go back to Infested Barrens → Mystic Refuge → clear → say Farrow to open Unique Verisium Runeforging."
+            },
+            {
+              "id": "s8",
+              "text": "Turn in Ignagduk's Ghastly Spear for Servi in town.",
+              "note": "Charm choose 1 of 3.",
+              "rewards": [
+                {
+                  "text": "Spirit +30/Lv.10 Spirit Gem",
+                  "type": "permanent"
+                }
+              ]
+            },
+            {
+              "id": "s9",
+              "text": "Teleport to town."
             }
           ]
         },
         {
-          "id": "G3_8",
+          "id": "act3_z13",
           "name": "The Drowned City",
           "objectives": [
             {
-              "id": "clear-for-mektul",
-              "text": "Clear The Molten Vault",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Skill Gem (10)",
-                  "type": "item"
-                },
-                {
-                  "text": "Unlocks Reforging Bench",
-                  "type": "unlocks"
-                }
-              ]
+              "id": "s0",
+              "text": "Fixed LAYOUT and Utzaal reflection; the chokepoint behind the bridge with checkpoint is where Viper will ambush in Utzaal.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "go-to-apex-of-filth",
-              "text": "Go to Apex of Filth"
+              "id": "s1",
+              "text": "Downstairs say Alva → into The Drowned City."
+            },
+            {
+              "id": "s2",
+              "text": "Find Apex of Filth → take WP → return.",
+              "waypoint": true
+            },
+            {
+              "id": "s3",
+              "text": "Find The Molten Vault → take WP → return.",
+              "waypoint": true
+            },
+            {
+              "id": "s4",
+              "text": "Drowned Quarters.",
+              "optional": true,
+              "note": "Rare monsters, gold, chests, Rune drops."
+            },
+            {
+              "id": "s5",
+              "text": "After the bridge/checkpoint there is an ambush Crawler swarm. Teal Drowning Orbs reduce visibility and are dangerous for prolonged standing — keep moving.",
+              "kind": "note",
+              "noteStyle": "warning"
+            },
+            {
+              "id": "s6",
+              "text": "Teleport to The Molten Vault."
             }
           ]
         },
         {
-          "id": "G3_9",
+          "id": "act3_z14",
           "name": "The Molten Vault",
-          "note": "Mektul has a 4 min timer",
           "objectives": [
             {
-              "id": "kill-mektul",
-              "text": "Kill Mektul",
+              "id": "s0",
+              "text": "(First character) Defeat Mektul, the Forgemaster.",
               "optional": true,
+              "boss": true,
+              "note": "Reforging Bench + Uncut Skill Gem Lv10 + Artificer's Orb.",
               "rewards": [
                 {
-                  "text": "Skill Gem (10)",
+                  "text": "Uncut Skill Gem Lv10 + Artificer's Orb",
                   "type": "item"
-                },
-                {
-                  "text": "Unlocks Reforging Bench",
-                  "type": "unlocks"
                 }
               ]
             },
             {
-              "id": "return-to-drowned-city",
-              "text": "Return to The Drowned City"
+              "id": "s1",
+              "text": "Pay Hammer of Kamasa to Oswald to open Reforging Bench; alt character can be dropped.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
+            {
+              "id": "s2",
+              "text": "Mektul has about 4 minutes before the molten flood overflows; it should be slightly overleveled and have Fire Resistance.",
+              "kind": "note",
+              "noteStyle": "warning"
+            },
+            {
+              "id": "s3",
+              "text": "Bring Hammer of Kamasa to Oswald to open Reforging Bench."
+            },
+            {
+              "id": "s4",
+              "text": "Frost Cores → Stone Altars to clear Molten Flow blockages → Gold Chests.",
+              "optional": true
+            },
+            {
+              "id": "s5",
+              "text": "Teleport to town."
             }
           ]
         },
         {
-          "id": "G3_11",
+          "id": "act3_z15",
           "name": "Apex of Filth",
           "objectives": [
             {
-              "id": "clear-for-mushrooms",
-              "text": "Clear until Red, Green & Blue Mushrooms drop → Place in Cauldron",
+              "id": "s0",
+              "text": "Find 3 Mushrooms → use Cauldron.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "Life Flask",
-                  "type": "item"
-                },
-                {
-                  "text": "Mana Flask",
-                  "type": "item"
-                }
-              ]
+              "note": "Quality Life/Mana Flasks."
             },
             {
-              "id": "kill-queen-of-filth",
-              "text": "Kill Queen of Filth"
+              "id": "s1",
+              "text": "After bottleneck/checkpoint, check the rear corners. Cauldron Keeper is also a hidden vendor selling caster gear + jewellery.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "return-to-ziggurat-encampment",
-              "text": "Loot Temple Door Idol → Return to Ziggurat Encampment"
+              "id": "s2",
+              "text": "Defeat Queen of Filth → take Temple Door Idol.",
+              "boss": true
+            },
+            {
+              "id": "s3",
+              "text": "Stand close to the Queen of Filth; going too far can trigger a strong rolling slam.",
+              "kind": "note",
+              "noteStyle": "warning"
+            },
+            {
+              "id": "s4",
+              "text": "Teleport to town."
             }
           ]
         },
         {
-          "id": "G3_12",
+          "id": "act3_z16",
           "name": "Temple of Kopec",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Spirit Gem (11)",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "LAYOUT: each floor is a triangle; the far corner has about a 50% chance of being the correct line — it should be checked first.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "search-for-stairs",
-              "text": "Search corners for stairs → Ascend to top floor"
+              "id": "s1",
+              "text": "Downstairs say Alva → through the back door into the Temple of Kopec."
             },
             {
-              "id": "kill-ketzuli",
-              "text": "Kill Ketzuli"
+              "id": "s2",
+              "text": "Each triangular floor; check the distal corner first priority.",
+              "optional": true
             },
             {
-              "id": "return-to-ziggurat-encampment",
-              "text": "Speak to Alva → Return to Ziggurat Encampment"
+              "id": "s3",
+              "text": "Lower Ketzuli, High Priest of the Sun upstairs.",
+              "boss": true
+            },
+            {
+              "id": "s4",
+              "text": "Indoors, sunlight causes burning debuffs in stacks; move between shaded areas when clear pack.",
+              "kind": "note",
+              "noteStyle": "warning"
+            },
+            {
+              "id": "s5",
+              "text": "Say Alva, wait for lore."
             }
           ]
         },
         {
-          "id": "G3_14",
+          "id": "act3_z17",
           "name": "Utzaal",
           "objectives": [
             {
-              "id": "search-peculiar-fortunes",
-              "text": "Search for Peculiar Fortunes",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Gold",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "LAYOUT is like Drowned City. Follow the paved road to Viper.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "find-chaos-statue",
-              "text": "Find the Chaos Statue",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Inscribed Ultimatum",
-                  "type": "ascendancy"
-                }
-              ]
+              "id": "s1",
+              "text": "Viper is very mobile with high dodge — bait the first attack cycle from a stable position so you can read the direction.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "find-sacrificial-heart",
-              "text": "Find Sacrificial Heart",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "2 Passives",
-                  "type": "points"
-                }
-              ]
+              "id": "s2",
+              "text": "Use the Gateway → go below into Utzaal."
             },
             {
-              "id": "kill-viper-napuatzi",
-              "text": "Kill Viper Napuatzi"
+              "id": "s3",
+              "text": "Follow the paved road to reach Viper."
             },
             {
-              "id": "go-to-aggorat",
-              "text": "Go to Aggorat"
+              "id": "s4",
+              "text": "Farm Sacrificial Heart from Vaal Goliaths.",
+              "optional": true
+            },
+            {
+              "id": "s5",
+              "text": "Sacrificial Heart only drops from Vaal Goliaths with a canister on their shoulder; it can also drop in Aggorat.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
+            {
+              "id": "s6",
+              "text": "Side doors — take idols to sell to Oswald.",
+              "optional": true
+            },
+            {
+              "id": "s7",
+              "text": "Chaos Statue for Inscribed Ultimatum.",
+              "optional": true
+            },
+            {
+              "id": "s8",
+              "text": "Defeat Viper Napuatzi.",
+              "boss": true
+            },
+            {
+              "id": "s9",
+              "text": "Enter Aggorat."
             }
           ]
         },
         {
-          "id": "G3_16",
+          "id": "act3_z18",
           "name": "Aggorat",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Skill Gem (11)",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "NAVIGATION: the town crier chanting marks the correct direction; the pyramid edge leads to the boss area.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "search-peculiar-fortunes",
-              "text": "Search for Peculiar Fortunes",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Gold",
-                  "type": "item"
-                }
-              ]
+              "id": "s1",
+              "text": "Listen to the town crier for direction; the pyramid rim leads to the boss."
             },
             {
-              "id": "place-sacrificial-heart",
-              "text": "Find altar → Place Sacrificial Heart (Utzaal required)",
-              "optional": true,
+              "id": "s2",
+              "text": "Find the Sacrificial Altar in the upper-right of the map."
+            },
+            {
+              "id": "s3",
+              "text": "Place the Sacrificial Heart → stab it with the Dagger.",
+              "note": "+2 Weapon Set Skill Points.",
               "rewards": [
                 {
-                  "text": "2 Passives",
+                  "text": "Skill Points",
                   "type": "points"
                 }
               ]
             },
             {
-              "id": "go-to-black-chambers",
-              "text": "Go to The Black Chambers"
+              "id": "s4",
+              "text": "League mech / Crag Tooth.",
+              "optional": true,
+              "note": "Vaal Orb."
+            },
+            {
+              "id": "s5",
+              "text": "Enter The Black Chambers in the upper left."
             }
           ]
         },
         {
-          "id": "G3_17",
+          "id": "act3_z19",
           "name": "The Black Chambers",
           "objectives": [
             {
-              "id": "fight-doryani",
-              "text": "Fight Doryani"
+              "id": "s0",
+              "text": "Defeat Doryani, Royal Thaumaturge — Act finale boss 3.",
+              "boss": true
             },
             {
-              "id": "return-to-ziggurat-encampment",
-              "text": "Return to Ziggurat Encampment → Speak to Doryani"
+              "id": "s1",
+              "text": "Boss has 3 phases: caster → Doryani's Triumph under 50% → airborne. Prep defensive buffs before the mechanic phase.",
+              "kind": "note",
+              "noteStyle": "warning"
+            },
+            {
+              "id": "s2",
+              "text": "Wait about 30 seconds for loot."
+            },
+            {
+              "id": "s3",
+              "text": "Teleport to town."
             }
           ]
+        },
+        {
+          "id": "act3_z20",
+          "name": "Ziggurat Encampment (End of Act)",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Speak to Doryani."
+            },
+            {
+              "id": "s1",
+              "text": "Speak to Doryani again → Alva → Hooded One → Alva."
+            },
+            {
+              "id": "s2",
+              "text": "Complete Act 3 → go to Act 4 (Kingsmarch)."
+            }
+          ],
+          "type": "town"
         }
-      ]
+      ],
+      "subtitle": "Overview map may still show the old layout — will be updated when available."
     },
     {
       "id": "act4",
       "num": 4,
-      "title": "Act IV — Kingsmarch",
+      "title": "Act 4 — Wraeclast Awakens",
       "areas": [
         {
-          "id": "G4_town",
+          "id": "act4_z0",
           "name": "Kingsmarch",
-          "type": "town",
-          "note": "Route overview",
           "objectives": [
             {
-              "id": "isle-of-kin-route",
-              "text": "Isle of Kin → Volcanic Warrens"
+              "id": "s0",
+              "text": "Speak to Doryani."
             },
             {
-              "id": "kedge-bay-route",
-              "text": "Kedge Bay → Journey's End"
+              "id": "s1",
+              "text": "Continue into town and speak to Alva (with Rog)."
             },
             {
-              "id": "abandoned-prison-route",
-              "text": "Abandoned Prison → Solitary Confinement"
+              "id": "s2",
+              "text": "Speak to Tujen → receive quest."
             },
             {
-              "id": "whakapanu-island-route",
-              "text": "Whakapanu Island → Singing Caverns"
+              "id": "s3",
+              "text": "PATCH 0.5: Rog has no quest role in this patch; boat/island selection is handled by Makoru.",
+              "kind": "note",
+              "noteStyle": "system"
             },
             {
-              "id": "shrike-island-route",
-              "text": "Shrike Island → Eye of Hinekora → Trial of the Ancestors"
+              "id": "s4",
+              "text": "Speak to Farrow → receive Quest 4.",
+              "note": "Start the 13 Ancient Runes chain via Remnants."
             },
             {
-              "id": "arastas-route",
-              "text": "Arastas → The Excavation → Ngakanu → Interlude"
+              "id": "s5",
+              "text": "Act 4 Farrow starts the 13 Ancient Runes chain via Remnants. The quest only finishes later at Plunder's Point / Deserted Post.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s6",
+              "text": "RUNEFORGING: Act 4 has no Runestone — collect all 4 Torn Map Pieces instead. This is the Ancient Runes tier after Act 1 Armour → Act 2 Runic Inscriptions → Act 3 Unique Runeforging.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s7",
+              "text": "Speak to Makoru on the ship and choose a destination."
             }
-          ]
+          ],
+          "type": "town"
         },
         {
-          "id": "G4_1_1",
-          "name": "Isle of Kin",
-          "objectives": [
-            {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Gemcutter's",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "kill-blind-beast",
-              "text": "Kill Blind Beast",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Greater Rune",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "kill-rare-beast",
-              "text": "Find Beast Pen → Kill Rare Beast",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Support Gem (4)",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "search-fossilized-formation",
-              "text": "Search for Fossilized Formation",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Lesser Jeweller's",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "search-shore-for-sailor-body",
-              "text": "Search shore for Sailor's Body",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Torn Map Piece (1/4)",
-                  "type": "unlocks"
-                }
-              ]
-            },
-            {
-              "id": "go-to-volcanic-warrens",
-              "text": "Go to Volcanic Warrens"
-            }
-          ]
-        },
-        {
-          "id": "G4_1_2",
-          "name": "Volcanic Warrens",
-          "objectives": [
-            {
-              "id": "kill-golems",
-              "text": "Find Volcanic Nest → Kill 2 Golems",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Magic Ring",
-                  "type": "item"
-                },
-                {
-                  "text": "Rare Ring",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "kill-krutog",
-              "text": "Kill Krutog"
-            },
-            {
-              "id": "return-to-ship",
-              "text": "Return to ship → Sail to Kedge Bay"
-            }
-          ]
-        },
-        {
-          "id": "G4_2_1",
-          "name": "Kedge Bay",
-          "objectives": [
-            {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Support Gem (4)",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "search-abandoned-ship",
-              "text": "Search for Abandoned Ship",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Lesser Jeweller's",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "search-dead-mans-chest",
-              "text": "Search for Dead Man's Chest",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Torn Map Piece (2/4)",
-                  "type": "unlocks"
-                }
-              ]
-            },
-            {
-              "id": "go-to-journeys-end",
-              "text": "Go to Journey's End"
-            }
-          ]
-        },
-        {
-          "id": "G4_2_2",
-          "name": "Journey's End",
-          "objectives": [
-            {
-              "id": "kill-captain-hartlin",
-              "text": "Kill Captain Hartlin"
-            },
-            {
-              "id": "loot-versium",
-              "text": "Loot Versium → Speak to Dannig in Kingsmarch"
-            },
-            {
-              "id": "free-freya",
-              "text": "Free Freya"
-            },
-            {
-              "id": "kill-omniphobia",
-              "text": "Kill Omniphobia",
-              "rewards": [
-                {
-                  "text": "Skill Gem (13)",
-                  "type": "item"
-                },
-                {
-                  "text": "2 Passives",
-                  "type": "points"
-                }
-              ]
-            },
-            {
-              "id": "return-to-ship",
-              "text": "Return to ship → Sail to Abandoned Prison"
-            }
-          ]
-        },
-        {
-          "id": "G4_5_1",
-          "name": "Abandoned Prison",
-          "objectives": [
-            {
-              "id": "clear-for-chapel-key",
-              "text": "Clear until Chapel Key drops → Enter Chapel",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "30% Life Recovery Flasks",
-                  "type": "permanent"
-                },
-                {
-                  "text": "30% Mana Recovery from Flasks",
-                  "type": "permanent"
-                }
-              ]
-            },
-            {
-              "id": "search-for-armoury",
-              "text": "Search for Armoury",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Rare Items",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "go-to-solitary-confinement",
-              "text": "Go to Solitary Confinement"
-            }
-          ]
-        },
-        {
-          "id": "G4_5_2",
-          "name": "Solitary Confinement",
-          "objectives": [
-            {
-              "id": "kill-prisoner",
-              "text": "Kill Prisoner"
-            },
-            {
-              "id": "speak-to-hooded-one",
-              "text": "Speak to Hooded One"
-            },
-            {
-              "id": "return-to-ship",
-              "text": "Return to ship → Sail to Whakapanu Island"
-            }
-          ]
-        },
-        {
-          "id": "G4_3_1",
+          "id": "act4_z1",
           "name": "Whakapanu Island",
           "objectives": [
             {
-              "id": "search-for-crabshell-cavern",
-              "text": "Search for Crabshell Cavern → Kill Rare Crab",
+              "id": "s0",
+              "text": "Petrified Pirate on the shoreline.",
               "optional": true,
+              "note": "Torn Map Piece (1/4)."
+            },
+            {
+              "id": "s1",
+              "text": "Shark Pit → Great White One.",
+              "optional": true,
+              "boss": true,
+              "note": "Shark Fin — turn in to Kaimana to finish Tribal Medicine; receive a choice Uncut Gem Lv11 + permanent Tukuama blessing."
+            },
+            {
+              "id": "s2",
+              "text": "Turn in Shark Fin to Kaimana to finish Tribal Medicine; receive a choice Uncut Gem Lv11 (Skill/Spirit/Support) + permanent Tukuama blessing.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
+            {
+              "id": "s3",
+              "text": "Crabshell Cavern → Clawcrunch.",
+              "optional": true,
+              "boss": true,
+              "note": "Support Gem 4.",
               "rewards": [
                 {
-                  "text": "Support Gem (4)",
+                  "text": "Support Gem 4",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "search-for-petrified-pirate",
-              "text": "Search for Petrified Pirate",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Torn Map Piece (3/4)",
-                  "type": "unlocks"
-                }
-              ]
-            },
-            {
-              "id": "kill-great-white-one",
-              "text": "Kill Great White One (choose defensive stat)",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Choose one:",
-                  "type": "permanent"
-                },
-                {
-                  "text": "30% Armour, Evasion and ES",
-                  "type": "permanent"
-                },
-                {
-                  "text": "15% Armour vs Ele., Deflec., Faster ES",
-                  "type": "permanent"
-                }
-              ]
-            },
-            {
-              "id": "go-to-singing-caverns",
-              "text": "Go to Singing Caverns"
+              "id": "s4",
+              "text": "Enter Singing Caverns."
             }
           ]
         },
         {
-          "id": "G4_3_2",
+          "id": "act4_z2",
           "name": "Singing Caverns",
           "objectives": [
             {
-              "id": "search-for-beckoning-clam",
-              "text": "Search for Beckoning Clam (Rare Pearlescent Amulet)",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Rare Pearlescent Amulet",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "Beckoning Clam → Humming Pearl, giao Rog.",
+              "optional": true
             },
             {
-              "id": "kill-diamora",
-              "text": "Kill Diamora"
+              "id": "s1",
+              "text": "Defeat Diamora, Song of Death.",
+              "boss": true
             },
             {
-              "id": "speak-to-hooded-one",
-              "text": "Speak to Hooded One"
-            },
-            {
-              "id": "return-to-ship",
-              "text": "Return to ship → Sail to Shrike Island"
+              "id": "s2",
+              "text": "Speak to the Hooded One → Waypoint back to town."
             }
           ]
         },
         {
-          "id": "G4_7",
+          "id": "act4_z3",
+          "name": "Kingsmarch — Hideout",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Speak to Ange → Shoreline Hideout."
+            },
+            {
+              "id": "s1",
+              "text": "Clear hideout, speak to Ange.",
+              "note": "Open Hideout + Trading."
+            }
+          ],
+          "type": "town"
+        },
+        {
+          "id": "act4_z4",
           "name": "Shrike Island",
           "objectives": [
             {
-              "id": "search-for-corpse-nest",
-              "text": "Search for Corpse Nest",
+              "id": "s0",
+              "text": "Corpse Nest / Impaled Karui.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "Torn Map Piece (4/4)",
-                  "type": "unlocks"
-                }
-              ]
+              "note": "Torn Map Piece (1/4)."
             },
             {
-              "id": "kill-scourge",
-              "text": "Kill Scourge"
+              "id": "s1",
+              "text": "Defeat Scourge of the Skies.",
+              "boss": true
             },
             {
-              "id": "free-matiki",
-              "text": "Free Matiki → Return to Ship"
-            },
-            {
-              "id": "sail-to-eye-of-hinekora",
-              "text": "Speak to Matiki → Sail to Eye of Hinekora"
+              "id": "s2",
+              "text": "Speak to the Hooded One → Waypoint → go to the next island."
             }
           ]
         },
         {
-          "id": "G4_4_1",
+          "id": "act4_z5",
+          "name": "Abandoned Prison",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Kill mobs until Chapel Key drops."
+            },
+            {
+              "id": "s1",
+              "text": "Armoury + Forgotten Cells.",
+              "optional": true,
+              "note": "Jewel + Blackstone / loot."
+            },
+            {
+              "id": "s2",
+              "text": "Open Chapel → defeat Forael → use Goddess of Justice.",
+              "boss": true,
+              "note": "Flask choice."
+            },
+            {
+              "id": "s3",
+              "text": "Enter Solitary Confinement."
+            }
+          ]
+        },
+        {
+          "id": "act4_z6",
+          "name": "Solitary Confinement",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Defeat The Prisoner.",
+              "boss": true
+            },
+            {
+              "id": "s1",
+              "text": "Speak to the Hooded One → go to Isle of Kin."
+            }
+          ]
+        },
+        {
+          "id": "act4_z7",
+          "name": "Isle of Kin",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Flayed Sailor near the shore.",
+              "optional": true,
+              "note": "Torn Map Piece (1/4)."
+            },
+            {
+              "id": "s1",
+              "text": "Doomed Mine / Fossilised Formation.",
+              "optional": true,
+              "note": "Lesser Jeweller's Orb."
+            },
+            {
+              "id": "s2",
+              "text": "Beast Pen.",
+              "optional": true,
+              "note": "Skill + Support Gem.",
+              "rewards": [
+                {
+                  "text": "Support Gem",
+                  "type": "item"
+                }
+              ]
+            },
+            {
+              "id": "s3",
+              "text": "Defeat Mimok the Enslaved in Beast Pen.",
+              "boss": true,
+              "note": "Guaranteed Tier 4 Support Gem.",
+              "rewards": [
+                {
+                  "text": "Support Gem",
+                  "type": "item"
+                }
+              ]
+            },
+            {
+              "id": "s4",
+              "text": "Primal Arena → Blind Beast.",
+              "optional": true,
+              "boss": true,
+              "note": "Greater Blank Rune."
+            },
+            {
+              "id": "s5",
+              "text": "Enter Volcanic Warrens."
+            }
+          ]
+        },
+        {
+          "id": "act4_z8",
+          "name": "Volcanic Warrens",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Volcanic Nest → Magma Twins; kill order decides the ring.",
+              "optional": true,
+              "boss": true,
+              "note": "Lightning dies first → Ruby Ring; Fire dies first → Topaz Ring."
+            },
+            {
+              "id": "s1",
+              "text": "Defeat Krutog, Lord of Kin at The Tyrant Throne.",
+              "boss": true
+            },
+            {
+              "id": "s2",
+              "text": "Waypoint back to Kingsmarch."
+            }
+          ]
+        },
+        {
+          "id": "act4_z9",
           "name": "Eye of Hinekora",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Chaos",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "Speak to Matiki at the well, then click the well."
             },
             {
-              "id": "speak-to-matiki-and-navali",
-              "text": "Speak to Matiki and Navali"
-            },
-            {
-              "id": "pass-tests",
-              "text": "Pass Kaom's, Maata's and Rakiata's Test"
-            },
-            {
-              "id": "pay-respects-at-silent-halls",
-              "text": "Search for Silent Halls → Pay your respects",
+              "id": "s1",
+              "text": "Chest behind the waterfall.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "+5% to Maximum Mana",
-                  "type": "permanent"
-                }
-              ]
+              "note": "Spirit Gem Lv12."
             },
             {
-              "id": "go-to-halls-of-the-dead",
-              "text": "Go to Halls of the Dead"
+              "id": "s2",
+              "text": "Complete 3 Tests: Fire, Nature, Cold."
+            },
+            {
+              "id": "s3",
+              "text": "Silent Hall altar → Pay Respects → speak to Navali.",
+              "note": "+5% Maximum Mana."
+            },
+            {
+              "id": "s4",
+              "text": "Enter Halls of the Dead."
+            },
+            {
+              "id": "s5",
+              "text": "Hidden chest behind the waterfall gives Spirit Gem Lv12.",
+              "kind": "note",
+              "noteStyle": "tip"
             }
           ]
         },
         {
-          "id": "G4_4_2",
+          "id": "act4_z10",
           "name": "Halls of the Dead",
           "objectives": [
             {
-              "id": "pass-tests",
-              "text": "Pass Tawhoa's, Tasalio's and Ngamahu's Test",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Blank Tattoo (\\xd73)",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "TATTOO: most builds should take +5% Fire/Cold/Lightning Resistance; only take +5 Str/Dex/Int if you need a stat threshold.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "kill-yama",
-              "text": "Kill Yama",
-              "rewards": [
-                {
-                  "text": "2 Passives",
-                  "type": "points"
-                }
-              ]
+              "id": "s1",
+              "text": "Trial of Ngakanu: complete the 3 clover-leaf tests and take the Tattoo.",
+              "note": "Choose +5% Fire/Cold/Lightning Resistance (recommended) or +5 Str/Dex/Int."
             },
             {
-              "id": "loot-silver-coin",
-              "text": "Loot Silver Coin"
+              "id": "s2",
+              "text": "Defeat Yama the White.",
+              "boss": true
             },
             {
-              "id": "go-to-trial-of-the-ancestors",
-              "text": "Go to Trial of the Ancestors"
+              "id": "s3",
+              "text": "Enter Trial of Ancestors."
             }
           ]
         },
         {
-          "id": "G4_4_3",
+          "id": "act4_z11",
           "name": "Trial of the Ancestors",
           "objectives": [
             {
-              "id": "speak-to-navali",
-              "text": "Speak to Navali",
+              "id": "s0",
+              "text": "Speak to Navali & Hinekora.",
+              "note": "+2 Skill Points.",
               "rewards": [
                 {
-                  "text": "2 Passives",
+                  "text": "Skill Points",
                   "type": "points"
                 }
               ]
             },
             {
-              "id": "return-to-ship",
-              "text": "Return to ship → Sail to Arastas"
+              "id": "s1",
+              "text": "Waypoint → go to Kedge Bay."
             }
           ]
         },
         {
-          "id": "G4_8b",
+          "id": "act4_z12",
+          "name": "Kedge Bay",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Dead Man's Chest / Smuggler's Stash.",
+              "optional": true,
+              "note": "Torn Map Piece (1/4)."
+            },
+            {
+              "id": "s1",
+              "text": "Abandoned Ship.",
+              "optional": true,
+              "note": "Loot."
+            },
+            {
+              "id": "s2",
+              "text": "Tidal Cay with Tombgrowl.",
+              "optional": true,
+              "note": "Loot."
+            },
+            {
+              "id": "s3",
+              "text": "Doran, the Deft near entrance.",
+              "optional": true,
+              "boss": true,
+              "note": "Loot."
+            },
+            {
+              "id": "s4",
+              "text": "Enter Journey's End."
+            }
+          ]
+        },
+        {
+          "id": "act4_z13",
+          "name": "Journey's End",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "Speak to Tujen."
+            },
+            {
+              "id": "s1",
+              "text": "Defeat Captain Harlin → take Verisium.",
+              "boss": true
+            },
+            {
+              "id": "s2",
+              "text": "Speak to Freya Hartlin."
+            },
+            {
+              "id": "s3",
+              "text": "Return to town → Dannig → take Verisium Spikes."
+            },
+            {
+              "id": "s4",
+              "text": "Return Journey's End → Freya."
+            },
+            {
+              "id": "s5",
+              "text": "Totem → defeat Omniphobia.",
+              "boss": true
+            },
+            {
+              "id": "s6",
+              "text": "Omniphobia is the +2 Skill Points source; Blind Beast on Isle of Kin now only drops a Greater Blank Rune.",
+              "kind": "note",
+              "noteStyle": "info",
+              "rewards": [
+                {
+                  "text": "Skill Points",
+                  "type": "points"
+                }
+              ]
+            },
+            {
+              "id": "s7",
+              "text": "Speak to Tujen in town.",
+              "note": "+2 Skill Points.",
+              "rewards": [
+                {
+                  "text": "Skill Points",
+                  "type": "points"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "act4_z14",
+          "name": "Plunder's Point",
+          "objectives": [
+            {
+              "id": "s0",
+              "text": "GATING: Plunder's Point only opens after turning in all 4 Torn Map Pieces in Kingsmarch.",
+              "kind": "note",
+              "noteStyle": "warning"
+            },
+            {
+              "id": "s1",
+              "text": "DO NOT SKIP: this is the Runekeeper branch that opens Deserted Post → summon Farrow → Runesmithing of Knowledge → unlock 13 Ancient Runes.",
+              "kind": "note",
+              "noteStyle": "warning"
+            },
+            {
+              "id": "s2",
+              "text": "Only accessible after turning in all 4 Torn Map Pieces in Kingsmarch."
+            },
+            {
+              "id": "s3",
+              "text": "This is the required Runekeeper branch to unlock 13 Ancient Runes — do not skip it."
+            },
+            {
+              "id": "s4",
+              "text": "Giao 4 maps for Makoru → sail → Dannig → Expedition → Deserted Post → summon Farrow.",
+              "note": "Open Runesmithing of Knowledge / 13 Ancient Runes."
+            }
+          ]
+        },
+        {
+          "id": "act4_z15",
           "name": "Arastas",
           "objectives": [
             {
-              "id": "speak-to-missionary-lorandis",
-              "text": "Speak to Missionary Lorandis"
+              "id": "s0",
+              "text": "Missionari Lorandis → follow him → break the shield."
             },
             {
-              "id": "search-for-morning-bell",
-              "text": "Search Town Square for Morning Bell",
+              "id": "s1",
+              "text": "Evening / Morning Bells.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "Regal (\\xd73)",
-                  "type": "item"
-                }
-              ]
+              "note": "Evening → 3 Exalted; Morning → 3 Regal."
             },
             {
-              "id": "search-for-evening-bell",
-              "text": "Search Cliffside for Evening Bell",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Exalted (\\xd73)",
-                  "type": "item"
-                }
-              ]
+              "id": "s2",
+              "text": "Defeat Torvian → enter Excavation.",
+              "boss": true
             },
             {
-              "id": "kill-torvian",
-              "text": "Kill Torvian"
+              "id": "s3",
+              "text": "BOSS TIP: bait Torvian into throwing rocks at the 2 priests above to break the setup and open the fight.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "go-to-the-excavation",
-              "text": "Go to The Excavation"
+              "id": "s4",
+              "text": "Tip: let Torvian throw rocks at the 2 priests above to open the fight.",
+              "optional": true
             }
           ]
         },
         {
-          "id": "G4_10",
+          "id": "act4_z16",
           "name": "The Excavation",
           "objectives": [
             {
-              "id": "kill-benedictus",
-              "text": "Kill Benedictus"
+              "id": "s0",
+              "text": "Defeat Benedictus at Precursor Forge → speak to the Hooded One.",
+              "boss": true
             },
             {
-              "id": "follow-tavakai-and-makoru",
-              "text": "Follow Tavakai and Makoru"
+              "id": "s1",
+              "text": "Excavated Cache at the checkpoint.",
+              "optional": true,
+              "note": "Loot."
             },
             {
-              "id": "speak-to-hooded-one",
-              "text": "Speak to Hooded One → Return to Kingsmarch"
+              "id": "s2",
+              "text": "Waypoint to Kingsmarch → go to Ngakanu."
             }
           ]
         },
         {
-          "id": "G4_11_1b",
+          "id": "act4_z17",
           "name": "Ngakanu",
           "objectives": [
             {
-              "id": "activate-waypoint",
-              "text": "Activate waypoint",
-              "rewards": [
-                {
-                  "text": "Greater Jeweller's",
-                  "type": "item"
-                }
-              ]
+              "id": "s0",
+              "text": "Abyss → Abyssal Depths.",
+              "optional": true,
+              "note": "Loot."
             },
             {
-              "id": "go-to-heart-of-the-tribe",
-              "text": "Go to Heart of the Tribe"
+              "id": "s1",
+              "text": "Mad Butcher in the large hut.",
+              "optional": true,
+              "boss": true,
+              "note": "Loot."
+            },
+            {
+              "id": "s2",
+              "text": "Enter Heart of the Tribe."
             }
           ]
         },
         {
-          "id": "G4_11_2",
+          "id": "act4_z18",
           "name": "Heart of the Tribe",
           "objectives": [
             {
-              "id": "search-for-meeting-house",
-              "text": "Search for Meeting House",
+              "id": "s0",
+              "text": "Meeting House with chests.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "Rare Items",
-                  "type": "item"
-                }
-              ]
+              "note": "Loot."
             },
             {
-              "id": "fight-tavakai",
-              "text": "Fight Tavakai"
+              "id": "s1",
+              "text": "Defeat Tavakai — Act 4 finale boss → speak to him.",
+              "boss": true
             },
             {
-              "id": "return-to-kingsmarch",
-              "text": "Speak to Tavakai → Return to Kingsmarch"
+              "id": "s2",
+              "text": "Return and speak to The Hooded One.",
+              "note": "Open Interludes."
             }
           ]
         }
-      ]
+      ],
+      "subtitle": "Clear lowest-level zones first. If underleveled, farm Act 3 to Lv 44+ before Act 4. Use your map — lowest level first; order below is a guide."
     },
     {
       "id": "interlude1",
       "num": 5,
-      "title": "Act V — The Ezomyte Homeland",
+      "title": "Interlude I — Ogham — The Refuge",
       "areas": [
         {
-          "id": "P1_Town",
-          "name": "The Refuge",
-          "type": "town",
+          "id": "interlude1_z0",
+          "name": "Interlude 5.1 — Ogham, The Refuge",
           "objectives": [
             {
-              "id": "p1-town-route",
-              "text": "Speak to NPCs → Go to Scorched Farmlands"
+              "id": "s0",
+              "text": "Interludes have permanent rewards that can be missed — finish all 3 before Maps.",
+              "kind": "note",
+              "noteStyle": "warning"
             },
             {
-              "id": "p1-town-route-2",
-              "text": "After Holten Estate: Speak to Hooded One → Travel to The Khari Bazaar"
-            }
-          ]
-        },
-        {
-          "id": "P1_1",
-          "name": "Scorched Farmlands",
-          "objectives": [
-            {
-              "id": "kill-isolde-heldra",
-              "text": "Kill Isolde + Heldra"
+              "id": "s1",
+              "text": "Resistances drop as soon as you enter an Interlude — only zone in when ready to run it.",
+              "kind": "note",
+              "noteStyle": "warning"
             },
             {
-              "id": "go-to-stones-of-serle",
-              "text": "Go to Stones of Serle"
+              "id": "s2",
+              "text": "Travel to The Refuge (Ogham) via The Hooded One → speak to The Hooded One."
             },
             {
-              "id": "go-to-the-blackwood",
-              "text": "After Stones of Serle: Go to The Blackwood"
-            }
-          ]
-        },
-        {
-          "id": "P1_2",
-          "name": "Stones of Serle",
-          "objectives": [
-            {
-              "id": "search-for-megaliths",
-              "text": "Search edges for 6 Megaliths"
+              "id": "s3",
+              "text": "Enter Scorched Farmlands (WP). The northern Blackwood exit is blocked by Darkness — clear Stones of Serle first.",
+              "waypoint": true
             },
             {
-              "id": "kill-siora",
-              "text": "Kill Siora in center"
+              "id": "s4",
+              "text": "Holten has Altars of Omen that can drop Omens / Dark Omens.",
+              "kind": "note",
+              "noteStyle": "info"
             },
             {
-              "id": "return-to-una",
-              "text": "Speak to Una → Return to Scorched Farmlands"
-            }
-          ]
-        },
-        {
-          "id": "P1_3",
-          "name": "The Blackwood",
-          "objectives": [
-            {
-              "id": "search-for-omen-altars",
-              "text": "Search for Omen Altars (Omen currency)",
+              "id": "s5",
+              "text": "Defeat Isolde & Heldra to the east.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "Omen",
-                  "type": "item"
-                }
-              ]
+              "boss": true
             },
             {
-              "id": "go-to-holten",
-              "text": "Go to Holten"
-            }
-          ]
-        },
-        {
-          "id": "P1_4",
-          "name": "Holten",
-          "objectives": [
+              "id": "s6",
+              "text": "Stones of Serle to the south → activate 6 Runed Megaliths to clear Darkness."
+            },
             {
-              "id": "kill-sigbert-and-godwin",
-              "text": "Kill Sigbert + Godwin",
+              "id": "s7",
+              "text": "Soul of the Ferryman at the docks in Holten.",
               "optional": true,
-              "rewards": [
-                {
-                  "text": "Armourer's Scrap",
-                  "type": "item"
-                }
-              ]
+              "note": "Greater Runes ~2000g."
             },
             {
-              "id": "search-for-ferryman",
-              "text": "Search center for Ferryman",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Vendor",
-                  "type": "item"
-                },
-                {
-                  "text": "Greater Runes (\\xd710) (20k Gold)",
-                  "type": "item"
-                }
-              ]
+              "id": "s8",
+              "text": "Through Blackwood → reach Holten; Altars of Omen here drop Omens / Dark Omens."
             },
             {
-              "id": "go-to-wolvenhold",
-              "text": "Go to Wolvenhold"
+              "id": "s9",
+              "text": "In Holten, defeat Godwin & Sigbert.",
+              "boss": true,
+              "note": "Drops Blacksmith's Whetstone."
             },
             {
-              "id": "go-to-holten-estate",
-              "text": "After Wolvenhold: Go to Holten Estate"
-            }
-          ]
-        },
-        {
-          "id": "P1_5",
-          "name": "Wolvenhold",
-          "objectives": [
+              "id": "s10",
+              "text": "From Holten there are 2 branches to clear: Wolvenhold (Oswin) and Holten Estate (story).",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
             {
-              "id": "kill-oswin",
-              "text": "Kill Oswin",
+              "id": "s11",
+              "text": "Clear both branches: Wolvenhold (Oswin) and Holten Estate (story)."
+            },
+            {
+              "id": "s12",
+              "text": "Wolvenhold → defeat Oswin, the Dread Warden → use Warden's Ledger.",
+              "boss": true,
+              "note": "+2 Skill Points; boss can also drop a unique + Vaal Orb.",
               "rewards": [
                 {
-                  "text": "2 Passives",
+                  "text": "Skill Points",
                   "type": "points"
                 }
               ]
             },
             {
-              "id": "return-to-holten",
-              "text": "Return to Holten"
-            }
-          ]
-        },
-        {
-          "id": "P1_6",
-          "name": "Holten Estate",
-          "note": "Complete Wolvenhold first",
-          "objectives": [
-            {
-              "id": "kill-thane-and-elswyth",
-              "text": "Kill Thane Wulfric + Lady Elswyth",
-              "rewards": [
-                {
-                  "text": "2 Passives",
-                  "type": "points"
-                }
-              ]
+              "id": "s13",
+              "text": "Holten Estate → up 2 staircases through the maze → upper floor → defeat Thane Wulfric & Lady Elswyth.",
+              "boss": true
             },
             {
-              "id": "return-to-refuge",
-              "text": "Return to The Refuge"
+              "id": "s14",
+              "text": "Complete Interlude 5.1 → return to town."
             }
-          ]
+          ],
+          "type": "town"
         }
-      ]
+      ],
+      "subtitle": "Take ALL quests on the 3 mini-maps. Recommended order: Interlude II (center) → Interlude I (left) → Interlude III (right). Center is longest/hardest — run while monsters are lower level."
     },
     {
       "id": "interlude2",
       "num": 6,
-      "title": "Act VI — The Khari Lands",
+      "title": "Interlude II — Khari Bazaar",
       "areas": [
         {
-          "id": "P2_Town",
-          "name": "The Khari Bazaar",
-          "type": "town",
+          "id": "interlude2_z0",
+          "name": "Interlude 5.2 — Khari Bazaar",
           "objectives": [
             {
-              "id": "p2-town-route",
-              "text": "Speak to Hooded One and Asala → Go to The Khari Crossing"
+              "id": "s0",
+              "text": "Orbala's 7 Boons can be changed anytime by returning to the pillar.",
+              "kind": "note",
+              "noteStyle": "info"
             },
             {
-              "id": "p2-town-route-2",
-              "text": "After Qimah Reservoir: Speak to Hooded One → Travel to The Glade"
-            }
-          ]
-        },
-        {
-          "id": "P2_1",
-          "name": "The Khari Crossing",
-          "note": "Take the North Galai Gates waypoint on the way through",
-          "objectives": [
-            {
-              "id": "search-for-molten-shrine",
-              "text": "Search North for Molten Shrine → Clear Skullmaw Stairway",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "+5% to Maximum Life",
-                  "type": "permanent"
-                }
-              ]
+              "id": "s1",
+              "text": "Go to Khari Crossing via the Hooded One."
             },
             {
-              "id": "kill-akthi-and-anundr",
-              "text": "Kill Akthi and Anundr",
-              "optional": true,
+              "id": "s2",
+              "text": "Defeat Akthi & Anundr → speak to Risu.",
+              "boss": true,
+              "note": "+2 Skill Points.",
               "rewards": [
                 {
-                  "text": "2 Passives",
+                  "text": "Skill Points",
                   "type": "points"
                 }
               ]
             },
             {
-              "id": "go-to-pools-of-khatal",
-              "text": "Go to Pools of Khatal"
+              "id": "s3",
+              "text": "Navigation: beetle chests/rune drop lead up the eastern stairs; Wayfinder's Seals point west to Pools of Kathal.",
+              "kind": "note",
+              "noteStyle": "tip"
             },
             {
-              "id": "go-to-galai-gates",
-              "text": "After Pools of Khatal: Go to The Galai Gates"
-            }
-          ]
-        },
-        {
-          "id": "P2_2",
-          "name": "Pools of Khatal",
-          "note": "Take The Galai Gates waypoint before continuing",
-          "objectives": [
-            {
-              "id": "go-to-sel-khari-sanctuary",
-              "text": "Go to Sel Khari Sanctuary"
-            }
-          ]
-        },
-        {
-          "id": "P2_3",
-          "name": "Sel Khari Sanctuary",
-          "objectives": [
-            {
-              "id": "clear-barya",
-              "text": "Clear until Yoon's Barya and Rangeen's Barya drops → Place in Altar",
+              "id": "s4",
+              "text": "Torbek at Khari Crossing.",
               "optional": true,
+              "note": "Discount rare caster weapons."
+            },
+            {
+              "id": "s5",
+              "text": "Go to Pools of Kathal (WP); has a guaranteed Expedition and the entrance to Sel Khari Sanctuary.",
+              "waypoint": true
+            },
+            {
+              "id": "s6",
+              "text": "Sel Khari Sanctuary: (Optional) Two Wishes — place Yoon's Barya & Rangeen's Barya to choose 2 rare jewelry.",
+              "optional": true,
+              "note": "2× Rare Ring/Amulet/Jewel."
+            },
+            {
+              "id": "s7",
+              "text": "End of Sel Khari Sanctuary → defeat Elzarah, the Cobra Lord → Asala & Jado appear.",
+              "boss": true
+            },
+            {
+              "id": "s8",
+              "text": "Activate Molten One's Gift → enter Skullmaw Stairway in Molten Shrine, find seals.",
+              "note": "+5% Maximum Life."
+            },
+            {
+              "id": "s9",
+              "text": "If Molten One's Gift is bugged, find all seals then reset the instance. Skullmaw Stairway is inside Molten Shrine, northeast.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
+            {
+              "id": "s10",
+              "text": "Enter Qimah → use Orbala's Pillar → choose 1 of 7 Boons; can be changed anytime."
+            },
+            {
+              "id": "s11",
+              "text": "Summon Jado to open Qimah Reservoir."
+            },
+            {
+              "id": "s12",
+              "text": "Qimah Reservoir → 2 Sacred Wells.",
+              "optional": true,
+              "note": "Currency: Regal/Exalt/Alchemy."
+            },
+            {
+              "id": "s13",
+              "text": "Rare Bloodbilge → click giant vase to spawn.",
+              "optional": true,
+              "boss": true,
+              "note": "Exalt + Vaal Orb + Skill Gem.",
               "rewards": [
                 {
-                  "text": "Rare Jewellery",
+                  "text": "Skill Gem",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "kill-elzarah",
-              "text": "Kill Elzarah"
+              "id": "s14",
+              "text": "Defeat finale boss Azmadi, the Faridun Prince → interact with Grand Barya → Jado / Asala.",
+              "boss": true
             },
             {
-              "id": "return-to-galai-gates",
-              "text": "Return to The Galai Gates"
+              "id": "s15",
+              "text": "Complete Interlude 5.2 → return to town."
             }
-          ]
-        },
-        {
-          "id": "P2_5",
-          "name": "The Galai Gates",
-          "objectives": [
-            {
-              "id": "grab-waypoint",
-              "text": "Grab waypoint → Return to The Khari Crossing"
-            },
-            {
-              "id": "kill-vornas",
-              "text": "After Sel Khari Sanctuary: Kill Vornas"
-            },
-            {
-              "id": "go-to-qimah",
-              "text": "Enter Qimah"
-            }
-          ]
-        },
-        {
-          "id": "P2_6",
-          "name": "Qimah",
-          "note": "Good area to farm XP / Gear",
-          "objectives": [
-            {
-              "id": "search-for-orbalas-pillar",
-              "text": "Search for Orbala's Pillar",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Permanent Boon",
-                  "type": "permanent"
-                }
-              ]
-            },
-            {
-              "id": "go-to-qimah-reservoir",
-              "text": "Speak to Jado → Go to Qimah Reservoir"
-            }
-          ]
-        },
-        {
-          "id": "P2_7",
-          "name": "Qimah Reservoir",
-          "objectives": [
-            {
-              "id": "search-for-sacred-wells",
-              "text": "Search for Sacred Wells (×2, Random Currency)",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Random Currency",
-                  "type": "item"
-                }
-              ]
-            },
-            {
-              "id": "kill-azmadi",
-              "text": "Kill Azmadi"
-            },
-            {
-              "id": "return-to-khari-bazaar",
-              "text": "Speak to Jado and Asala → Return to The Khari Bazaar"
-            }
-          ]
+          ],
+          "type": "town"
         }
-      ]
+      ],
+      "subtitle": "Take ALL quests on the 3 mini-maps. Recommended order: Interlude II (center) → Interlude I (left) → Interlude III (right). Center is longest/hardest — run while monsters are lower level."
     },
     {
       "id": "interlude3",
       "num": 7,
-      "title": "Act VII — The Glacial Peaks",
+      "title": "Interlude III — Mount Kriar → Maps",
       "areas": [
         {
-          "id": "P3_Town",
-          "name": "The Glade",
-          "type": "town",
+          "id": "interlude3_z0",
+          "name": "Interlude 5.3 — Mount Kriar, The Glade",
           "objectives": [
             {
-              "id": "p3-town-route",
-              "text": "Speak to NPCs → Go to Ashen Forest"
-            }
-          ]
-        },
-        {
-          "id": "P3_1",
-          "name": "Ashen Forest",
-          "objectives": [
+              "id": "s0",
+              "text": "Mount Kriar has a fairly stable layout/POIs; Elder Maddox is usually around 10–11 o'clock.",
+              "kind": "note",
+              "noteStyle": "tip"
+            },
             {
-              "id": "search-for-ancient-monument",
-              "text": "Search for Ancient Monument",
-              "optional": true,
+              "id": "s1",
+              "text": "Go to Mount Kriar via the Hooded One → enter Ashen Forest through The Glade."
+            },
+            {
+              "id": "s2",
+              "text": "Find Ancient Monument in Ashen Forest.",
+              "note": "Skill Gem level scales with Interlude completion order.",
               "rewards": [
                 {
-                  "text": "Skill Gem (14)",
+                  "text": "Skill Gem level scales wi",
                   "type": "item"
                 }
               ]
             },
             {
-              "id": "go-to-kriar-village",
-              "text": "Go to Kriar Village"
-            }
-          ]
-        },
-        {
-          "id": "P3_2",
-          "name": "Kriar Village",
-          "objectives": [
-            {
-              "id": "kill-lythara",
-              "text": "Kill Lythara",
+              "id": "s3",
+              "text": "Go to Kriar Village → follow the 2 wisps → defeat Lythara, the Wayward Spear.",
+              "boss": true,
+              "note": "+40 Spirit + Spirit Gem (order-dependent) + Gemcrust Skull.",
               "rewards": [
                 {
                   "text": "+40 Spirit",
                   "type": "permanent"
-                },
-                {
-                  "text": "Spirit Gem (14)",
-                  "type": "item"
                 }
               ]
             },
             {
-              "id": "go-to-glacial-tarn",
-              "text": "Go to Glacial Tarn"
-            }
-          ]
-        },
-        {
-          "id": "P3_3",
-          "name": "Glacial Tarn",
-          "objectives": [
+              "id": "s4",
+              "text": "Interlude Skill/Spirit gem levels scale with the order you complete them, so gem level is not fixed.",
+              "kind": "note",
+              "noteStyle": "info"
+            },
             {
-              "id": "clear-howling-caves",
-              "text": "Clear Howling Caves",
-              "optional": true,
+              "id": "s5",
+              "text": "Go to Glacial Tarn → enter Howling Caves → defeat The Abominable Yeti → take Icy Tusks.",
+              "boss": true
+            },
+            {
+              "id": "s6",
+              "text": "Turn in Icy Tusks for Hilda.",
+              "note": "Book of Specialization +2 Skill Points.",
               "rewards": [
                 {
-                  "text": "2 Passives",
+                  "text": "Skill Points",
                   "type": "points"
                 }
               ]
             },
             {
-              "id": "go-to-kriar-peaks",
-              "text": "Go to Kriar Peaks"
-            }
-          ]
-        },
-        {
-          "id": "P3_4",
-          "name": "Howling Caves",
-          "objectives": [
+              "id": "s7",
+              "text": "Return to Glacial Tarn → defeat Rakkar, the Frozen Talon to the NW to open the path to Kriar Peaks.",
+              "boss": true
+            },
             {
-              "id": "kill-abominable-yeti",
-              "text": "Kill Abominable Yeti",
+              "id": "s8",
+              "text": "Kriar Peaks → find Elder Maddox around the 10–11 o'clock direction.",
+              "note": "Free Unique Item."
+            },
+            {
+              "id": "s9",
+              "text": "Go to Etched Ravine → defeat Stormgore, the Guardian → open The Cuachic Vault.",
+              "boss": true
+            },
+            {
+              "id": "s10",
+              "text": "Enter The Cuachic Vault; (Optional) Ancient Treasures: open Sealed Vaults with Small Soul Cores.",
               "optional": true,
+              "note": "Currency / loot."
+            },
+            {
+              "id": "s11",
+              "text": "Reach finale bosses Zolin & Zelina → defeat them to continue Fate of the Vaal.",
+              "boss": true
+            },
+            {
+              "id": "s12",
+              "text": "FATE OF THE VAAL: 6 Vaal Beacons are spread across Mount Kriar zones. Stormgore opens Cuachic Vault; defeat Zolin & Zelina to continue the storyline.",
+              "kind": "note",
+              "noteStyle": "system"
+            },
+            {
+              "id": "s13",
+              "text": "Fate of the Vaal: 6 Vaal Beacons are spread across Mount Kriar zones; complete them to power the Temple.",
+              "optional": true
+            },
+            {
+              "id": "s14",
+              "text": "After completing all 3 Interludes, speak to The Hooded One in Kingsmarch.",
+              "note": "+2 Skill Points.",
               "rewards": [
                 {
-                  "text": "2 Passives",
+                  "text": "Skill Points",
                   "type": "points"
                 }
               ]
             },
             {
-              "id": "return-to-glacial-tarn",
-              "text": "Return to Glacial Tarn"
-            }
-          ]
-        },
-        {
-          "id": "P3_5",
-          "name": "Kriar Peaks",
-          "objectives": [
-            {
-              "id": "search-for-elder-madox",
-              "text": "Search for Elder Madox",
-              "optional": true,
-              "rewards": [
-                {
-                  "text": "Random Unique",
-                  "type": "item"
-                }
-              ]
+              "id": "s15",
+              "text": "Go to Oriath → speak to Farrow → The Hooded One → Doryani."
             },
             {
-              "id": "go-to-etched-ravine",
-              "text": "Go to Etched Ravine"
-            }
-          ]
-        },
-        {
-          "id": "P3_6",
-          "name": "Etched Ravine",
-          "objectives": [
-            {
-              "id": "kill-stormgore",
-              "text": "Kill Stormgore"
-            },
-            {
-              "id": "go-to-cuachic-vault",
-              "text": "Enter The Cuachic Vault"
-            }
-          ]
-        },
-        {
-          "id": "P3_7",
-          "name": "The Cuachic Vault",
-          "objectives": [
-            {
-              "id": "kill-zelina-and-zolin",
-              "text": "Kill Zelina + Zolin"
-            },
-            {
-              "id": "speak-to-doryani",
-              "text": "Speak to Doryani"
-            },
-            {
-              "id": "return-to-kingsmarch",
-              "text": "Return to Kingsmarch → Speak to Hooded One"
+              "id": "s16",
+              "text": "Open the Endgame Atlas / Maps → start your first map (Lv58–60).",
+              "note": "Endgame begins."
             }
           ]
         }
-      ]
+      ],
+      "subtitle": "Take ALL quests on the 3 mini-maps. Recommended order: Interlude II (center) → Interlude I (left) → Interlude III (right). Center is longest/hardest — run while monsters are lower level."
     }
   ]
 }
