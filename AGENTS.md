@@ -16,6 +16,16 @@ When working on a change, apply it for **both** Path of Exile and Path of Exile 
 - If UI, filters, storage, styling, or data loading changes, verify both game tabs still work.
 - Only make a change single-game when the feature is inherently game-specific (for example Campaign is PoE2-only via `data-poe2-only`), or the user explicitly asks for one game.
 
+## No Contributors
+
+Do **not** add any Contributors, credits, acknowledgements, or similar attribution for Cursor, agents, or tools.
+
+- No `CONTRIBUTORS` / `AUTHORS` / credits files or README contributor sections.
+- No `Co-authored-by: Cursor` (or any AI/agent) trailer in commit messages.
+- Do not invent or append contributor entries; leave human owner attribution alone.
+
+A local Git hook lives at `.githooks/prepare-commit-msg` (also installed under `.git/hooks/`) to strip Cursor co-author trailers if the editor injects them.
+
 ## Project notes
 
 - Static frontend: `index.html`, `app.js`, `campaign.js`, CSS, and `data/`.
