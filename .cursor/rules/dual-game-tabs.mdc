@@ -1,0 +1,17 @@
+---
+description: Apply changes to both Path of Exile and Path of Exile 2 game tabs by default
+alwaysApply: true
+---
+
+# Dual-game changes (default)
+
+This app has two top-level game tabs: **Path of Exile 2** (`poe2`) and **Path of Exile** (`poe`), configured in `GAME_CONFIGS` in `app.js`.
+
+When working on a change, apply it for **both** games by default.
+
+- Prefer shared logic over game-specific forks.
+- If behavior depends on game, handle both `poe` and `poe2`—do not ship a one-tab-only fix.
+- After UI, filter, storage, styling, or data-loading changes, verify both game tabs.
+- Single-game work is allowed only for inherently game-specific features (e.g. Campaign / `data-poe2-only`) or when the user explicitly scopes to one game.
+
+Also follow root `AGENTS.md` for Codex and shared agent guidance.
