@@ -1041,9 +1041,54 @@ h2 {
 .campaign-header-actions {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
   flex: 0 0 auto;
   padding-top: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.campaign-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.campaign-filter {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 6px 11px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.campaign-filter:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.campaign-filter.active {
+  color: #11100e;
+  background: var(--gold);
+  border-color: color-mix(in srgb, var(--gold) 80%, #fff 10%);
+}
+
+.campaign-filter-empty {
+  margin: 0;
+  padding: 16px;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 /* ── Campaign: status line ─────────────────────────────────── */
@@ -1593,6 +1638,18 @@ h2 {
 
   .campaign-header-actions {
     padding-top: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .campaign-filters {
+    order: -1;
+    width: 100%;
+  }
+
+  .campaign-filter {
+    flex: 1;
+    text-align: center;
   }
 
   .campaign-overall-progress {

@@ -5,8 +5,23 @@ const campaignState = {
   data: null,
   completed: new Map(),
   collapsedActs: new Set(),
+  filter: "all", // all | required | optional
   saveTimer: null
 };
+
+function isRequiredObjective(obj) {
+  return obj?.kind !== "note" && !obj?.optional;
+}
+
+function isOptionalObjective(obj) {
+  return obj?.kind === "note" || !!obj?.optional;
+}
+
+function matchesCampaignFilter(obj) {
+  if (campaignState.filter === "required") return isRequiredObjective(obj);
+  if (campaignState.filter === "optional") return isOptionalObjective(obj);
+  return true;
+}
 
 function objKey(actId, areaId, objId) {
   return `${actId}.${areaId}.${objId}`;
@@ -171,6 +186,14 @@ function renderCampaignSummary(els) {
 }
 
 function renderArea(act, area, els) {
+  const notes = area.objectives.filter((o) => o.kind === "note" && matchesCampaignFilter(o));
+  const required = area.objectives.filter((o) => isRequiredObjective(o) && matchesCampaignFilter(o));
+  const optional = area.objectives.filter((o) => o.kind !== "note" && o.optional && matchesCampaignFilter(o));
+
+  if (!notes.length && !required.length && !optional.length) {
+    return null;
+  }
+
   const progress = countAreaProgress(act, area);
   const isComplete = progress.total > 0 && progress.done === progress.total;
   const isTown = area.type === "town";
@@ -211,10 +234,6 @@ function renderArea(act, area, els) {
 
   // Area progress bar
   areaEl.append(createAreaProgressBar(progress.done, progress.total));
-
-  const notes = area.objectives.filter((o) => o.kind === "note");
-  const required = area.objectives.filter((o) => o.kind !== "note" && !o.optional);
-  const optional = area.objectives.filter((o) => o.kind !== "note" && o.optional);
 
   function createGuideNote(obj) {
     const note = document.createElement("div");
@@ -427,8 +446,25 @@ function renderCampaignActs(els) {
     body.className = "campaign-act-body";
     if (collapsed) body.setAttribute("hidden", "");
 
+    let visibleAreas = 0;
     for (const area of act.areas) {
-      body.append(renderArea(act, area, els));
+      const areaEl = renderArea(act, area, els);
+      if (areaEl) {
+        body.append(areaEl);
+        visibleAreas += 1;
+      }
+    }
+
+    if (!visibleAreas) {
+      const empty = document.createElement("p");
+      empty.className = "campaign-filter-empty";
+      empty.textContent =
+        campaignState.filter === "required"
+          ? "No required objectives in this act."
+          : campaignState.filter === "optional"
+            ? "No optional objectives in this act."
+            : "No objectives in this act.";
+      body.append(empty);
     }
 
     function handleToggle() {
@@ -464,6 +500,21 @@ function renderCampaign(els) {
   renderCampaignActs(els);
 }
 
+function setCampaignFilter(filter, els) {
+  const next = filter === "required" || filter === "optional" ? filter : "all";
+  if (campaignState.filter === next) return;
+
+  campaignState.filter = next;
+
+  els.campaignFilters?.forEach((button) => {
+    const active = button.dataset.campaignFilter === next;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+
+  renderCampaign(els);
+}
+
 function resetCampaignProgress(els) {
   campaignState.completed.clear();
   saveCampaignProgress();
@@ -488,6 +539,12 @@ async function initCampaign(els) {
     if (window.confirm("Reset all campaign checklist progress?")) {
       resetCampaignProgress(els);
     }
+  });
+
+  els.campaignFilters?.forEach((button) => {
+    button.addEventListener("click", () => {
+      setCampaignFilter(button.dataset.campaignFilter, els);
+    });
   });
 
   els.campaignStatus.textContent = "Loading campaign checklist...";
