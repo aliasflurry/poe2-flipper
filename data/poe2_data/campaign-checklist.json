@@ -38,13 +38,13 @@
             {
               "id": "s0",
               "text": "Speak to Renly.",
-              "note": "Receive Skill Gem Lv1.",
               "rewards": [
                 {
                   "text": "Skill Gem Lv1",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Receive Skill Gem Lv1."
             },
             {
               "id": "s1",
@@ -78,26 +78,26 @@
               "id": "s3",
               "text": "Defeat Beira of the Rotten Pack in the north.",
               "boss": true,
-              "note": "+10% Cold Resistance.",
               "rewards": [
                 {
                   "text": "+10% Cold Resistance",
                   "type": "permanent"
                 }
-              ]
+              ],
+              "note": "+10% Cold Resistance."
             },
             {
               "id": "s4",
               "text": "Mud Burrow → defeat The Devourer.",
               "optional": true,
               "boss": true,
-              "note": "Skill Gem Lv2.",
               "rewards": [
                 {
                   "text": "Skill Gem Lv2",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Skill Gem Lv2."
             },
             {
               "id": "s5",
@@ -107,25 +107,25 @@
             {
               "id": "s6",
               "text": "After defeating Beira, speak to Renly in town.",
-              "note": "Support Gem Lv1.",
               "rewards": [
                 {
                   "text": "Support Gem Lv1",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Support Gem Lv1."
             },
             {
               "id": "s7",
               "text": "Abandoned Stash in Mysterious Campsite.",
               "optional": true,
-              "note": "Skill Gem Lv1.",
               "rewards": [
                 {
                   "text": "Skill Gem Lv1",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Skill Gem Lv1."
             },
             {
               "id": "s8",
@@ -161,26 +161,26 @@
               "text": "Defeat Gerung, the Brambleghast.",
               "optional": true,
               "boss": true,
-              "note": "Skill Gem Lv2.",
               "rewards": [
                 {
                   "text": "Skill Gem Lv2",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Skill Gem Lv2."
             },
             {
               "id": "s5",
               "text": "Hut with Cauldron → defeat Areagne.",
               "optional": true,
               "boss": true,
-              "note": "Medium Life + Mana Flasks, Support Gem Lv1.",
               "rewards": [
                 {
                   "text": "Support Gem Lv1",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Medium Life + Mana Flasks, Support Gem Lv1."
             },
             {
               "id": "s6",
@@ -206,13 +206,13 @@
               "id": "s1",
               "text": "The Rust King appears at the final obelisk; defeat boss.",
               "boss": true,
-              "note": "Skill Gem Lv3.",
               "rewards": [
                 {
                   "text": "Skill Gem Lv3",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Skill Gem Lv3."
             },
             {
               "id": "s2",
@@ -293,13 +293,13 @@
               "text": "Defeat Ervig, the Rotted Druid.",
               "optional": true,
               "boss": true,
-              "note": "Support Gem.",
               "rewards": [
                 {
                   "text": "Support Gem",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Support Gem."
             },
             {
               "id": "s3",
@@ -330,13 +330,13 @@
               "id": "s3",
               "text": "Forgotten Riches hidden cache in Mausoleum of the Praetor.",
               "optional": true,
-              "note": "Support Gem Lv1 + Gold.",
               "rewards": [
                 {
                   "text": "Support Gem Lv1 + Gold",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Support Gem Lv1 + Gold."
             },
             {
               "id": "s4",
@@ -353,13 +353,13 @@
               "id": "s6",
               "text": "Haunted Treasure secret.",
               "optional": true,
-              "note": "Support Gem Lv1.",
               "rewards": [
                 {
                   "text": "Support Gem Lv1",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Support Gem Lv1."
             },
             {
               "id": "s7",
@@ -369,13 +369,13 @@
               "id": "s8",
               "text": "Defeat Lachlann, take Ring.",
               "boss": true,
-              "note": "Skill Gem Lv3.",
               "rewards": [
                 {
                   "text": "Skill Gem Lv3",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Skill Gem Lv3."
             },
             {
               "id": "s9",
@@ -422,13 +422,13 @@
               "id": "s6",
               "text": "Defeat The Crowbell.",
               "boss": true,
-              "note": "+2 Weapon Set Skill Points.",
               "rewards": [
                 {
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "+2 Weapon Set Skill Points."
             },
             {
               "id": "s7",
@@ -444,13 +444,13 @@
               "id": "s9",
               "text": "Small ritual event.",
               "optional": true,
-              "note": "Support Gem Lv1.",
               "rewards": [
                 {
                   "text": "Support Gem Lv1",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Support Gem Lv1."
             },
             {
               "id": "s10",
@@ -480,13 +480,13 @@
               "id": "s3",
               "text": "Big Ritual Altar → defeat The King in the Mists.",
               "boss": true,
-              "note": "+30 Spirit + Spirit Gem Lv4 (Persistent Buff).",
               "rewards": [
                 {
                   "text": "+30 Spirit",
                   "type": "permanent"
                 }
-              ]
+              ],
+              "note": "+30 Spirit + Spirit Gem Lv4 (Persistent Buff)."
             },
             {
               "id": "s4",
@@ -513,13 +513,13 @@
             {
               "id": "s0",
               "text": "Find Una's Lute Box in the house near checkpoint.",
-              "note": "Una's Lute +2 Weapon Set Skill Points.",
               "rewards": [
                 {
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "Una's Lute +2 Weapon Set Skill Points."
             },
             {
               "id": "s1",
@@ -539,13 +539,13 @@
               "id": "s4",
               "text": "Rare dogs in crop circle.",
               "optional": true,
-              "note": "Skill Gem Lv4.",
               "rewards": [
                 {
                   "text": "Skill Gem Lv4",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Skill Gem Lv4."
             },
             {
               "id": "s5",
@@ -583,13 +583,13 @@
               "id": "s4",
               "text": "Defeat The Executioner.",
               "boss": true,
-              "note": "Support Gem Lv1.",
               "rewards": [
                 {
                   "text": "Support Gem Lv1",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Support Gem Lv1."
             },
             {
               "id": "s5",
@@ -615,13 +615,13 @@
               "id": "s0",
               "text": "Gallows secret near the checkpoint.",
               "optional": true,
-              "note": "Support Gem Lv1.",
               "rewards": [
                 {
                   "text": "Support Gem Lv1",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Support Gem Lv1."
             },
             {
               "id": "s1",
@@ -643,13 +643,13 @@
               "id": "s0",
               "text": "Defeat Candlemass on floor 1.",
               "boss": true,
-              "note": "+20 Maximum Life.",
               "rewards": [
                 {
                   "text": "+20 Maximum Life",
                   "type": "permanent"
                 }
-              ]
+              ],
+              "note": "+20 Maximum Life."
             },
             {
               "id": "s1",
@@ -735,13 +735,13 @@
             {
               "id": "s3",
               "text": "Speak to Zarka.",
-              "note": "Uncut Skill Gem Lv5.",
               "rewards": [
                 {
                   "text": "Uncut Skill Gem Lv5",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Uncut Skill Gem Lv5."
             },
             {
               "id": "s4",
@@ -818,13 +818,13 @@
               "id": "s2",
               "text": "Defeat Rudja.",
               "boss": true,
-              "note": "Uncut Skill Gem Lv6.",
               "rewards": [
                 {
                   "text": "Uncut Skill Gem Lv6",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Uncut Skill Gem Lv6."
             },
             {
               "id": "s3",
@@ -870,13 +870,13 @@
               "text": "Defeat Balbala, the Traitor.",
               "optional": true,
               "boss": true,
-              "note": "Djinn Barya + Uncut Skill Gem Lv6. Barya Lv28 can be skipped and taken in Deshar.",
               "rewards": [
                 {
                   "text": "Uncut Skill Gem Lv6",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Djinn Barya + Uncut Skill Gem Lv6. Barya Lv28 can be skipped and taken in Deshar."
             },
             {
               "id": "s3",
@@ -970,13 +970,13 @@
               "id": "s2",
               "text": "Shrine of Bones near the checkpoint.",
               "optional": true,
-              "note": "Support Gem Lv2.",
               "rewards": [
                 {
                   "text": "Support Gem Lv2",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Support Gem Lv2."
             },
             {
               "id": "s3",
@@ -1087,7 +1087,6 @@
               "id": "s4",
               "text": "Lower Kabala, Constrictor Queen at Venom Pit.",
               "boss": true,
-              "note": "+2 Weapon Set Skill Points; if you make Mastodon first, you will fall Skill Gem Lv7.",
               "rewards": [
                 {
                   "text": "Skill Gem Lv7",
@@ -1097,7 +1096,8 @@
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "+2 Weapon Set Skill Points; if you make Mastodon first, you will fall Skill Gem Lv7."
             },
             {
               "id": "s5",
@@ -1148,13 +1148,13 @@
               "id": "s0",
               "text": "Guarded sarcophagus.",
               "optional": true,
-              "note": "Support Gem / Lesser Jeweller's Orb.",
               "rewards": [
                 {
                   "text": "Support Gem / Lesser Jewell",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Support Gem / Lesser Jeweller's Orb."
             },
             {
               "id": "s1",
@@ -1260,13 +1260,13 @@
             {
               "id": "s2",
               "text": "Find Fallen Dekhara near tower.",
-              "note": "+2 Weapon Set Skill Points.",
               "rewards": [
                 {
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "+2 Weapon Set Skill Points."
             },
             {
               "id": "s3",
@@ -1275,13 +1275,13 @@
             {
               "id": "s4",
               "text": "Lower 2 Vultures in the side area.",
-              "note": "Backup Djinn Barya Lv28 — Ascendancy road is easier than Balbala.",
               "rewards": [
                 {
                   "text": "Ascendancy",
                   "type": "ascendancy"
                 }
-              ]
+              ],
+              "note": "Backup Djinn Barya Lv28 — Ascendancy road is easier than Balbala."
             },
             {
               "id": "s5",
@@ -1325,13 +1325,13 @@
               "id": "s2",
               "text": "Shifting Vases / Hushed Urn.",
               "optional": true,
-              "note": "4 rares + Support Gem Lv2.",
               "rewards": [
                 {
                   "text": "Support Gem Lv2",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "4 rares + Support Gem Lv2."
             },
             {
               "id": "s3",
@@ -1346,13 +1346,13 @@
             {
               "id": "s0",
               "text": "Interact with Sisters of Garukhan shrine.",
-              "note": "+10% Lightning Resistance.",
               "rewards": [
                 {
                   "text": "+10% Lightning Resistance",
                   "type": "permanent"
                 }
-              ]
+              ],
+              "note": "+10% Lightning Resistance."
             },
             {
               "id": "s1",
@@ -1399,13 +1399,13 @@
             {
               "id": "s4",
               "text": "Complete Trial.",
-              "note": "First Ascendancy.",
               "rewards": [
                 {
                   "text": "Ascendancy",
                   "type": "ascendancy"
                 }
-              ]
+              ],
+              "note": "First Ascendancy."
             },
             {
               "id": "s5",
@@ -1531,13 +1531,13 @@
               "text": "Defeat Rootdredge.",
               "optional": true,
               "boss": true,
-              "note": "Skill Gem Lv9.",
               "rewards": [
                 {
                   "text": "Skill Gem Lv9",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Skill Gem Lv9."
             },
             {
               "id": "s2",
@@ -1549,13 +1549,13 @@
               "id": "s3",
               "text": "Hanging tree corpse.",
               "optional": true,
-              "note": "Magic Ring + Skill Gem Lv9.",
               "rewards": [
                 {
                   "text": "Skill Gem Lv9",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Magic Ring + Skill Gem Lv9."
             },
             {
               "id": "s4",
@@ -1634,13 +1634,13 @@
               "id": "s7",
               "text": "Defeat Mighty Silverfist.",
               "boss": true,
-              "note": "+2 Weapon Set Skill Points.",
               "rewards": [
                 {
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "+2 Weapon Set Skill Points."
             },
             {
               "id": "s8",
@@ -1665,7 +1665,7 @@
             },
             {
               "id": "s12",
-              "text": "Find WP near Venom Crypts → enter The Venom Crypts.",
+              "text": "Find Waypoint near Venom Crypts → enter The Venom Crypts.",
               "waypoint": true
             }
           ]
@@ -1801,25 +1801,25 @@
               "id": "s4",
               "text": "League mechanic.",
               "optional": true,
-              "note": "Skill Gem Lv9.",
               "rewards": [
                 {
                   "text": "Skill Gem Lv9",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Skill Gem Lv9."
             },
             {
               "id": "s5",
-              "text": "Enter Temple of Chaos → take WP → return.",
+              "text": "Enter Temple of Chaos → take Waypoint → return.",
               "waypoint": true,
-              "note": "Open the Second Ascendancy.",
               "rewards": [
                 {
                   "text": "Ascendancy",
                   "type": "ascendancy"
                 }
-              ]
+              ],
+              "note": "Open the Second Ascendancy."
             },
             {
               "id": "s6",
@@ -1859,13 +1859,13 @@
             {
               "id": "s3",
               "text": "Complete Trial.",
-              "note": "Second Ascendancy.",
               "rewards": [
                 {
                   "text": "Ascendancy",
                   "type": "ascendancy"
                 }
-              ]
+              ],
+              "note": "Second Ascendancy."
             },
             {
               "id": "s4",
@@ -1905,13 +1905,13 @@
               "id": "s5",
               "text": "Open the Blackjaw door → to defeat Blackjaw, the Remnant → uses Flame Core.",
               "boss": true,
-              "note": "+10% Fire Resistance.",
               "rewards": [
                 {
                   "text": "+10% Fire Resistance",
                   "type": "permanent"
                 }
-              ]
+              ],
+              "note": "+10% Fire Resistance."
             },
             {
               "id": "s6",
@@ -2062,13 +2062,17 @@
               "id": "s3",
               "text": "Flameskin rituals / Ignagduk's Harvest.",
               "optional": true,
-              "note": "Fire Res + Rarity.",
               "rewards": [
                 {
-                  "text": "Spirit +30/Lv.10 Spirit Gem",
+                  "text": "+25% Fire Resistance",
+                  "type": "permanent"
+                },
+                {
+                  "text": "Increased Item Rarity",
                   "type": "permanent"
                 }
-              ]
+              ],
+              "note": "Fire Res + Rarity."
             },
             {
               "id": "s4",
@@ -2080,13 +2084,13 @@
               "id": "s5",
               "text": "Defeat Ignagduk, the Bog Witch → use Gemrot Skull.",
               "boss": true,
-              "note": "+30 Spirit + Uncut Spirit Gem Lv10.",
               "rewards": [
                 {
                   "text": "+30 Spirit",
                   "type": "permanent"
                 }
-              ]
+              ],
+              "note": "+30 Spirit + Uncut Spirit Gem Lv10."
             },
             {
               "id": "s6",
@@ -2100,13 +2104,29 @@
             {
               "id": "s8",
               "text": "Turn in Ignagduk's Ghastly Spear for Servi in town.",
-              "note": "Charm choose 1 of 3.",
               "rewards": [
                 {
-                  "text": "Spirit +30/Lv.10 Spirit Gem",
-                  "type": "permanent"
+                  "text": "Thawing Charm",
+                  "type": "item"
+                },
+                {
+                  "text": "Staunching Charm",
+                  "type": "item"
+                },
+                {
+                  "text": "Antidote Charm",
+                  "type": "item"
+                },
+                {
+                  "text": "Dousing Charm",
+                  "type": "item"
+                },
+                {
+                  "text": "Grounding Charm",
+                  "type": "item"
                 }
-              ]
+              ],
+              "note": "Charm choose 1 of 5."
             },
             {
               "id": "s9",
@@ -2130,12 +2150,12 @@
             },
             {
               "id": "s2",
-              "text": "Find Apex of Filth → take WP → return.",
+              "text": "Find Apex of Filth → take Waypoint → return.",
               "waypoint": true
             },
             {
               "id": "s3",
-              "text": "Find The Molten Vault → take WP → return.",
+              "text": "Find The Molten Vault → take Waypoint → return.",
               "waypoint": true
             },
             {
@@ -2165,13 +2185,13 @@
               "text": "(First character) Defeat Mektul, the Forgemaster.",
               "optional": true,
               "boss": true,
-              "note": "Reforging Bench + Uncut Skill Gem Lv10 + Artificer's Orb.",
               "rewards": [
                 {
                   "text": "Uncut Skill Gem Lv10 + Artificer's Orb",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Reforging Bench + Uncut Skill Gem Lv10 + Artificer's Orb."
             },
             {
               "id": "s1",
@@ -2346,13 +2366,13 @@
             {
               "id": "s3",
               "text": "Place the Sacrificial Heart → stab it with the Dagger.",
-              "note": "+2 Weapon Set Skill Points.",
               "rewards": [
                 {
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "+2 Weapon Set Skill Points."
             },
             {
               "id": "s4",
@@ -2492,13 +2512,13 @@
               "text": "Crabshell Cavern → Clawcrunch.",
               "optional": true,
               "boss": true,
-              "note": "Support Gem 4.",
               "rewards": [
                 {
                   "text": "Support Gem 4",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Support Gem 4."
             },
             {
               "id": "s4",
@@ -2624,25 +2644,25 @@
               "id": "s2",
               "text": "Beast Pen.",
               "optional": true,
-              "note": "Skill + Support Gem.",
               "rewards": [
                 {
                   "text": "Support Gem",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Skill + Support Gem."
             },
             {
               "id": "s3",
               "text": "Defeat Mimok the Enslaved in Beast Pen.",
               "boss": true,
-              "note": "Guaranteed Tier 4 Support Gem.",
               "rewards": [
                 {
                   "text": "Support Gem",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Guaranteed Tier 4 Support Gem."
             },
             {
               "id": "s4",
@@ -2747,13 +2767,13 @@
             {
               "id": "s0",
               "text": "Speak to Navali & Hinekora.",
-              "note": "+2 Skill Points.",
               "rewards": [
                 {
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "+2 Skill Points."
             },
             {
               "id": "s1",
@@ -2841,13 +2861,13 @@
             {
               "id": "s7",
               "text": "Speak to Tujen in town.",
-              "note": "+2 Skill Points.",
               "rewards": [
                 {
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "+2 Skill Points."
             }
           ]
         },
@@ -3010,7 +3030,7 @@
             },
             {
               "id": "s3",
-              "text": "Enter Scorched Farmlands (WP). The northern Blackwood exit is blocked by Darkness — clear Stones of Serle first.",
+              "text": "Enter Scorched Farmlands (Waypoint). The northern Blackwood exit is blocked by Darkness — clear Stones of Serle first.",
               "waypoint": true
             },
             {
@@ -3059,13 +3079,13 @@
               "id": "s12",
               "text": "Wolvenhold → defeat Oswin, the Dread Warden → use Warden's Ledger.",
               "boss": true,
-              "note": "+2 Skill Points; boss can also drop a unique + Vaal Orb.",
               "rewards": [
                 {
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "+2 Skill Points; boss can also drop a unique + Vaal Orb."
             },
             {
               "id": "s13",
@@ -3105,13 +3125,13 @@
               "id": "s2",
               "text": "Defeat Akthi & Anundr → speak to Risu.",
               "boss": true,
-              "note": "+2 Skill Points.",
               "rewards": [
                 {
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "+2 Skill Points."
             },
             {
               "id": "s3",
@@ -3127,7 +3147,7 @@
             },
             {
               "id": "s5",
-              "text": "Go to Pools of Kathal (WP); has a guaranteed Expedition and the entrance to Sel Khari Sanctuary.",
+              "text": "Go to Pools of Kathal (Waypoint); has a guaranteed Expedition and the entrance to Sel Khari Sanctuary.",
               "waypoint": true
             },
             {
@@ -3171,13 +3191,13 @@
               "text": "Rare Bloodbilge → click giant vase to spawn.",
               "optional": true,
               "boss": true,
-              "note": "Exalt + Vaal Orb + Skill Gem.",
               "rewards": [
                 {
                   "text": "Skill Gem",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Exalt + Vaal Orb + Skill Gem."
             },
             {
               "id": "s14",
@@ -3216,25 +3236,25 @@
             {
               "id": "s2",
               "text": "Find Ancient Monument in Ashen Forest.",
-              "note": "Skill Gem level scales with Interlude completion order.",
               "rewards": [
                 {
                   "text": "Skill Gem level scales wi",
                   "type": "item"
                 }
-              ]
+              ],
+              "note": "Skill Gem level scales with Interlude completion order."
             },
             {
               "id": "s3",
               "text": "Go to Kriar Village → follow the 2 wisps → defeat Lythara, the Wayward Spear.",
               "boss": true,
-              "note": "+40 Spirit + Spirit Gem (order-dependent) + Gemcrust Skull.",
               "rewards": [
                 {
                   "text": "+40 Spirit",
                   "type": "permanent"
                 }
-              ]
+              ],
+              "note": "+40 Spirit + Spirit Gem (order-dependent) + Gemcrust Skull."
             },
             {
               "id": "s4",
@@ -3250,13 +3270,13 @@
             {
               "id": "s6",
               "text": "Turn in Icy Tusks for Hilda.",
-              "note": "Book of Specialization +2 Skill Points.",
               "rewards": [
                 {
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "Book of Specialization +2 Skill Points."
             },
             {
               "id": "s7",
@@ -3298,13 +3318,13 @@
             {
               "id": "s14",
               "text": "After completing all 3 Interludes, speak to The Hooded One in Kingsmarch.",
-              "note": "+2 Skill Points.",
               "rewards": [
                 {
                   "text": "Skill Points",
                   "type": "points"
                 }
-              ]
+              ],
+              "note": "+2 Skill Points."
             },
             {
               "id": "s15",
