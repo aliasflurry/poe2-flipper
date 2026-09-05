@@ -6,7 +6,7 @@
     {
       "id": "act1",
       "num": 1,
-      "title": "Act 1 — Clearfell → Ogham Manor",
+      "title": "Act 1 - Clearfell → Ogham Manor",
       "areas": [
         {
           "id": "act1_z0",
@@ -64,7 +64,7 @@
             },
             {
               "id": "s1",
-              "text": "Farrow is the league's new NPC. Meeting Farrow here only starts The Runeseeker. The quest chain continues through 3 Runestone → Lost Catacombs → return to Clearfell; end of the Act 1 chain unlocks Verisium Anvil. Runeforging allows you to use Verisium to add Runic Ward — a regenerating defense layer that recovers after taking no damage.",
+              "text": "Farrow is the league's new NPC. Meeting Farrow here only starts The Runeseeker. The quest chain continues through 3 Runestone → Lost Catacombs → return to Clearfell; end of the Act 1 chain unlocks Verisium Anvil. Runeforging allows you to use Verisium to add Runic Ward - a regenerating defense layer that recovers after taking no damage.",
               "kind": "note",
               "noteStyle": "system"
             },
@@ -284,7 +284,7 @@
             },
             {
               "id": "s1",
-              "text": "Runeseeker — Runestone 1/3: The first stone is on the main path in Grim Tangle, so it is hard to miss if you follow the campaign route.",
+              "text": "Runeseeker - Runestone 1/3: The first stone is on the main path in Grim Tangle, so it is hard to miss if you follow the campaign route.",
               "kind": "note",
               "noteStyle": "system"
             },
@@ -404,7 +404,7 @@
             },
             {
               "id": "s3",
-              "text": "Runeseeker — Runestone 2/3 is located in Hunting Grounds. Farrow comes first; Delwyn is usually a little deeper in the area.",
+              "text": "Runeseeker - Runestone 2/3 is located in Hunting Grounds. Farrow comes first; Delwyn is usually a little deeper in the area.",
               "kind": "note",
               "noteStyle": "system"
             },
@@ -468,7 +468,7 @@
             },
             {
               "id": "s1",
-              "text": "The smoke from the Big Ritual Altar will point to the remaining Small Ritual Altars — just follow the smoke to find it quickly.",
+              "text": "The smoke from the Big Ritual Altar will point to the remaining Small Ritual Altars - just follow the smoke to find it quickly.",
               "kind": "note",
               "noteStyle": "tip"
             },
@@ -531,7 +531,7 @@
             },
             {
               "id": "s3",
-              "text": "Runeseeker — Runestone 3/3: after collecting all 3, return to The Grelwood and summon Farrow at Tree of Souls → enter Lost Catacombs → take Liquid Verisium at the end → return to Clearfell to unlock the Verisium Anvil.",
+              "text": "Runeseeker - Runestone 3/3: after collecting all 3, return to The Grelwood and summon Farrow at Tree of Souls → enter Lost Catacombs → take Liquid Verisium at the end → return to Clearfell to unlock the Verisium Anvil.",
               "kind": "note",
               "noteStyle": "system"
             },
@@ -653,7 +653,7 @@
             },
             {
               "id": "s1",
-              "text": "Sau Candlemass, keep going deeper downstairs to find Geonor. The Manor has winding paths — stick to the downward route.",
+              "text": "Sau Candlemass, keep going deeper downstairs to find Geonor. The Manor has winding paths - stick to the downward route.",
               "kind": "note",
               "noteStyle": "tip"
             },
@@ -713,7 +713,7 @@
     {
       "id": "act2",
       "num": 2,
-      "title": "Act 2 — Vastiri Desert → Dreadnought",
+      "title": "Act 2 - Vastiri Desert → Dreadnought",
       "areas": [
         {
           "id": "act2_z0",
@@ -759,13 +759,13 @@
             },
             {
               "id": "s1",
-              "text": "PATCH 0.5 — Runes of Aldur: Farrow has appeared since Act 1. There are no Runic Alloy quests left in Caravan. Each zone has Ezomyte Remnant; some zones have Runestone to call Farrow and open a new formula.",
+              "text": "PATCH 0.5 - Runes of Aldur: Farrow has appeared since Act 1. There are no Runic Alloy quests left in Caravan. Each zone has Ezomyte Remnant; some zones have Runestone to call Farrow and open a new formula.",
               "kind": "note",
               "noteStyle": "system"
             },
             {
               "id": "s2",
-              "text": "RUNEFORGING: each Act open 1 tier — Act 1 Armour Runeforging → Act 2 Runic Inscriptions → Act 3 Unique Runeforging → Act 4 Ancient Runes.",
+              "text": "RUNEFORGING: each Act open 1 tier - Act 1 Armour Runeforging → Act 2 Runic Inscriptions → Act 3 Unique Runeforging → Act 4 Ancient Runes.",
               "kind": "note",
               "noteStyle": "system"
             },
@@ -1249,7 +1249,7 @@
           "objectives": [
             {
               "id": "s0",
-              "text": "PATCH 0.5 — Act 2 RUNIC VAULT: interact with Runestone to call Farrow to → caravan to Skull of the Titan (Runeseeker) to → find the cave entrance to Runic Vault to → call Farrow to → open Runic Inscriptions.",
+              "text": "PATCH 0.5 - Act 2 RUNIC VAULT: interact with Runestone to call Farrow to → caravan to Skull of the Titan (Runeseeker) to → find the cave entrance to Runic Vault to → call Farrow to → open Runic Inscriptions.",
               "kind": "note",
               "noteStyle": "system"
             },
@@ -1281,7 +1281,7 @@
                   "type": "ascendancy"
                 }
               ],
-              "note": "Backup Djinn Barya Lv28 — Ascendancy road is easier than Balbala."
+              "note": "Backup Djinn Barya Lv28 - Ascendancy road is easier than Balbala."
             },
             {
               "id": "s5",
@@ -1436,7 +1436,7 @@
             },
             {
               "id": "s1",
-              "text": "Defeat Jamanra, the Abomination — Act finale boss 2.",
+              "text": "Defeat Jamanra, the Abomination - Act finale boss 2.",
               "boss": true
             },
             {
@@ -1516,7 +1516,7 @@
     {
       "id": "act3",
       "num": 3,
-      "title": "Act 3 — Sandswept Marsh → Ziggurat",
+      "title": "Act 3 - Sandswept Marsh → Ziggurat",
       "areas": [
         {
           "id": "act3_z0",
@@ -1601,7 +1601,7 @@
             },
             {
               "id": "s1",
-              "text": "RUNES OF ALDUR: Act 3 has 3 Runestone — Jungle Ruins, Venom Crypts, Azak Bog. Grab all 3 and shoot Infested Barrens → Mystic Refuge → clear and say Farrow to open Unique Verisium Runeforging.",
+              "text": "RUNES OF ALDUR: Act 3 has 3 Runestone - Jungle Ruins, Venom Crypts, Azak Bog. Grab all 3 and shoot Infested Barrens → Mystic Refuge → clear and say Farrow to open Unique Verisium Runeforging.",
               "kind": "note",
               "noteStyle": "system"
             },
@@ -1697,13 +1697,13 @@
             },
             {
               "id": "s4",
-              "text": "PATCH 0.5: activates Venom Crypts Runestone if encountered — this is 1 of 3 Runestone of Act 3.",
+              "text": "PATCH 0.5: activates Venom Crypts Runestone if encountered - this is 1 of 3 Runestone of Act 3.",
               "kind": "note",
               "noteStyle": "system"
             },
             {
               "id": "s5",
-              "text": "Activate Venom Crypts Runestone — Runestone 2/3.",
+              "text": "Activate Venom Crypts Runestone - Runestone 2/3.",
               "optional": true
             },
             {
@@ -1714,7 +1714,7 @@
         },
         {
           "id": "act3_z4",
-          "name": "Ziggurat Encampment — Servi Choice",
+          "name": "Ziggurat Encampment - Servi Choice",
           "objectives": [
             {
               "id": "s0",
@@ -2094,7 +2094,7 @@
             },
             {
               "id": "s6",
-              "text": "Activate Azak Bog Runestone — Runestone 3/3.",
+              "text": "Activate Azak Bog Runestone - Runestone 3/3.",
               "optional": true
             },
             {
@@ -2166,7 +2166,7 @@
             },
             {
               "id": "s5",
-              "text": "After the bridge/checkpoint there is an ambush Crawler swarm. Teal Drowning Orbs reduce visibility and are dangerous for prolonged standing — keep moving.",
+              "text": "After the bridge/checkpoint there is an ambush Crawler swarm. Teal Drowning Orbs reduce visibility and are dangerous for prolonged standing - keep moving.",
               "kind": "note",
               "noteStyle": "warning"
             },
@@ -2259,7 +2259,7 @@
           "objectives": [
             {
               "id": "s0",
-              "text": "LAYOUT: each floor is a triangle; the far corner has about a 50% chance of being the correct line — it should be checked first.",
+              "text": "LAYOUT: each floor is a triangle; the far corner has about a 50% chance of being the correct line - it should be checked first.",
               "kind": "note",
               "noteStyle": "tip"
             },
@@ -2301,7 +2301,7 @@
             },
             {
               "id": "s1",
-              "text": "Viper is very mobile with high dodge — bait the first attack cycle from a stable position so you can read the direction.",
+              "text": "Viper is very mobile with high dodge - bait the first attack cycle from a stable position so you can read the direction.",
               "kind": "note",
               "noteStyle": "tip"
             },
@@ -2326,7 +2326,7 @@
             },
             {
               "id": "s6",
-              "text": "Side doors — take idols to sell to Oswald.",
+              "text": "Side doors - take idols to sell to Oswald.",
               "optional": true
             },
             {
@@ -2392,7 +2392,7 @@
           "objectives": [
             {
               "id": "s0",
-              "text": "Defeat Doryani, Royal Thaumaturge — Act finale boss 3.",
+              "text": "Defeat Doryani, Royal Thaumaturge - Act finale boss 3.",
               "boss": true
             },
             {
@@ -2431,12 +2431,12 @@
           "type": "town"
         }
       ],
-      "subtitle": "Overview map may still show the old layout — will be updated when available."
+      "subtitle": "Overview map may still show the old layout - will be updated when available."
     },
     {
       "id": "act4",
       "num": 4,
-      "title": "Act 4 — Wraeclast Awakens",
+      "title": "Act 4 - Wraeclast Awakens",
       "areas": [
         {
           "id": "act4_z0",
@@ -2473,7 +2473,7 @@
             },
             {
               "id": "s6",
-              "text": "RUNEFORGING: Act 4 has no Runestone — collect all 4 Torn Map Pieces instead. This is the Ancient Runes tier after Act 1 Armour → Act 2 Runic Inscriptions → Act 3 Unique Runeforging.",
+              "text": "RUNEFORGING: Act 4 has no Runestone - collect all 4 Torn Map Pieces instead. This is the Ancient Runes tier after Act 1 Armour → Act 2 Runic Inscriptions → Act 3 Unique Runeforging.",
               "kind": "note",
               "noteStyle": "system"
             },
@@ -2499,7 +2499,7 @@
               "text": "Shark Pit → Great White One.",
               "optional": true,
               "boss": true,
-              "note": "Shark Fin — turn in to Kaimana to finish Tribal Medicine; receive a choice Uncut Gem Lv11 + permanent Tukuama blessing."
+              "note": "Shark Fin - turn in to Kaimana to finish Tribal Medicine; receive a choice Uncut Gem Lv11 + permanent Tukuama blessing."
             },
             {
               "id": "s2",
@@ -2548,7 +2548,7 @@
         },
         {
           "id": "act4_z3",
-          "name": "Kingsmarch — Hideout",
+          "name": "Kingsmarch - Hideout",
           "objectives": [
             {
               "id": "s0",
@@ -2893,11 +2893,11 @@
             },
             {
               "id": "s3",
-              "text": "This is the required Runekeeper branch to unlock 13 Ancient Runes — do not skip it."
+              "text": "This is the required Runekeeper branch to unlock 13 Ancient Runes - do not skip it."
             },
             {
               "id": "s4",
-              "text": "Giao 4 maps for Makoru → sail → Dannig → Expedition → Deserted Post → summon Farrow.",
+              "text": "Turn in 4 maps for Makoru → sail → Dannig → Expedition → Deserted Post → summon Farrow.",
               "note": "Open Runesmithing of Knowledge / 13 Ancient Runes."
             }
           ]
@@ -2990,7 +2990,7 @@
             },
             {
               "id": "s1",
-              "text": "Defeat Tavakai — Act 4 finale boss → speak to him.",
+              "text": "Defeat Tavakai - Act 4 finale boss → speak to him.",
               "boss": true
             },
             {
@@ -3001,26 +3001,26 @@
           ]
         }
       ],
-      "subtitle": "Clear lowest-level zones first. If underleveled, farm Act 3 to Lv 44+ before Act 4. Use your map — lowest level first; order below is a guide."
+      "subtitle": "Clear lowest-level zones first. If underleveled, farm Act 3 to Lv 44+ before Act 4. Use your map - lowest level first; order below is a guide."
     },
     {
       "id": "interlude1",
       "num": 5,
-      "title": "Interlude I — Ogham — The Refuge",
+      "title": "Interlude I - Ogham - The Refuge",
       "areas": [
         {
           "id": "interlude1_z0",
-          "name": "Interlude 5.1 — Ogham, The Refuge",
+          "name": "Interlude 5.1 - Ogham, The Refuge",
           "objectives": [
             {
               "id": "s0",
-              "text": "Interludes have permanent rewards that can be missed — finish all 3 before Maps.",
+              "text": "Interludes have permanent rewards that can be missed - finish all 3 before Maps.",
               "kind": "note",
               "noteStyle": "warning"
             },
             {
               "id": "s1",
-              "text": "Resistances drop as soon as you enter an Interlude — only zone in when ready to run it.",
+              "text": "Resistances drop as soon as you enter an Interlude - only zone in when ready to run it.",
               "kind": "note",
               "noteStyle": "warning"
             },
@@ -3030,7 +3030,7 @@
             },
             {
               "id": "s3",
-              "text": "Enter Scorched Farmlands (Waypoint). The northern Blackwood exit is blocked by Darkness — clear Stones of Serle first.",
+              "text": "Enter Scorched Farmlands (Waypoint). The northern Blackwood exit is blocked by Darkness - clear Stones of Serle first.",
               "waypoint": true
             },
             {
@@ -3100,16 +3100,16 @@
           "type": "town"
         }
       ],
-      "subtitle": "Take ALL quests on the 3 mini-maps. Recommended order: Interlude II (center) → Interlude I (left) → Interlude III (right). Center is longest/hardest — run while monsters are lower level."
+      "subtitle": "Take ALL quests on the 3 mini-maps. Recommended order: Interlude II (center) → Interlude I (left) → Interlude III (right). Center is longest/hardest - run while monsters are lower level."
     },
     {
       "id": "interlude2",
       "num": 6,
-      "title": "Interlude II — Khari Bazaar",
+      "title": "Interlude II - Khari Bazaar",
       "areas": [
         {
           "id": "interlude2_z0",
-          "name": "Interlude 5.2 — Khari Bazaar",
+          "name": "Interlude 5.2 - Khari Bazaar",
           "objectives": [
             {
               "id": "s0",
@@ -3123,7 +3123,7 @@
             },
             {
               "id": "s2",
-              "text": "Defeat Akthi & Anundr → speak to Risu.",
+              "text": "Defeat Akthi & Anundr → speak to Risu. (Go to bottom-right)",
               "boss": true,
               "rewards": [
                 {
@@ -3152,7 +3152,7 @@
             },
             {
               "id": "s6",
-              "text": "Sel Khari Sanctuary: (Optional) Two Wishes — place Yoon's Barya & Rangeen's Barya to choose 2 rare jewelry.",
+              "text": "Sel Khari Sanctuary: (Optional) Two Wishes - place Yoon's Barya & Rangeen's Barya to choose 2 rare jewelry.",
               "optional": true,
               "note": "2× Rare Ring/Amulet/Jewel."
             },
@@ -3163,7 +3163,7 @@
             },
             {
               "id": "s8",
-              "text": "Activate Molten One's Gift → enter Skullmaw Stairway in Molten Shrine, find seals.",
+              "text": "Enter Skullmaw Stairway in Molten Shrine, find seals. → Activate Molten One's Gift",
               "note": "+5% Maximum Life."
             },
             {
@@ -3212,16 +3212,16 @@
           "type": "town"
         }
       ],
-      "subtitle": "Take ALL quests on the 3 mini-maps. Recommended order: Interlude II (center) → Interlude I (left) → Interlude III (right). Center is longest/hardest — run while monsters are lower level."
+      "subtitle": "Take ALL quests on the 3 mini-maps. Recommended order: Interlude II (center) → Interlude I (left) → Interlude III (right). Center is longest/hardest - run while monsters are lower level."
     },
     {
       "id": "interlude3",
       "num": 7,
-      "title": "Interlude III — Mount Kriar → Maps",
+      "title": "Interlude III - Mount Kriar → Maps",
       "areas": [
         {
           "id": "interlude3_z0",
-          "name": "Interlude 5.3 — Mount Kriar, The Glade",
+          "name": "Interlude 5.3 - Mount Kriar, The Glade",
           "objectives": [
             {
               "id": "s0",
@@ -3236,17 +3236,11 @@
             {
               "id": "s2",
               "text": "Find Ancient Monument in Ashen Forest.",
-              "rewards": [
-                {
-                  "text": "Skill Gem level scales wi",
-                  "type": "item"
-                }
-              ],
               "note": "Skill Gem level scales with Interlude completion order."
             },
             {
               "id": "s3",
-              "text": "Go to Kriar Village → follow the 2 wisps → defeat Lythara, the Wayward Spear.",
+              "text": "Go to Kriar Village → defeat Lythara, the Wayward Spear.",
               "boss": true,
               "rewards": [
                 {
@@ -3338,7 +3332,7 @@
           ]
         }
       ],
-      "subtitle": "Take ALL quests on the 3 mini-maps. Recommended order: Interlude II (center) → Interlude I (left) → Interlude III (right). Center is longest/hardest — run while monsters are lower level."
+      "subtitle": "Take ALL quests on the 3 mini-maps. Recommended order: Interlude II (center) → Interlude I (left) → Interlude III (right). Center is longest/hardest - run while monsters are lower level."
     }
   ]
 }

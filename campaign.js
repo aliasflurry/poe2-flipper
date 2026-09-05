@@ -175,7 +175,7 @@ function renderCampaignSummary(els) {
   const progress = countOverallProgress();
   const percent = progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0;
 
-  els.campaignSummary.textContent = `${progress.done} of ${progress.total} objectives complete — ${percent}%`;
+  els.campaignSummary.textContent = `${progress.done} of ${progress.total} objectives complete - ${percent}%`;
 
   const bar = document.getElementById("campaignOverallBar");
   if (bar) {
@@ -186,11 +186,9 @@ function renderCampaignSummary(els) {
 }
 
 function renderArea(act, area, els, sectionNum) {
-  const notes = area.objectives.filter((o) => o.kind === "note" && matchesCampaignFilter(o));
-  const required = area.objectives.filter((o) => isRequiredObjective(o) && matchesCampaignFilter(o));
-  const optional = area.objectives.filter((o) => o.kind !== "note" && o.optional && matchesCampaignFilter(o));
+  const visible = area.objectives.filter((o) => matchesCampaignFilter(o));
 
-  if (!notes.length && !required.length && !optional.length) {
+  if (!visible.length) {
     return null;
   }
 
@@ -261,110 +259,107 @@ function renderArea(act, area, els, sectionNum) {
     return note;
   }
 
-  function buildObjectiveList(objectives) {
-    const list = document.createElement("ul");
-    list.className = "campaign-objective-list";
+  function createObjectiveItem(obj) {
+    const item = document.createElement("li");
+    const classes = ["campaign-objective"];
+    if (obj.optional) classes.push("optional");
+    if (obj.boss) classes.push("is-boss");
+    if (obj.waypoint) classes.push("is-waypoint");
+    item.className = classes.join(" ");
 
-    for (const obj of objectives) {
-      const item = document.createElement("li");
-      const classes = ["campaign-objective"];
-      if (obj.optional) classes.push("optional");
-      if (obj.boss) classes.push("is-boss");
-      if (obj.waypoint) classes.push("is-waypoint");
-      item.className = classes.join(" ");
+    const label = document.createElement("label");
 
-      const label = document.createElement("label");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = isObjCompleted(act.id, area.id, obj.id);
+    if (checkbox.checked) item.classList.add("done");
 
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.checked = isObjCompleted(act.id, area.id, obj.id);
-      if (checkbox.checked) item.classList.add("done");
+    const textWrap = document.createElement("span");
+    textWrap.className = "campaign-objective-content";
 
-      const textWrap = document.createElement("span");
-      textWrap.className = "campaign-objective-content";
+    const textRow = document.createElement("span");
+    textRow.className = "campaign-objective-text-row";
 
-      const textRow = document.createElement("span");
-      textRow.className = "campaign-objective-text-row";
+    const text = document.createElement("span");
+    text.className = "campaign-objective-text";
+    text.textContent = obj.text;
+    textRow.append(text);
 
-      const text = document.createElement("span");
-      text.className = "campaign-objective-text";
-      text.textContent = obj.text;
-      textRow.append(text);
-
-      if (obj.boss || obj.waypoint) {
-        const badges = document.createElement("span");
-        badges.className = "campaign-objective-badges";
-        if (obj.boss) {
-          const b = document.createElement("span");
-          b.className = "campaign-badge campaign-badge-boss";
-          b.textContent = "Boss";
-          badges.append(b);
-        }
-        if (obj.waypoint) {
-          const b = document.createElement("span");
-          b.className = "campaign-badge campaign-badge-waypoint";
-          b.textContent = "Waypoint";
-          badges.append(b);
-        }
-        textRow.append(badges);
+    if (obj.boss || obj.waypoint) {
+      const badges = document.createElement("span");
+      badges.className = "campaign-objective-badges";
+      if (obj.boss) {
+        const b = document.createElement("span");
+        b.className = "campaign-badge campaign-badge-boss";
+        b.textContent = "Boss";
+        badges.append(b);
       }
-
-      textWrap.append(textRow);
-
-      if (obj.note) {
-        const tip = document.createElement("span");
-        tip.className = "campaign-objective-note";
-        tip.textContent = obj.note;
-        textWrap.append(tip);
+      if (obj.waypoint) {
+        const b = document.createElement("span");
+        b.className = "campaign-badge campaign-badge-waypoint";
+        b.textContent = "Waypoint";
+        badges.append(b);
       }
-
-      if (obj.rewards?.length) {
-        const rewardRow = document.createElement("span");
-        rewardRow.className = "campaign-objective-rewards";
-        for (const reward of obj.rewards) {
-          rewardRow.append(createRewardPill(reward.text, reward.type));
-        }
-        textWrap.append(rewardRow);
-      }
-
-      checkbox.addEventListener("change", () => {
-        toggleObj(act.id, area.id, obj.id, checkbox.checked);
-        item.classList.toggle("done", checkbox.checked);
-
-        const newProgress = countAreaProgress(act, area);
-        countEl.textContent = `${newProgress.done}/${newProgress.total}`;
-        const newPercent = newProgress.total > 0
-          ? Math.round((newProgress.done / newProgress.total) * 100)
-          : 0;
-        const areaBar = areaEl.querySelector(".campaign-area-progress-fill");
-        if (areaBar) areaBar.style.width = `${newPercent}%`;
-        areaEl.classList.toggle("is-complete", newProgress.total > 0 && newProgress.done === newProgress.total);
-
-        renderCampaignSummary(els);
-        updateActHeader(act, areaEl.closest(".campaign-act"));
-      });
-
-      label.append(checkbox, textWrap);
-      item.append(label);
-      list.append(item);
+      textRow.append(badges);
     }
 
-    return list;
+    textWrap.append(textRow);
+
+    if (obj.note) {
+      const tip = document.createElement("span");
+      tip.className = "campaign-objective-note";
+      tip.textContent = obj.note;
+      textWrap.append(tip);
+    }
+
+    if (obj.rewards?.length) {
+      const rewardRow = document.createElement("span");
+      rewardRow.className = "campaign-objective-rewards";
+      for (const reward of obj.rewards) {
+        rewardRow.append(createRewardPill(reward.text, reward.type));
+      }
+      textWrap.append(rewardRow);
+    }
+
+    checkbox.addEventListener("change", () => {
+      toggleObj(act.id, area.id, obj.id, checkbox.checked);
+      item.classList.toggle("done", checkbox.checked);
+
+      const newProgress = countAreaProgress(act, area);
+      countEl.textContent = `${newProgress.done}/${newProgress.total}`;
+      const newPercent = newProgress.total > 0
+        ? Math.round((newProgress.done / newProgress.total) * 100)
+        : 0;
+      const areaBar = areaEl.querySelector(".campaign-area-progress-fill");
+      if (areaBar) areaBar.style.width = `${newPercent}%`;
+      areaEl.classList.toggle("is-complete", newProgress.total > 0 && newProgress.done === newProgress.total);
+
+      renderCampaignSummary(els);
+      updateActHeader(act, areaEl.closest(".campaign-act"));
+    });
+
+    label.append(checkbox, textWrap);
+    item.append(label);
+    return item;
   }
 
-  for (const noteObj of notes) {
-    areaEl.append(createGuideNote(noteObj));
-  }
+  // Keep notes/tips/warnings inline in checklist order (matches pathofbuild).
+  let list = null;
+  for (const obj of area.objectives) {
+    if (!matchesCampaignFilter(obj)) continue;
 
-  if (required.length > 0) {
-    areaEl.append(buildObjectiveList(required));
-  }
+    if (obj.kind === "note") {
+      list = null;
+      areaEl.append(createGuideNote(obj));
+      continue;
+    }
 
-  if (optional.length > 0) {
-    const optHeader = document.createElement("p");
-    optHeader.className = "campaign-optional-header";
-    optHeader.textContent = "Optional";
-    areaEl.append(optHeader, buildObjectiveList(optional));
+    if (!list) {
+      list = document.createElement("ul");
+      list.className = "campaign-objective-list";
+      areaEl.append(list);
+    }
+    list.append(createObjectiveItem(obj));
   }
 
   return areaEl;
