@@ -185,7 +185,7 @@ function renderCampaignSummary(els) {
   }
 }
 
-function renderArea(act, area, els) {
+function renderArea(act, area, els, sectionNum) {
   const notes = area.objectives.filter((o) => o.kind === "note" && matchesCampaignFilter(o));
   const required = area.objectives.filter((o) => isRequiredObjective(o) && matchesCampaignFilter(o));
   const optional = area.objectives.filter((o) => o.kind !== "note" && o.optional && matchesCampaignFilter(o));
@@ -209,10 +209,18 @@ function renderArea(act, area, els) {
   const headerLeft = document.createElement("div");
   headerLeft.className = "campaign-area-header-left";
 
+  const nameRow = document.createElement("span");
+  nameRow.className = "campaign-area-name-row";
+
+  const numEl = document.createElement("span");
+  numEl.className = "campaign-area-num";
+  numEl.textContent = `${sectionNum}.`;
+
   const nameEl = document.createElement("span");
   nameEl.className = "campaign-area-name";
   nameEl.textContent = area.name;
-  headerLeft.append(nameEl);
+  nameRow.append(numEl, nameEl);
+  headerLeft.append(nameRow);
 
   if (area.note) {
     const noteEl = document.createElement("span");
@@ -295,7 +303,7 @@ function renderArea(act, area, els) {
         if (obj.waypoint) {
           const b = document.createElement("span");
           b.className = "campaign-badge campaign-badge-waypoint";
-          b.textContent = "WP";
+          b.textContent = "Waypoint";
           badges.append(b);
         }
         textRow.append(badges);
@@ -447,13 +455,13 @@ function renderCampaignActs(els) {
     if (collapsed) body.setAttribute("hidden", "");
 
     let visibleAreas = 0;
-    for (const area of act.areas) {
-      const areaEl = renderArea(act, area, els);
+    act.areas.forEach((area, index) => {
+      const areaEl = renderArea(act, area, els, index + 1);
       if (areaEl) {
         body.append(areaEl);
         visibleAreas += 1;
       }
-    }
+    });
 
     if (!visibleAreas) {
       const empty = document.createElement("p");

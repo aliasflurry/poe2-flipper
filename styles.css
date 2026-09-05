@@ -1285,10 +1285,30 @@ h2 {
   min-width: 0;
 }
 
+.campaign-area-name-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.campaign-area-num {
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
 .campaign-area-name {
   font-size: 0.92rem;
   font-weight: 700;
   color: var(--text);
+}
+
+.campaign-area-town .campaign-area-num {
+  color: rgba(215, 168, 79, 0.7);
+  font-size: 0.8rem;
 }
 
 .campaign-area-town .campaign-area-name {
