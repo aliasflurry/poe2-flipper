@@ -8,7 +8,7 @@ const GAME_CONFIGS = {
     localSnapshotUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/snapshot.json`,
     historyUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/price-history.json`,
     goldCostsUrl: "data/poe2_data/gold-costs.json",
-    liveSnapshotUrl: "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs"
+    liveSnapshotUrl: "https://api.poe2scout.com/poe2/Leagues/forbiddenrites/SnapshotPairs"
   },
   poe: {
     label: "Path of Exile",
