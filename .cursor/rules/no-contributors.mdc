@@ -1,0 +1,15 @@
+---
+description: Never add Contributors, credits, or Cursor co-author trailers
+alwaysApply: true
+---
+
+# No Contributors
+
+Do **not** add any Contributors section, credits block, acknowledgements list, or similar attribution to Cursor, agents, or tools.
+
+- Never create or update `CONTRIBUTORS`, `AUTHORS`, `CREDITS`, or all-contributors files/sections.
+- Never add README badges or tables that list Cursor or AI agents as contributors.
+- Never add `Co-authored-by: Cursor`, `Co-authored-by: cursoragent@cursor.com`, or any other AI/agent co-author trailer to commit messages.
+- Never mention Cursor, Auto, Composer, or other agents as authors, contributors, or credits in docs, UI, or metadata.
+
+If existing contributor/credit content for Cursor or agents is present, remove it when touching that file. Human project owners may keep their own attribution; do not invent new contributor entries.

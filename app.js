@@ -13,7 +13,7 @@ const GAME_CONFIGS = {
     localSnapshotUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/snapshot.json`,
     historyUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/price-history.json`,
     goldCostsUrl: "data/poe2_data/gold-costs.json",
-    liveSnapshotUrl: "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs"
+    liveSnapshotUrl: "https://api.poe2scout.com/poe2/Leagues/forbiddenrites/SnapshotPairs"
   },
   poe: {
     label: "Path of Exile",
@@ -144,6 +144,7 @@ const els = {
   campaignStatus: document.querySelector("#campaignStatus"),
   campaignMeta: document.querySelector("#campaignMeta"),
   campaignResetButton: document.querySelector("#campaignResetButton"),
+  campaignFilters: document.querySelectorAll("[data-campaign-filter]"),
   workspace: document.querySelector(".workspace")
 };
 
@@ -2273,9 +2274,20 @@ async function loadData() {
 
     els.status.textContent = `${state.rawPairs.length.toLocaleString()} ${game.label} exchange pairs loaded`;
     const matchedGoldCosts = `${state.goldCostsByItem.size.toLocaleString()} gold costs matched`;
-    els.snapshotMeta.textContent = loaded.updatedAt
-      ? `${formatSnapshotMeta(loaded.updatedAt)} | ${matchedGoldCosts}`
-      : `Loaded ${state.lastLoadedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} | ${matchedGoldCosts}`;
+    const dataChangedAt = USE_API
+      ? loaded.updatedAt
+      : lastDataChangedAt(
+        loaded.pairs,
+        history.snapshots || [],
+        loaded.updatedAt,
+        state.lastLoadedAt?.toISOString()
+      );
+    const snapshotLabel = !dataChangedAt
+      ? `Loaded ${state.lastLoadedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+      : USE_API
+        ? formatSnapshotMeta(dataChangedAt)
+        : `Data updated ${new Date(dataChangedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`;
+    els.snapshotMeta.textContent = `${snapshotLabel} | ${matchedGoldCosts}`;
   } catch (error) {
     if (requestedGameId !== state.gameId) return;
 
@@ -2322,6 +2334,86 @@ function normalizeTotalDifferences(payload) {
     if (key && Number.isFinite(total)) totalDifferences[key] = total;
   }
   return totalDifferences;
+}
+
+function buildPriceMapFromRawPairs(pairs) {
+  const prices = {};
+  for (const pair of pairs) {
+    for (const [item, data] of [
+      [pair?.CurrencyOne, pair?.CurrencyOneData],
+      [pair?.CurrencyTwo, pair?.CurrencyTwoData]
+    ]) {
+      const apiId = item?.ApiId;
+      const price = toNumber(data?.RelativePrice);
+      if (apiId && price > 0) prices[apiId] = price;
+    }
+  }
+  return prices;
+}
+
+function buildPairMapFromRawPairs(pairs) {
+  const result = {};
+  for (const pair of pairs) {
+    const oneId = pair?.CurrencyOne?.ApiId;
+    const twoId = pair?.CurrencyTwo?.ApiId;
+    if (!oneId || !twoId) continue;
+
+    const onePrice = toNumber(pair?.CurrencyOneData?.RelativePrice);
+    const twoPrice = toNumber(pair?.CurrencyTwoData?.RelativePrice);
+    const volume = toNumber(pair?.Volume);
+    if (onePrice <= 0 || twoPrice <= 0) continue;
+
+    result[`${oneId}>${twoId}`] = { onePrice, twoPrice, volume };
+  }
+  return result;
+}
+
+function sortObjectKeys(object) {
+  return Object.keys(object)
+    .sort()
+    .reduce((sorted, key) => {
+      sorted[key] = object[key];
+      return sorted;
+    }, {});
+}
+
+function snapshotDataFingerprint(snapshot) {
+  const prices = Array.isArray(snapshot?.pairs)
+    ? buildPriceMapFromRawPairs(snapshot.pairs)
+    : (snapshot?.prices && typeof snapshot.prices === "object" ? snapshot.prices : {});
+  const pairs = Array.isArray(snapshot?.pairs)
+    ? buildPairMapFromRawPairs(snapshot.pairs)
+    : (snapshot?.pairs && typeof snapshot.pairs === "object" ? snapshot.pairs : {});
+
+  return JSON.stringify({
+    prices: sortObjectKeys(prices),
+    pairs: sortObjectKeys(pairs)
+  });
+}
+
+function lastDataChangedAt(rawPairs, historySnapshots, snapshotUpdatedAt, loadedAt = null) {
+  const currentFingerprint = snapshotDataFingerprint({ pairs: rawPairs });
+  const timeline = historySnapshots
+    .filter((snapshot) => snapshot?.updatedAt)
+    .sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt));
+
+  if (timeline.length === 0) {
+    return snapshotUpdatedAt || loadedAt || null;
+  }
+
+  let lastChange = timeline[0].updatedAt;
+  for (let index = 1; index < timeline.length; index += 1) {
+    if (snapshotDataFingerprint(timeline[index]) !== snapshotDataFingerprint(timeline[index - 1])) {
+      lastChange = timeline[index].updatedAt;
+    }
+  }
+
+  const latestHistory = timeline[timeline.length - 1];
+  if (currentFingerprint !== snapshotDataFingerprint(latestHistory)) {
+    return snapshotUpdatedAt || loadedAt || latestHistory.updatedAt;
+  }
+
+  return lastChange;
 }
 
 async function fetchPriceHistory() {

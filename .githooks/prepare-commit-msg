@@ -1,0 +1,10 @@
+#!/bin/sh
+# Strip Cursor/agent co-author trailers so they never appear as GitHub contributors.
+MSG_FILE="$1"
+[ -f "$MSG_FILE" ] || exit 0
+
+# portable: rewrite without sed -i (works on Git Bash / Windows)
+TMP="${MSG_FILE}.tmp"
+grep -viE '^Co-authored-by:[[:space:]]*(Cursor|.*cursoragent@cursor\.com)' "$MSG_FILE" > "$TMP" || true
+mv "$TMP" "$MSG_FILE"
+exit 0

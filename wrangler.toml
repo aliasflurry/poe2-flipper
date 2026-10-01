@@ -8,9 +8,9 @@ binding = "ASSETS"
 run_worker_first = ["/api/*"]
 
 [[d1_databases]]
-binding = "DB"
+binding = "price_checker"
 database_name = "price-checker"
-migrations_dir = "migrations"
+database_id = "71eb5e53-4c6f-4284-815f-45ddf3e4f54f"
 
 [triggers]
 crons = ["*/30 * * * *"]

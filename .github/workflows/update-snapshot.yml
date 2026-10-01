@@ -30,7 +30,7 @@ jobs:
 
           $snapshots = @(
             @{
-              source = "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs"
+              source = "https://api.poe2scout.com/poe2/Leagues/forbiddenrites/SnapshotPairs"
               path = "data/poe2_data/snapshot.json"
               historyPath = "data/poe2_data/price-history.json"
             },
@@ -257,11 +257,35 @@ jobs:
             } | ConvertTo-Json -Depth 100 -Compress | Set-Content -Path $path -Encoding utf8NoBOM
           }
 
+          function Get-SnapshotDataJson($pairs) {
+            return (@{
+              prices = Get-PriceMap $pairs
+              pairs = Get-PairMap $pairs
+            } | ConvertTo-Json -Depth 100 -Compress)
+          }
+
           foreach ($snapshot in $snapshots) {
             $source = $snapshot.source
             $pairsJson = (Invoke-WebRequest -Uri $source -Headers $headers).Content
             $payload = $pairsJson | ConvertFrom-Json
             $pairs = Get-SnapshotPairs $payload
+            $newDataJson = Get-SnapshotDataJson $pairs
+            $existingUpdatedAt = $null
+            $dataChanged = $true
+
+            if (Test-Path -Path $snapshot.path) {
+              $existingFile = Get-Content -Path $snapshot.path -Raw | ConvertFrom-Json
+              $existingUpdatedAt = $existingFile.updatedAt
+              $existingPairs = Get-SnapshotPairs $existingFile.pairs
+              $existingDataJson = Get-SnapshotDataJson $existingPairs
+              $dataChanged = $newDataJson -ne $existingDataJson
+            }
+
+            if (-not $dataChanged) {
+              Write-Host "No exchange data change for $($snapshot.path); keeping updatedAt $existingUpdatedAt."
+              continue
+            }
+
             $updatedAt = (Get-Date).ToUniversalTime().ToString("o")
             [pscustomobject]@{
               updatedAt = $updatedAt
