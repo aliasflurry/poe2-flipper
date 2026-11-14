@@ -17,7 +17,7 @@ const GAME_CONFIGS = {
     localSnapshotUrl: `${SNAPSHOT_DATA_BASE}/data/poe_data/snapshot.json`,
     historyUrl: `${SNAPSHOT_DATA_BASE}/data/poe_data/price-history.json`,
     goldCostsUrl: "data/poe_data/gold-costs.json",
-    liveSnapshotUrl: "https://api.poe2scout.com/pc/Leagues/allflame/SnapshotPairs"
+    liveSnapshotUrl: "https://api.poe2scout.com/pc/Leagues/covens/SnapshotPairs"
   }
 };
 const DEFAULT_GAME_ID = "poe2";
@@ -2261,6 +2261,7 @@ async function fetchPriceHistory() {
   if (!response?.ok) return empty;
 
   const payload = await response.json();
+  if (payload?.source !== game.liveSnapshotUrl) return empty;
   const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const snapshots = Array.isArray(payload?.snapshots) ? payload.snapshots : [];
 
@@ -2291,7 +2292,10 @@ async function fetchSnapshot() {
   if (game.localSnapshotUrl) {
     const localResponse = await fetch(game.localSnapshotUrl, { cache: "no-store" });
     if (localResponse.ok) {
-      return normalizeSnapshotPayload(await localResponse.json());
+      const payload = await localResponse.json();
+      if (payload?.source === game.liveSnapshotUrl) {
+        return normalizeSnapshotPayload(payload);
+      }
     }
   }
 
@@ -2302,6 +2306,9 @@ async function fetchSnapshot() {
   });
 
   if (!liveResponse.ok) {
+    if (state.gameId === "poe" && liveResponse.status === 400) {
+      throw new Error("POE2 Scout has not published Covens of Umbra exchange data yet.");
+    }
     throw new Error(`live API HTTP ${liveResponse.status}`);
   }
 

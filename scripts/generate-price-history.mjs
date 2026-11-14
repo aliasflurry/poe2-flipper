@@ -5,12 +5,12 @@ const GAMES = [
   {
     snapshotPath: "data/poe2_data/snapshot.json",
     historyPath: "data/poe2_data/price-history.json",
-    source: "https://api.poe2scout.com/poe2/Leagues/runes/SnapshotPairs"
+    source: "https://api.poe2scout.com/poe2/Leagues/forbiddenrites/SnapshotPairs"
   },
   {
     snapshotPath: "data/poe_data/snapshot.json",
     historyPath: "data/poe_data/price-history.json",
-    source: "https://api.poe2scout.com/pc/Leagues/mirage/SnapshotPairs"
+    source: "https://api.poe2scout.com/pc/Leagues/covens/SnapshotPairs"
   }
 ];
 
@@ -80,6 +80,10 @@ function buildBase(pairs) {
 
 function generate(game) {
   const payload = JSON.parse(readFileSync(game.snapshotPath, "utf8"));
+  if (payload.source !== game.source) {
+    console.warn(`Snapshot source does not match ${game.source}, skipping ${game.snapshotPath}.`);
+    return;
+  }
   const pairs = getPairs(payload);
   const { items, pairDefs } = buildBase(pairs);
 

@@ -34,7 +34,7 @@ jobs:
               historyPath = "data/poe2_data/price-history.json"
             },
             @{
-              source = "https://api.poe2scout.com/pc/Leagues/allflame/SnapshotPairs"
+              source = "https://api.poe2scout.com/pc/Leagues/covens/SnapshotPairs"
               path = "data/poe_data/snapshot.json"
               historyPath = "data/poe_data/price-history.json"
             }
@@ -224,7 +224,7 @@ jobs:
 
             if (Test-Path -Path $path) {
               $existing = Get-Content -Path $path -Raw | ConvertFrom-Json
-              if ($existing.snapshots) {
+              if ($existing.source -eq $source -and $existing.snapshots) {
                 $snapshots = @($existing.snapshots | Where-Object {
                   $_.updatedAt -and ([datetime]$_.updatedAt) -ge $cutoff
                 })
@@ -268,16 +268,21 @@ jobs:
             $pairsJson = (Invoke-WebRequest -Uri $source -Headers $headers).Content
             $payload = $pairsJson | ConvertFrom-Json
             $pairs = Get-SnapshotPairs $payload
+            if (-not $pairs.Count) {
+              throw "No exchange pairs returned by $source"
+            }
             $newDataJson = Get-SnapshotDataJson $pairs
             $existingUpdatedAt = $null
             $dataChanged = $true
 
             if (Test-Path -Path $snapshot.path) {
               $existingFile = Get-Content -Path $snapshot.path -Raw | ConvertFrom-Json
-              $existingUpdatedAt = $existingFile.updatedAt
-              $existingPairs = Get-SnapshotPairs $existingFile.pairs
-              $existingDataJson = Get-SnapshotDataJson $existingPairs
-              $dataChanged = $newDataJson -ne $existingDataJson
+              if ($existingFile.source -eq $source) {
+                $existingUpdatedAt = $existingFile.updatedAt
+                $existingPairs = Get-SnapshotPairs $existingFile.pairs
+                $existingDataJson = Get-SnapshotDataJson $existingPairs
+                $dataChanged = $newDataJson -ne $existingDataJson
+              }
             }
 
             if (-not $dataChanged) {
