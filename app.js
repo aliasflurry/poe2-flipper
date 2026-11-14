@@ -4,20 +4,22 @@ const GAME_CONFIGS = {
   poe2: {
     label: "Path of Exile 2",
     storagePrefix: "poe2",
-    defaultStartCurrency: "exalted",
+    defaultStartCurrency: "Metadata/Items/Currency/CurrencyAddModToRare",
     localSnapshotUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/snapshot.json`,
     historyUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/price-history.json`,
     goldCostsUrl: "data/poe2_data/gold-costs.json",
-    liveSnapshotUrl: "https://api.poe2scout.com/poe2/Leagues/forbiddenrites/SnapshotPairs"
+    source: "https://web.poecdn.com/api/currency-exchange/poe2",
+    league: "Forbidden Rites"
   },
   poe: {
     label: "Path of Exile",
     storagePrefix: "poe",
-    defaultStartCurrency: "chaos",
+    defaultStartCurrency: "Metadata/Items/Currency/CurrencyRerollRare",
     localSnapshotUrl: `${SNAPSHOT_DATA_BASE}/data/poe_data/snapshot.json`,
     historyUrl: `${SNAPSHOT_DATA_BASE}/data/poe_data/price-history.json`,
     goldCostsUrl: "data/poe_data/gold-costs.json",
-    liveSnapshotUrl: "https://api.poe2scout.com/pc/Leagues/covens/SnapshotPairs"
+    source: "https://web.poecdn.com/api/currency-exchange",
+    league: "Covens"
   }
 };
 const DEFAULT_GAME_ID = "poe2";
@@ -36,6 +38,7 @@ const CATEGORY_LABELS = {
     allflameembers: "Allflame Embers",
     ancestor: "Tattoos & Omens",
     cards: "Divination Cards",
+    divinationcards: "Divination Cards",
     catalysts: "Catalysts",
     currency: "Currency",
     deliriumorbs: "Delirium Orbs",
@@ -43,6 +46,7 @@ const CATEGORY_LABELS = {
     essences: "Essences",
     expedition: "Expedition",
     fragments: "Fragments",
+    mapfragments: "Map Fragments",
     keepers: "Keepers",
     oils: "Oils",
     runegrafts: "Runegrafts"
@@ -55,6 +59,7 @@ const CATEGORY_LABELS = {
     essences: "Essences",
     expedition: "Expedition",
     fragments: "Fragments",
+    mapfragments: "Map Fragments",
     idol: "Idols",
     incursion: "Incursion",
     lineagesupportgems: "Lineage Support Gems",
@@ -72,7 +77,6 @@ const state = {
   gameId: DEFAULT_GAME_ID,
   rawPairs: [],
   items: new Map(),
-  itemPricesById: new Map(),
   priceHistory: [],
   totalDifferences: {},
   goldCostsByName: new Map(),
@@ -164,7 +168,7 @@ function gameStorageKey(key) {
 }
 
 function defaultStartCurrency() {
-  return currentGame().defaultStartCurrency || "exalted";
+  return currentGame().defaultStartCurrency || "Metadata/Items/Currency/CurrencyAddModToRare";
 }
 
 function toNumber(value) {
@@ -213,13 +217,6 @@ function rememberItem(item) {
   }
 }
 
-function rememberItemPrice(item, data) {
-  const price = toNumber(data?.RelativePrice);
-  if (item?.ApiId && price > 0) {
-    state.itemPricesById.set(item.ApiId, price);
-  }
-}
-
 function hydrateGoldCosts() {
   state.goldCostsByItem.clear();
 
@@ -242,7 +239,8 @@ function makeEdge(pair, fromItem, toItem, fromData, toData) {
   }
 
   const id = `${pair.CurrencyExchangeSnapshotPairId}:${fromItem.ApiId}>${toItem.ApiId}`;
-  const originalRate = fromPrice / toPrice;
+  const quotedRate = toNumber(fromData.RateToOther);
+  const originalRate = quotedRate > 0 ? quotedRate : fromPrice / toPrice;
   const overrideRate = state.rateOverrides.get(id);
 
   return {
@@ -264,7 +262,6 @@ function makeEdge(pair, fromItem, toItem, fromData, toData) {
 
 function buildGraph(pairs) {
   state.items.clear();
-  state.itemPricesById.clear();
   state.edgesByFrom.clear();
 
   for (const pair of pairs) {
@@ -272,9 +269,6 @@ function buildGraph(pairs) {
     const two = pair.CurrencyTwo;
     rememberItem(one);
     rememberItem(two);
-    rememberItemPrice(one, pair.CurrencyOneData);
-    rememberItemPrice(two, pair.CurrencyTwoData);
-
     const edges = [
       makeEdge(pair, one, two, pair.CurrencyOneData, pair.CurrencyTwoData),
       makeEdge(pair, two, one, pair.CurrencyTwoData, pair.CurrencyOneData)
@@ -465,18 +459,23 @@ async function copyItemName(name) {
   }
 }
 
-function exaltedValueFor(itemId) {
-  if (itemId === "exalted") return 1;
-  return state.itemPricesById.get(itemId) || 0;
-}
-
 function marketValueFor(itemId) {
-  if (itemId === defaultStartCurrency()) return 1;
-  return state.itemPricesById.get(itemId) || 0;
+  const baseId = defaultStartCurrency();
+  if (itemId === baseId) return 1;
+
+  const edges = state.edgesByFrom.get(itemId) || [];
+  const direct = edges.find((edge) => edge.to === baseId);
+  if (direct) return direct.originalRate;
+
+  for (const edge of edges) {
+    const second = (state.edgesByFrom.get(edge.to) || []).find((next) => next.to === baseId);
+    if (second) return edge.originalRate * second.originalRate;
+  }
+  return 0;
 }
 
 function formatDivineProfit(value) {
-  const divinePrice = marketValueFor("divine");
+  const divinePrice = marketValueFor("Metadata/Items/Currency/CurrencyModValues");
   const fallbackCurrency = state.gameId === "poe" ? "Chaos Orb" : "Exalted Orb";
   const remainderCurrency = state.gameId === "poe" ? "Chaos" : "Exalted";
   if (!divinePrice) {
@@ -1098,12 +1097,12 @@ function pairRateAt(snapshot, fromId, toId) {
   if (pairs) {
     const direct = pairs[`${fromId}>${toId}`];
     if (direct) {
-      const rate = Number(direct.onePrice) / Number(direct.twoPrice);
+      const rate = Number(direct.forwardRate || Number(direct.onePrice) / Number(direct.twoPrice));
       if (Number.isFinite(rate) && rate > 0) return rate;
     }
     const reverse = pairs[`${toId}>${fromId}`];
     if (reverse) {
-      const rate = Number(reverse.twoPrice) / Number(reverse.onePrice);
+      const rate = Number(reverse.reverseRate || Number(reverse.twoPrice) / Number(reverse.onePrice));
       if (Number.isFinite(rate) && rate > 0) return rate;
     }
   }
@@ -2042,7 +2041,6 @@ function resetControlsToDefaults() {
 function resetExchangeState() {
   state.rawPairs = [];
   state.items.clear();
-  state.itemPricesById.clear();
   state.priceHistory = [];
   state.totalDifferences = {};
   state.goldCostsByName.clear();
@@ -2113,7 +2111,7 @@ async function loadData() {
     renderResults();
     renderPriceTrends();
 
-    els.status.textContent = `${state.rawPairs.length.toLocaleString()} ${game.label} exchange pairs loaded`;
+    els.status.textContent = `${state.rawPairs.length.toLocaleString()} ${game.label} hourly market pairs loaded (estimated rates)`;
     const matchedGoldCosts = `${state.goldCostsByItem.size.toLocaleString()} gold costs matched`;
     const dataChangedAt = lastDataChangedAt(
       loaded.pairs,
@@ -2122,12 +2120,12 @@ async function loadData() {
       state.lastLoadedAt?.toISOString()
     );
     els.snapshotMeta.textContent = dataChangedAt
-      ? `Data updated ${new Date(dataChangedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} | ${matchedGoldCosts}`
+      ? `Market hour ${new Date(dataChangedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} | ${matchedGoldCosts}`
       : `Loaded ${state.lastLoadedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} | ${matchedGoldCosts}`;
   } catch (error) {
     if (requestedGameId !== state.gameId) return;
 
-    els.status.textContent = `Could not load ${game.label} poe2scout data.`;
+    els.status.textContent = `Could not load ${game.label} exchange data.`;
     els.snapshotMeta.textContent = error.message;
     renderEmpty("The exchange snapshot could not be reached from this browser. Refresh again or try the other game tab.");
     renderTrendsEmpty("The exchange snapshot could not be reached from this browser.");
@@ -2172,21 +2170,6 @@ function normalizeTotalDifferences(payload) {
   return totalDifferences;
 }
 
-function buildPriceMapFromRawPairs(pairs) {
-  const prices = {};
-  for (const pair of pairs) {
-    for (const [item, data] of [
-      [pair?.CurrencyOne, pair?.CurrencyOneData],
-      [pair?.CurrencyTwo, pair?.CurrencyTwoData]
-    ]) {
-      const apiId = item?.ApiId;
-      const price = toNumber(data?.RelativePrice);
-      if (apiId && price > 0) prices[apiId] = price;
-    }
-  }
-  return prices;
-}
-
 function buildPairMapFromRawPairs(pairs) {
   const result = {};
   for (const pair of pairs) {
@@ -2199,7 +2182,12 @@ function buildPairMapFromRawPairs(pairs) {
     const volume = toNumber(pair?.Volume);
     if (onePrice <= 0 || twoPrice <= 0) continue;
 
-    result[`${oneId}>${twoId}`] = { onePrice, twoPrice, volume };
+    result[`${oneId}>${twoId}`] = {
+      one: oneId, two: twoId, onePrice, twoPrice,
+      forwardRate: toNumber(pair?.CurrencyOneData?.RateToOther),
+      reverseRate: toNumber(pair?.CurrencyTwoData?.RateToOther),
+      volume
+    };
   }
   return result;
 }
@@ -2214,17 +2202,11 @@ function sortObjectKeys(object) {
 }
 
 function snapshotDataFingerprint(snapshot) {
-  const prices = Array.isArray(snapshot?.pairs)
-    ? buildPriceMapFromRawPairs(snapshot.pairs)
-    : (snapshot?.prices && typeof snapshot.prices === "object" ? snapshot.prices : {});
   const pairs = Array.isArray(snapshot?.pairs)
     ? buildPairMapFromRawPairs(snapshot.pairs)
     : (snapshot?.pairs && typeof snapshot.pairs === "object" ? snapshot.pairs : {});
 
-  return JSON.stringify({
-    prices: sortObjectKeys(prices),
-    pairs: sortObjectKeys(pairs)
-  });
+  return JSON.stringify(sortObjectKeys(pairs));
 }
 
 function lastDataChangedAt(rawPairs, historySnapshots, snapshotUpdatedAt, loadedAt = null) {
@@ -2261,7 +2243,7 @@ async function fetchPriceHistory() {
   if (!response?.ok) return empty;
 
   const payload = await response.json();
-  if (payload?.source !== game.liveSnapshotUrl) return empty;
+  if (payload?.source !== game.source || payload?.league !== game.league) return empty;
   const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const snapshots = Array.isArray(payload?.snapshots) ? payload.snapshots : [];
 
@@ -2288,34 +2270,15 @@ function normalizeSnapshotPayload(payload) {
 
 async function fetchSnapshot() {
   const game = currentGame();
-
-  if (game.localSnapshotUrl) {
-    const localResponse = await fetch(game.localSnapshotUrl, { cache: "no-store" });
-    if (localResponse.ok) {
-      const payload = await localResponse.json();
-      if (payload?.source === game.liveSnapshotUrl) {
-        return normalizeSnapshotPayload(payload);
-      }
-    }
+  const response = await fetch(game.localSnapshotUrl, { cache: "no-store" });
+  if (!response.ok) throw new Error(`snapshot HTTP ${response.status}`);
+  const payload = await response.json();
+  if (payload?.source !== game.source || payload?.league !== game.league) {
+    throw new Error(`The ${game.league} official exchange snapshot has not been published yet.`);
   }
-
-  const liveResponse = await fetch(game.liveSnapshotUrl, {
-    headers: {
-      accept: "application/json"
-    }
-  });
-
-  if (!liveResponse.ok) {
-    if (state.gameId === "poe" && liveResponse.status === 400) {
-      throw new Error("POE2 Scout has not published Covens of Umbra exchange data yet.");
-    }
-    throw new Error(`live API HTTP ${liveResponse.status}`);
-  }
-
-  return {
-    ...normalizeSnapshotPayload(await liveResponse.json()),
-    updatedAt: null
-  };
+  const snapshot = normalizeSnapshotPayload(payload);
+  if (!snapshot.pairs.length) throw new Error(`No ${game.league} exchange pairs in the snapshot.`);
+  return snapshot;
 }
 
 function handleFilterChange() {

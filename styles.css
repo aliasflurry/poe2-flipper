@@ -45,6 +45,13 @@ select {
   min-height: calc(100vh - 64px);
 }
 
+.third-party-notice {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
 .game-tabs {
   display: flex;
   gap: 8px;

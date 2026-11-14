@@ -1,15 +1,16 @@
 # PoE 2 Exchange Path Finder
 
-A static GitHub Pages tool that reads poe2scout exchange snapshot data and ranks the best 2-trade or 3-trade loops for a selected starting currency.
+A static GitHub Pages tool that reads the official Path of Exile Currency Exchange hourly history and ranks 2-trade or 3-trade loops for a selected starting currency.
 
 ## How it works
 
-- Each poe2scout pair contains two items and each item has a `RelativePrice` in Exalted Orb value.
+- Each official market digest gives a range of ratios, traded volume, and stock for two items. The app uses the conservative end of the hourly range for each trade direction; these historical estimates are not live quotes.
 - The app converts every pair into two directed trades.
 - A route is profitable when multiplying the trade rates returns more of the starting currency than it began with.
 - Volume and stock filters help remove routes that are likely too thin to execute.
 - Gold costs are read from the selected game's data folder: `poe2_data/gold-costs.json` or `poe_data/gold-costs.json`.
 - Price history is read from the `snapshots` branch and appears when a result row is expanded.
+- Known names and icons come from local catalogs migrated from earlier snapshots. Items missing from the catalogs use readable names derived from their exchange IDs.
 
 ## Deploy locally
 
@@ -40,14 +41,14 @@ No build step is required.
 1. Create a GitHub repository.
 2. Push this folder to the repository.
 3. Push the `snapshots` branch.
-4. Open the **Actions** tab and run **Update poe2scout snapshot** once.
+4. Open the **Actions** tab and run **Update official exchange snapshots** once.
 5. In GitHub, open **Settings > Pages**.
 6. Set **Source** to **Deploy from a branch**.
 7. Choose your main branch and the root folder.
 
 The exchange path finder is fully static, so no build step is required.
 
-The browser cannot reliably fetch the poe2scout API directly because of CORS, so `.github/workflows/update-snapshot.yml` refreshes the snapshot JSON files and commits them to the `snapshots` branch. `main` keeps the app source clean, while the generated snapshot history lives separately. The workflow fetches live snapshot pairs every 30 minutes, but only appends a price-history snapshot every 3 hours. Each price-history snapshot records the per-pair price history (both currencies' relative prices and volume) alongside a flat item price map, and only the last 7 days are kept. The file also stores a `totalDifferences` map (`from>to` → sum of absolute consecutive rate changes) over that window, which Price trends uses for sorting.
+The official Currency Exchange feed publishes completed hourly digests and cannot be fetched directly by this browser app. `.github/workflows/update-snapshot.yml` reads the PoE1 `Covens` and PoE2 `Forbidden Rites` markets each hour, converts them into app snapshots, and commits them to the `snapshots` branch. `main` keeps the app source clean, while generated history lives separately. Price history is sampled every 3 hours and retains the last 7 days. The file also stores a `totalDifferences` map (`from>to` → sum of absolute consecutive rate changes) over that window, which Price trends uses for sorting.
 
 ## Stash lookup proxy
 
