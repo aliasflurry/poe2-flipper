@@ -54,6 +54,27 @@
               </select>
             </label>
 
+            <div class="estimate-field">
+              <div class="estimate-heading">
+                <label for="estimateMode">Estimate</label>
+                <div class="estimate-help">
+                  <button type="button" class="estimate-help-button" aria-label="About estimate types" aria-describedby="estimateHelp estimateDescription">?</button>
+                  <div class="estimate-description" role="tooltip">
+                    <div id="estimateHelp">
+                      <p><strong>Conservative:</strong> Uses the less favorable end of the recorded hourly price range for each trade. This lowers estimated returns and can hide routes that would be profitable at better prices.</p>
+                      <p><strong>Typical:</strong> Uses the average exchange ratio calculated from the quantities traded during the hour. This can reveal more potential routes, but you may not be able to trade at those average prices.</p>
+                      <p>Both modes use historical data, not live offers. Hourly highs, lows, and averages may come from different moments. Check every trade's price and available stock in game; estimated profit is not guaranteed. Your manual rate edits take priority in either mode.</p>
+                    </div>
+                    <p id="estimateDescription" aria-live="polite"></p>
+                  </div>
+                </div>
+              </div>
+              <select id="estimateMode" aria-describedby="estimateHelp estimateDescription">
+                <option value="conservative">Conservative</option>
+                <option value="typical">Typical</option>
+              </select>
+            </div>
+
             <label>
               Minimum volume
               <input id="minVolume" type="number" min="0" step="1" value="10">

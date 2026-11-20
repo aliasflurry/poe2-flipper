@@ -52,3 +52,19 @@ test("ignores markets without a traded volume or usable ratio", () => {
   assert.equal(marketToPair(market({ lowest_ratio: {}, highest_ratio: {} })), null);
   assert.equal(marketToPair(market({ market_pair: [chaos] })), null);
 });
+
+test("missing and legacy generated names never become item display names", () => {
+  const id = "Metadata/Items/Currency/CurrencyAddModToRareOriginator";
+  const input = market({
+    market_pair: [id, divine],
+    volume_traded: { [id]: 1000, [divine]: 10 },
+    lowest_ratio: { [id]: 93, [divine]: 1 },
+    highest_ratio: { [id]: 110, [divine]: 1 }
+  });
+  for (const catalog of [{}, { [id]: { name: "Add Mod To Rare Originator" } }]) {
+    const pair = marketToPair(input, catalog);
+    assert.equal(pair.CurrencyOne.ApiId, id);
+    assert.equal(pair.CurrencyOne.Text, "Unknown item");
+  }
+  assert.equal(marketToPair(input, { [id]: { name: "Originator's Exalted Orb" } }).CurrencyOne.Text, "Originator's Exalted Orb");
+});

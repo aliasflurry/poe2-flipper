@@ -1,11 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { fetchBaseItems, refreshCatalog, unresolvedIds } from "./item-catalog.mjs";
 
-const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const CATALOG_PATH = new URL("../data/poe_data/item-catalog.json", import.meta.url);
-const BASE_ITEMS_URL = "https://repoe-fork.github.io/base_items.json";
-const MARKET_URL = "https://web.poecdn.com/api/currency-exchange";
-const SNAPSHOT_URL = "https://raw.githubusercontent.com/aliasflurry/poe2-flipper/snapshots/data/poe_data/snapshot.json";
 const NINJA_URL = "https://poe.ninja/poe1/api/economy/exchange/current/overview";
 const NINJA_TYPES = [
   "Currency", "Fragment", "Runegraft", "AllflameEmber", "Tattoo", "Omen",
@@ -68,25 +63,27 @@ function itemFromNinja(id, ninjaItems) {
   return null;
 }
 
-async function latestMarkets() {
+async function latestMarkets(game) {
   const hour = Math.floor(Date.now() / 3_600_000) * 3600;
   for (let back = 1; back <= 4; back += 1) {
-    const payload = await getJson(`${MARKET_URL}/${hour - back * 3600}`);
-    const markets = payload.markets?.filter((market) => market.league === "Covens") || [];
+    const payload = await getJson(`https://web.poecdn.com/api/currency-exchange${game.id === "poe2" ? "/poe2" : ""}/${hour - back * 3600}`);
+    const markets = payload.markets?.filter((market) => market.league === game.league) || [];
     if (markets.length) return markets;
   }
-  throw new Error("No recent Covens markets found");
+  throw new Error(`No recent ${game.league} markets found`);
 }
 
-async function main() {
+async function main(game) {
+  const CATALOG_PATH = new URL(`../data/${game.id}_data/item-catalog.json`, import.meta.url);
+  const SNAPSHOT_URL = `https://raw.githubusercontent.com/aliasflurry/poe2-flipper/snapshots/data/${game.id}_data/snapshot.json`;
   const existing = JSON.parse(readFileSync(CATALOG_PATH, "utf8"));
   const [baseItems, markets, snapshot] = await Promise.all([
-    getJson(BASE_ITEMS_URL), latestMarkets(), getJson(SNAPSHOT_URL)
+    fetchBaseItems(game.id), latestMarkets(game), getJson(SNAPSHOT_URL)
   ]);
   const snapshotIds = (snapshot.pairs || []).flatMap((pair) => [pair.CurrencyOne?.ApiId, pair.CurrencyTwo?.ApiId]);
   const ids = [...new Set([...markets.flatMap((market) => market.market_pair || []), ...snapshotIds].filter(Boolean))].sort();
   const ninjaItems = [];
-  for (const type of NINJA_TYPES) {
+  for (const type of game.id === "poe" ? NINJA_TYPES : []) {
     const url = `${NINJA_URL}?league=Covens&type=${type}`;
     const data = await getJson(url);
     ninjaItems.push(...(data.items || []));
@@ -98,11 +95,9 @@ async function main() {
     byName.get(key).push(item);
   }
 
-  const catalog = {};
-  const unresolved = [];
+  const catalog = refreshCatalog(existing, baseItems, ids);
   for (const id of ids) {
     const baseName = baseItems[id]?.name;
-    const existingItem = existing[id];
     const matchedById = !baseName ? itemFromNinja(id, ninjaItems) : null;
     const candidateName = baseName || matchedById?.name || fallbackName(id);
     const matches = byName.get(normalized(candidateName)) || [];
@@ -110,19 +105,21 @@ async function main() {
     const icon = unique?.image
       ? new URL(unique.image, "https://web.poecdn.com").href
       : directIcon(baseItems[id]);
-    catalog[id] = {
-      name: baseName || unique?.name || fallbackName(id),
-      icon,
-      category: existingItem?.category || id.split("/")[2]?.toLowerCase() || "unknown"
-    };
-    if (!baseName && !unique || !icon) unresolved.push({ id, name: catalog[id].name, icon: !!icon });
+    if (unique?.name && !baseName) {
+      catalog[id].name = unique.name;
+      catalog[id].nameSource = "verified";
+    }
+    if (icon) catalog[id].icon = icon;
   }
 
-  console.log(`Market IDs: ${ids.length}; unresolved names or icons: ${unresolved.length}`);
+  const unresolved = unresolvedIds(catalog, ids);
+  console.log(`${game.id}: Market IDs: ${ids.length}; unresolved names: ${unresolved.length}`);
   console.log(JSON.stringify(unresolved, null, 2));
   if (process.argv.includes("--write")) {
     writeFileSync(CATALOG_PATH, `${JSON.stringify(catalog)}\n`);
   }
 }
 
-await main();
+for (const game of [{ id: "poe", league: "Covens" }, { id: "poe2", league: "Forbidden Rites" }]) {
+  await main(game);
+}

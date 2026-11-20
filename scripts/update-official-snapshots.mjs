@@ -2,6 +2,7 @@ import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { computeTotalDifferences } from "./price-history-totals.mjs";
+import { fetchBaseItems, refreshCatalog, resolvedName, unresolvedIds, UNKNOWN_ITEM } from "./item-catalog.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const OUTPUT_ROOT = process.argv[2] || ROOT;
@@ -35,20 +36,13 @@ function positive(value) {
   return Number.isFinite(number) && number > 0 ? number : null;
 }
 
-function fallbackName(id) {
-  return id.split("/").at(-1)
-    .replace(/^(Currency|DivinationCard|MapFragment)/, "")
-    .replace(/([a-z\d])([A-Z])/g, "$1 $2")
-    .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")
-    .trim() || id;
-}
-
 function itemFor(id, catalog) {
   const known = catalog[id];
   return {
     ApiId: id,
     BaseItemTypeId: id,
-    Text: known?.name || fallbackName(id),
+    Text: resolvedName(id, known?.name, known?.nameSource) || UNKNOWN_ITEM,
+    NameSource: known?.nameSource || "catalog",
     IconUrl: known?.icon || "",
     CategoryApiId: known?.category || id.split("/")[2]?.toLowerCase() || "unknown"
   };
@@ -138,14 +132,24 @@ async function updateGame(game) {
   const snapshotPath = join(directory, "snapshot.json");
   const historyPath = join(directory, "price-history.json");
   const updatedAt = new Date(hour * 1000).toISOString();
-  const existingSnapshot = readJson(snapshotPath);
-  if (existingSnapshot?.source === source && existingSnapshot?.league === game.league
-      && existingSnapshot?.updatedAt === updatedAt) {
-    console.log(`${game.league}: already processed ${updatedAt}`);
-    return;
+  const catalogPath = join(directory, "item-catalog.json");
+  const existingCatalog = readJson(catalogPath) || {};
+  const localCatalog = readJson(join(ROOT, "data", game.directory, "item-catalog.json")) || {};
+  for (const [id, item] of Object.entries(localCatalog)) {
+    if (resolvedName(id, item?.name, item?.nameSource) || !resolvedName(id, existingCatalog[id]?.name, existingCatalog[id]?.nameSource)) {
+      existingCatalog[id] = item;
+    }
   }
-
-  const catalog = readJson(join(ROOT, "data", game.directory, "item-catalog.json")) || {};
+  const ids = markets.flatMap((market) => market.market_pair || []);
+  let baseItems = {};
+  try {
+    baseItems = await fetchBaseItems(game.realm === "poe2" ? "poe2" : "poe");
+  } catch (error) {
+    console.warn(`::warning::${game.league}: catalog refresh unavailable: ${error.message}`);
+  }
+  const catalog = refreshCatalog(existingCatalog, baseItems, ids);
+  const missing = unresolvedIds(catalog, ids);
+  if (missing.length) console.warn(`::warning::${game.league}: ${missing.length} unresolved item names: ${missing.join(", ")}`);
   const pairs = markets.map((market) => marketToPair(market, catalog)).filter(Boolean);
   if (!pairs.length) throw new Error(`No usable ${game.league} market pairs at ${updatedAt}`);
 
@@ -160,6 +164,8 @@ async function updateGame(game) {
   }
 
   mkdirSync(directory, { recursive: true });
+  writeJson(catalogPath, catalog);
+  writeJson(join(directory, "unresolved-items.json"), { updatedAt, ids: missing });
   writeJson(snapshotPath, { updatedAt, source, league: game.league, pairs });
   writeJson(historyPath, {
     updatedAt: snapshots.at(-1)?.updatedAt || updatedAt,

@@ -186,6 +186,77 @@ select[multiple] {
 select[multiple] option {
   padding: 6px 8px;
 }
+.estimate-field {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+}
+
+.estimate-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.estimate-help {
+  position: relative;
+}
+
+.estimate-help-button {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--muted);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: help;
+}
+
+.estimate-help-button:hover,
+.estimate-help-button:focus-visible {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+.estimate-description {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 20;
+  width: min(360px, calc(100vw - 52px));
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-strong);
+  box-shadow: 0 8px 24px #0008;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 400;
+  line-height: 1.5;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.estimate-help:not([data-dismissed]):hover .estimate-description,
+.estimate-help:not([data-dismissed]):focus-within .estimate-description {
+  visibility: visible;
+  opacity: 1;
+}
+
+.estimate-description p {
+  margin: 0 0 0.5rem;
+}
+
+.estimate-description > p:last-child {
+  margin-bottom: 0;
+}
+
 .exclude-field {
   grid-column: 1 / -1;
 }

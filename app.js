@@ -8,6 +8,7 @@ const GAME_CONFIGS = {
     localSnapshotUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/snapshot.json`,
     historyUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/price-history.json`,
     goldCostsUrl: "data/poe2_data/gold-costs.json",
+    itemCatalogUrl: "data/poe2_data/item-catalog.json",
     source: "https://web.poecdn.com/api/currency-exchange/poe2",
     league: "Forbidden Rites"
   },
@@ -103,6 +104,8 @@ const els = {
   startCurrency: document.querySelector("#startCurrency"),
   startAmount: document.querySelector("#startAmount"),
   pathLength: document.querySelector("#pathLength"),
+  estimateMode: document.querySelector("#estimateMode"),
+  estimateDescription: document.querySelector("#estimateDescription"),
   minVolume: document.querySelector("#minVolume"),
   minStock: document.querySelector("#minStock"),
   maxGoldCost: document.querySelector("#maxGoldCost"),
@@ -211,13 +214,25 @@ function normalizeName(value) {
     .trim();
 }
 
+function resolvedItemName(id, name, source) {
+  const generated = id.split("/").at(-1)
+    .replace(/^(Currency|DivinationCard|MapFragment)/, "")
+    .replace(/([a-z\d])([A-Z])/g, "$1 $2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2").trim();
+  return typeof name === "string" && name.trim() && name !== id && name !== "Unknown item" &&
+    (source === "base-items" || source === "verified" || name !== generated) ? name : null;
+}
+
 function rememberItem(item) {
   if (!item?.ApiId) return;
   if (!state.items.has(item.ApiId)) {
     const known = state.itemCatalog[item.ApiId];
+    const name = resolvedItemName(item.ApiId, known?.name, known?.nameSource) ||
+      resolvedItemName(item.ApiId, item.Text, item.NameSource);
     state.items.set(item.ApiId, {
       id: item.ApiId,
-      name: known?.name || item.Text,
+      name: name || `Unknown item (${item.ApiId.split("/").at(-1)})`,
+      unknown: !name,
       icon: known ? known.icon : state.gameId === "poe" ? "" : item.IconUrl,
       category: known?.category || item.CategoryApiId
     });
@@ -235,6 +250,20 @@ function hydrateGoldCosts() {
   }
 }
 
+function estimatedRate(fromData, toData) {
+  if (els.estimateMode.value === "typical") {
+    const fromVolume = toNumber(fromData.VolumeTraded);
+    const toVolume = toNumber(toData.VolumeTraded);
+    const typicalRate = toVolume / fromVolume;
+    if (fromVolume > 0 && toVolume > 0 && Number.isFinite(typicalRate) && typicalRate > 0) {
+      return typicalRate;
+    }
+  }
+
+  const quotedRate = toNumber(fromData.RateToOther);
+  return quotedRate > 0 ? quotedRate : toNumber(fromData.RelativePrice) / toNumber(toData.RelativePrice);
+}
+
 function makeEdge(pair, fromItem, toItem, fromData, toData) {
   const fromPrice = toNumber(fromData.RelativePrice);
   const toPrice = toNumber(toData.RelativePrice);
@@ -246,8 +275,7 @@ function makeEdge(pair, fromItem, toItem, fromData, toData) {
   }
 
   const id = `${pair.CurrencyExchangeSnapshotPairId}:${fromItem.ApiId}>${toItem.ApiId}`;
-  const quotedRate = toNumber(fromData.RateToOther);
-  const originalRate = quotedRate > 0 ? quotedRate : fromPrice / toPrice;
+  const originalRate = estimatedRate(fromData, toData);
   const overrideRate = state.rateOverrides.get(id);
 
   return {
@@ -321,13 +349,16 @@ function populateCurrencies() {
       const option = document.createElement("option");
       option.value = item.id;
       option.textContent = item.name;
+      option.title = item.id;
       return option;
     });
   const searchOptions = [...state.items.values()]
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((item) => {
       const option = document.createElement("option");
-      option.value = item.name;
+      option.value = item.unknown ? item.id : item.name;
+      option.label = item.name;
+      option.title = item.id;
       option.dataset.itemId = item.id;
       return option;
     });
@@ -580,6 +611,7 @@ function saveFilterSettings() {
     startCurrency: els.startCurrency.value,
     startAmount: els.startAmount.value,
     pathLength: els.pathLength.value,
+    estimateMode: els.estimateMode.value,
     minVolume: els.minVolume.value,
     minStock: els.minStock.value,
     maxGoldCost: els.maxGoldCost.value,
@@ -599,6 +631,7 @@ function saveFilterSettings() {
 
 function applyFilterSettings() {
   const settings = state.filterSettings;
+  els.estimateMode.value = settings?.estimateMode === "typical" ? "typical" : "conservative";
   if (!settings) return;
 
   setInputValue(els.startAmount, settings.startAmount);
@@ -792,6 +825,7 @@ function populateTrendsCurrencies() {
       const option = document.createElement("option");
       option.value = item.id;
       option.textContent = item.name;
+      option.title = item.id;
       return option;
     });
 
@@ -940,6 +974,9 @@ function renderIncludedChips() {
 }
 
 function renderResults() {
+  els.estimateDescription.textContent = els.estimateMode.value === "typical"
+    ? "Showing typical estimates. Only routes with a positive estimated return and matching filters appear."
+    : "Showing conservative estimates. Only routes with a positive estimated return and matching filters appear, so an item can be present in the data without appearing in a route.";
   const settings = getSettings();
   let cycles = findCycles(settings);
 
@@ -1709,6 +1746,7 @@ function makeTrendCard(entry, startName) {
   icon.className = "trends-card-icon";
   titleWrap.className = "trends-card-titles";
   title.textContent = entry.name;
+  title.title = entry.itemId;
   subtitle.className = "trends-card-subtitle";
   subtitle.textContent = `Price in ${startName}`;
   metrics.className = "trends-card-metrics";
@@ -1916,24 +1954,26 @@ function makeStepItems(edge) {
   setItemIcon(toIcon, edge.to);
   toIcon.alt = "";
 
-  wrap.append(fromIcon, makeCopyableItemName(edge.fromName), arrow, toIcon, makeCopyableItemName(edge.toName));
+  wrap.append(fromIcon, makeCopyableItemName(edge.fromName, edge.from), arrow, toIcon, makeCopyableItemName(edge.toName, edge.to));
   return wrap;
 }
 
-function makeCopyableItemName(name) {
+function makeCopyableItemName(name, id) {
+  const copyText = state.items.get(id)?.unknown ? id : name;
+  const title = state.items.get(id)?.unknown ? `Unknown item: ${id}. Click to copy ID` : `Copy ${name}`;
   const button = document.createElement("button");
   button.type = "button";
   button.className = "copy-item-name";
   button.textContent = name;
-  button.title = `Copy ${name}`;
+  button.title = title;
   button.setAttribute("aria-label", `Copy ${name}`);
   button.addEventListener("click", async () => {
-    const copied = await copyItemName(name);
+    const copied = await copyItemName(copyText);
     button.classList.toggle("copied", copied);
     button.title = copied ? `Copied ${name}` : `Could not copy ${name}`;
     window.setTimeout(() => {
       button.classList.remove("copied");
-      button.title = `Copy ${name}`;
+      button.title = title;
     }, 1200);
   });
   return button;
@@ -2183,8 +2223,23 @@ async function fetchGoldCosts() {
 async function fetchItemCatalog() {
   const url = currentGame().itemCatalogUrl;
   if (!url) return {};
-  const response = await fetch(url, { cache: "no-store" }).catch(() => null);
-  return response?.ok ? response.json() : {};
+  const read = async (catalogUrl) => {
+    try {
+      const response = await fetch(catalogUrl, { cache: "no-store" });
+      const catalog = response.ok ? await response.json() : null;
+      return catalog && typeof catalog === "object" && !Array.isArray(catalog) ? catalog : {};
+    } catch {
+      return {};
+    }
+  };
+  const [local, published] = await Promise.all([read(url), read(`${SNAPSHOT_DATA_BASE}/${url}`)]);
+  const catalog = { ...local };
+  for (const [id, item] of Object.entries(published)) {
+    if (resolvedItemName(id, item?.name, item?.nameSource) || !resolvedItemName(id, local[id]?.name, local[id]?.nameSource)) {
+      catalog[id] = item;
+    }
+  }
+  return catalog;
 }
 
 function normalizeTotalDifferences(payload) {
@@ -2318,6 +2373,9 @@ function handleFilterChange() {
 
 function handleControlsInput(event) {
   if (event.target === els.excludeSearch || event.target === els.includeSearch) return;
+  if (event.target === els.estimateMode) {
+    buildGraph(state.rawPairs);
+  }
   handleFilterChange();
 }
 
@@ -2384,6 +2442,16 @@ for (const button of els.gameButtons) {
 }
 
 document.querySelector("#controls").addEventListener("input", handleControlsInput);
+const estimateHelp = document.querySelector(".estimate-help");
+estimateHelp.addEventListener("pointerenter", () => delete estimateHelp.dataset.dismissed);
+estimateHelp.addEventListener("focusin", () => delete estimateHelp.dataset.dismissed);
+estimateHelp.querySelector("button").addEventListener("click", () => delete estimateHelp.dataset.dismissed);
+estimateHelp.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    estimateHelp.dataset.dismissed = "true";
+    event.stopPropagation();
+  }
+});
 document.querySelector("#controls").addEventListener("change", handleControlsInput);
 els.trendsControls.addEventListener("input", handleTrendsControlsChange);
 els.trendsControls.addEventListener("change", handleTrendsControlsChange);

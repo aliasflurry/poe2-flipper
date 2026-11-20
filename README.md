@@ -10,7 +10,7 @@ A static GitHub Pages tool that reads the official Path of Exile Currency Exchan
 - Volume and stock filters help remove routes that are likely too thin to execute.
 - Gold costs are read from the selected game's data folder: `poe2_data/gold-costs.json` or `poe_data/gold-costs.json`.
 - Price history is read from the `snapshots` branch and appears when a result row is expanded.
-- Known names and icons come from local catalogs migrated from earlier snapshots. Items missing from the catalogs use readable names derived from their exchange IDs.
+- Item catalogs for both games refresh from RePoE game data during hourly updates and are published alongside snapshots. Local catalogs provide a fallback. Unresolved names appear as “Unknown item” with the internal ID available to inspect; updates warn and publish an `unresolved-items.json` report for each game.
 
 ## Deploy locally
 

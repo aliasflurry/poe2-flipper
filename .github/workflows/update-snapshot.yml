@@ -29,7 +29,7 @@ jobs:
 
       - name: Commit snapshots
         run: |
-          git -C snapshot-data add data/poe_data/snapshot.json data/poe_data/price-history.json data/poe2_data/snapshot.json data/poe2_data/price-history.json
+          git -C snapshot-data add data/poe_data/snapshot.json data/poe_data/price-history.json data/poe_data/item-catalog.json data/poe_data/unresolved-items.json data/poe2_data/snapshot.json data/poe2_data/price-history.json data/poe2_data/item-catalog.json data/poe2_data/unresolved-items.json
           if git -C snapshot-data diff --cached --quiet; then
             echo "No new exchange hour to publish."
             exit 0
