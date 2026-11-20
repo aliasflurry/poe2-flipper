@@ -18,6 +18,7 @@ const GAME_CONFIGS = {
     localSnapshotUrl: `${SNAPSHOT_DATA_BASE}/data/poe_data/snapshot.json`,
     historyUrl: `${SNAPSHOT_DATA_BASE}/data/poe_data/price-history.json`,
     goldCostsUrl: "data/poe_data/gold-costs.json",
+    itemCatalogUrl: "data/poe_data/item-catalog.json",
     source: "https://web.poecdn.com/api/currency-exchange",
     league: "Covens"
   }
@@ -76,6 +77,7 @@ const CATEGORY_LABELS = {
 const state = {
   gameId: DEFAULT_GAME_ID,
   rawPairs: [],
+  itemCatalog: {},
   items: new Map(),
   priceHistory: [],
   totalDifferences: {},
@@ -167,6 +169,10 @@ function gameStorageKey(key) {
   return `${currentGame().storagePrefix}-${key}`;
 }
 
+function currentMarketKey() {
+  return `${currentGame().source}|${currentGame().league}`;
+}
+
 function defaultStartCurrency() {
   return currentGame().defaultStartCurrency || "Metadata/Items/Currency/CurrencyAddModToRare";
 }
@@ -208,11 +214,12 @@ function normalizeName(value) {
 function rememberItem(item) {
   if (!item?.ApiId) return;
   if (!state.items.has(item.ApiId)) {
+    const known = state.itemCatalog[item.ApiId];
     state.items.set(item.ApiId, {
       id: item.ApiId,
-      name: item.Text,
-      icon: item.IconUrl,
-      category: item.CategoryApiId
+      name: known?.name || item.Text,
+      icon: known ? known.icon : state.gameId === "poe" ? "" : item.IconUrl,
+      category: known?.category || item.CategoryApiId
     });
   }
 }
@@ -248,8 +255,8 @@ function makeEdge(pair, fromItem, toItem, fromData, toData) {
     pairId: pair.CurrencyExchangeSnapshotPairId,
     from: fromItem.ApiId,
     to: toItem.ApiId,
-    fromName: fromItem.Text,
-    toName: toItem.Text,
+    fromName: itemLabel(fromItem.ApiId),
+    toName: itemLabel(toItem.ApiId),
     rate: Number.isFinite(overrideRate) && overrideRate > 0 ? overrideRate : originalRate,
     originalRate,
     isRateOverridden: Number.isFinite(overrideRate) && overrideRate > 0,
@@ -448,6 +455,14 @@ function itemIcon(id) {
   return state.items.get(id)?.icon || "";
 }
 
+function setItemIcon(image, id) {
+  const icon = itemIcon(id);
+  image.hidden = !icon;
+  if (!icon) return;
+  image.src = icon;
+  image.addEventListener("error", () => { image.hidden = true; }, { once: true });
+}
+
 async function copyItemName(name) {
   if (!navigator.clipboard?.writeText) return false;
 
@@ -552,7 +567,7 @@ function saveRateOverrides() {
 function loadFilterSettings() {
   try {
     const stored = JSON.parse(localStorage.getItem(gameStorageKey(FILTER_SETTINGS_STORAGE_KEY)) || "null");
-    state.filterSettings = stored && typeof stored === "object" ? stored : null;
+    state.filterSettings = stored?.marketKey === currentMarketKey() ? stored : null;
     applyFilterSettings();
   } catch {
     state.filterSettings = null;
@@ -561,6 +576,7 @@ function loadFilterSettings() {
 
 function saveFilterSettings() {
   const settings = {
+    marketKey: currentMarketKey(),
     startCurrency: els.startCurrency.value,
     startAmount: els.startAmount.value,
     pathLength: els.pathLength.value,
@@ -957,8 +973,11 @@ function renderResults() {
   }
 
   if (!cycles.length) {
-    const lengthText = settings.length === "both" ? "2 or 3 trade" : `${settings.length} trade`;
-    renderEmpty(`No profitable ${lengthText} loops match these filters.`);
+    if (settings.length === "2") {
+      renderEmpty("Two-trade loops are unavailable from the official hourly market feed. Choose 3 trades.");
+      return;
+    }
+    renderEmpty("No profitable 3-trade loops match these filters. Try lowering minimum volume or stock.");
     return;
   }
 
@@ -1685,7 +1704,7 @@ function makeTrendCard(entry, startName) {
   card.className = "trends-card";
   header.className = "trends-card-header";
   identity.className = "trends-card-identity";
-  icon.src = itemIcon(entry.itemId);
+  setItemIcon(icon, entry.itemId);
   icon.alt = "";
   icon.className = "trends-card-icon";
   titleWrap.className = "trends-card-titles";
@@ -1890,11 +1909,11 @@ function makeStepItems(edge) {
   const toIcon = document.createElement("img");
 
   wrap.className = "step-items";
-  fromIcon.src = itemIcon(edge.from);
+  setItemIcon(fromIcon, edge.from);
   fromIcon.alt = "";
   arrow.className = "arrow";
   arrow.textContent = "->";
-  toIcon.src = itemIcon(edge.to);
+  setItemIcon(toIcon, edge.to);
   toIcon.alt = "";
 
   wrap.append(fromIcon, makeCopyableItemName(edge.fromName), arrow, toIcon, makeCopyableItemName(edge.toName));
@@ -2040,6 +2059,7 @@ function resetControlsToDefaults() {
 
 function resetExchangeState() {
   state.rawPairs = [];
+  state.itemCatalog = {};
   state.items.clear();
   state.priceHistory = [];
   state.totalDifferences = {};
@@ -2092,15 +2112,17 @@ async function loadData() {
   els.snapshotMeta.textContent = "";
 
   try {
-    const [loaded, goldCosts, history] = await Promise.all([
+    const [loaded, goldCosts, history, itemCatalog] = await Promise.all([
       fetchSnapshot(),
       fetchGoldCosts(),
-      fetchPriceHistory()
+      fetchPriceHistory(),
+      fetchItemCatalog()
     ]);
 
     if (requestedGameId !== state.gameId) return;
 
     state.rawPairs = loaded.pairs;
+    state.itemCatalog = itemCatalog;
     state.priceHistory = history.snapshots || [];
     state.totalDifferences = history.totalDifferences || {};
     state.goldCostsByName = goldCosts.costsByName;
@@ -2156,6 +2178,13 @@ async function fetchGoldCosts() {
     costsByName,
     updatedAt: payload.updatedAt || null
   };
+}
+
+async function fetchItemCatalog() {
+  const url = currentGame().itemCatalogUrl;
+  if (!url) return {};
+  const response = await fetch(url, { cache: "no-store" }).catch(() => null);
+  return response?.ok ? response.json() : {};
 }
 
 function normalizeTotalDifferences(payload) {

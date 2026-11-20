@@ -503,6 +503,11 @@ h2 {
   flex: 0 0 auto;
 }
 
+.step-items img[hidden],
+.trends-card-icon[hidden] {
+  display: none;
+}
+
 .arrow {
   color: var(--gold);
 }
