@@ -1,0 +1,1896 @@
+{
+  "act1": {
+    "areas": {
+      "act1_z0": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với Wounded Man, trang bị vũ khí khởi đầu."
+          },
+          "s1": {
+            "text": "Mở Large Chests, trang bị item và skill nhặt được."
+          },
+          "s2": {
+            "text": "Hạ The Bloated Miller."
+          },
+          "s3": {
+            "text": "Đi vào Clearfell Encampment phía sau boss."
+          }
+        }
+      },
+      "act1_z1": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với Renly.",
+            "note": "Nhận Skill Gem Lv1."
+          },
+          "s1": {
+            "text": "Đi vào Clearfell."
+          }
+        }
+      },
+      "act1_z2": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với Farrow để bắt đầu quest The Runeseeker.",
+            "note": "Patch 0.5 bắt đầu chuỗi The Runeseeker. Cuối Act 1 sẽ mở khóa Verisium Anvil."
+          },
+          "s1": {
+            "text": "Farrow là NPC mới của League. Gặp Farrow ở đây để bắt đầu The Runeseeker. Sau đó thu thập 3 Runestone, vào Lost Catacombs rồi quay lại Clearfell. Hoàn thành chuỗi ở cuối Act 1 để mở khóa Verisium Anvil. Runeforging cho phép dùng Verisium để thêm Runic Ward, một lớp phòng thủ tự hồi sau khi không nhận sát thương trong một thời gian."
+          },
+          "s2": {
+            "text": "Lộ trình Runeforging: Act 1 mở Armour Runeforging → Act 2 Runic Inscriptions → Act 3 Unique Runeforging → Act 4 Ancient Runes."
+          },
+          "s3": {
+            "text": "Hạ Beira of the Rotten Pack ở phía bắc.",
+            "note": "+10% Cold Resistance."
+          },
+          "s4": {
+            "text": "Vào Mud Burrow → hạ The Devourer.",
+            "note": "Skill Gem Lv2."
+          },
+          "s5": {
+            "text": "Lấy Waypoint cạnh Mud Burrow; cây cầu phía trước dẫn tới The Grelwood."
+          },
+          "s6": {
+            "text": "Sau khi hạ Beira, nói chuyện với Renly trong thị trấn.",
+            "note": "Support Gem Lv1."
+          },
+          "s7": {
+            "text": "Abandoned Stash nằm trong Mysterious Campsite.",
+            "note": "Skill Gem Lv1."
+          },
+          "s8": {
+            "text": "Đi vào The Grelwood."
+          }
+        }
+      },
+      "act1_z3": {
+        "objectives": {
+          "s0": {
+            "text": "Tìm / triệu hồi / nói chuyện với Una."
+          },
+          "s1": {
+            "text": "Lấy Waypoint."
+          },
+          "s2": {
+            "text": "Vào Grim Tangle → lấy Waypoint → quay lại."
+          },
+          "s3": {
+            "text": "Vào The Red Vale → lấy Waypoint → quay lại."
+          },
+          "s4": {
+            "text": "Hạ Gerung, the Brambleghast.",
+            "note": "Skill Gem Lv2."
+          },
+          "s5": {
+            "text": "Tìm căn lều có Cauldron → hạ Areagne.",
+            "note": "Medium Life Flask + Medium Mana Flask, Support Gem Lv1."
+          },
+          "s6": {
+            "text": "Areagne là một trong những trận khó ở đầu game. Cẩn thận các đòn Frost Bomb; giữ khoảng cách và ưu tiên né vùng sát thương."
+          },
+          "s7": {
+            "text": "Đi vào The Red Vale."
+          }
+        }
+      },
+      "act1_z4": {
+        "objectives": {
+          "s0": {
+            "text": "Tìm 3 Obelisks of Rust, lấy Runed Girdle ở mỗi obelisk."
+          },
+          "s1": {
+            "text": "The Rust King xuất hiện ở obelisk cuối; hạ boss.",
+            "note": "Skill Gem Lv3."
+          },
+          "s2": {
+            "text": "Mẹo đánh The Rust King: giữ di chuyển quanh boss và tránh đứng lâu trong vùng AoE để duy trì nhịp gây sát thương an toàn."
+          },
+          "s3": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act1_z5": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với Renly, nhận Runed Spikes."
+          },
+          "s1": {
+            "text": "Teleport tới The Grelwood."
+          }
+        }
+      },
+      "act1_z6": {
+        "objectives": {
+          "s0": {
+            "text": "Kích hoạt 3 Runic Seals."
+          },
+          "s1": {
+            "text": "Nói chuyện với Una."
+          },
+          "s2": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act1_z7": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với Una."
+          },
+          "s1": {
+            "text": "Teleport tới Grim Tangle."
+          }
+        }
+      },
+      "act1_z8": {
+        "objectives": {
+          "s0": {
+            "text": "Runeseeker: lấy Runestone 1/3 trong tiến trình chính."
+          },
+          "s1": {
+            "text": "The Runeseeker – Runestone 1/3 nằm ngay trên đường chính ở Grim Tangle."
+          },
+          "s2": {
+            "text": "Hạ Ervig, the Rotted Druid.",
+            "note": "Support Gem."
+          },
+          "s3": {
+            "text": "Đi vào Cemetery of the Eternals."
+          }
+        }
+      },
+      "act1_z9": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với Lachlann the Lost."
+          },
+          "s1": {
+            "text": "Ancient Ruins nằm gần Checkpoint.",
+            "note": "Iron hoặc Lazuli Ring."
+          },
+          "s2": {
+            "text": "Vào Mausoleum of the Praetor → hạ Draven → lấy Key Piece → Teleport về."
+          },
+          "s3": {
+            "text": "Tìm Forgotten Riches ẩn trong Mausoleum of the Praetor.",
+            "note": "Support Gem Lv1 + Gold."
+          },
+          "s4": {
+            "text": "Forgotten Riches: tìm công tắc ẩn trong Mausoleum of the Praetor để mở khu vực bí mật."
+          },
+          "s5": {
+            "text": "Vào Tomb of the Consort → hạ Asinia → lấy Key Piece → Teleport về."
+          },
+          "s6": {
+            "text": "Tìm bí mật Haunted Treasure.",
+            "note": "Support Gem Lv1."
+          },
+          "s7": {
+            "text": "Mở Memorial Gate cạnh Lachlann."
+          },
+          "s8": {
+            "text": "Hạ Lachlann, lấy Ring.",
+            "note": "Skill Gem Lv3."
+          },
+          "s9": {
+            "text": "Ra Hunting Grounds → lấy Waypoint → Teleport về town."
+          }
+        }
+      },
+      "act1_z10": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện Finn, Una và The Hooded One ở town trước khi đi; Hooded One được hồi sinh và mở Identify."
+          },
+          "s1": {
+            "text": "REVIVAL: The Hooded One hồi sinh khi bạn quay lại town. Từ lúc này chức năng Identify đã có thể sử dụng."
+          },
+          "s2": {
+            "text": "Farrow → lấy Runestone 2/3."
+          },
+          "s3": {
+            "text": "Runeseeker — Runestone 2/3 nằm ở Hunting Grounds. Farrow xuất hiện trước; Delwyn thường nằm sâu hơn một chút trong khu vực."
+          },
+          "s4": {
+            "text": "Nói chuyện với Delwyn."
+          },
+          "s5": {
+            "text": "Delwyn nằm sâu hơn Farrow một chút. Nếu chưa gặp Delwyn, cứ tiếp tục đi sâu vào Hunting Grounds."
+          },
+          "s6": {
+            "text": "Đánh bại The Crowbell",
+            "note": "+2 Weapon Set Skill Points."
+          },
+          "s7": {
+            "text": "Vào Freythorn → lấy Waypoint → quay lại."
+          },
+          "s8": {
+            "text": "Vào Ogham Farmlands → lấy Waypoint → quay lại."
+          },
+          "s9": {
+            "text": "Sự kiện Ritual nhỏ.",
+            "note": "Support Gem Lv1."
+          },
+          "s10": {
+            "text": "Teleport tới Freythorn."
+          }
+        }
+      },
+      "act1_z11": {
+        "objectives": {
+          "s0": {
+            "text": "Kích hoạt 3 Small Ritual Altars."
+          },
+          "s1": {
+            "text": "Các luồng khói từ Big Ritual Altar sẽ chỉ hướng tới những Small Ritual Altar còn lại — cứ đi theo khói để tìm nhanh."
+          },
+          "s2": {
+            "text": "Đi theo các dải khói từ Big Ritual Altar để tìm altar nhỏ."
+          },
+          "s3": {
+            "text": "Big Ritual Altar → hạ The King in the Mists.",
+            "note": "+30 Spirit + Spirit Gem Lv4 (Persistent Buff)."
+          },
+          "s4": {
+            "text": "The King in the Mists: sau khi thắng, nhớ kiểm tra phần thưởng Spirit. Ở phase 2 ưu tiên né cơ chế trước rồi mới tiếp tục gây sát thương."
+          },
+          "s5": {
+            "text": "Thanh tẩy Ominous Altars rồi nhận Charm từ Finn trong thị trấn.",
+            "note": "Ruby/Sapphire/Topaz Charm."
+          },
+          "s6": {
+            "text": "Teleport tới Ogham Farmlands."
+          }
+        }
+      },
+      "act1_z12": {
+        "objectives": {
+          "s0": {
+            "text": "Tìm Una's Lute Box trong căn nhà gần checkpoint.",
+            "note": "Una's Lute +2 Weapon Set Skill Points."
+          },
+          "s1": {
+            "text": "Đem Una's Lute về cho Una để nhận thưởng."
+          },
+          "s2": {
+            "text": "Runeseeker: lấy Runestone 3/3 trong cánh đồng."
+          },
+          "s3": {
+            "text": "The Runeseeker – Runestone 3/3. Thu thập đủ 3 Runestone rồi quay lại The Grelwood, triệu hồi Farrow tại Tree of Souls → vào Lost Catacombs → lấy Liquid Verisium ở cuối khu vực → về Clearfell để mở khóa Verisium Anvil."
+          },
+          "s4": {
+            "text": "Có chó Rare trong vòng tròn trên cánh đồng.",
+            "note": "Skill Gem Lv4."
+          },
+          "s5": {
+            "text": "Đi vào Ogham Village."
+          }
+        }
+      },
+      "act1_z13": {
+        "objectives": {
+          "s0": {
+            "text": "(Nhân vật đầu tiên) Lấy Smithing Tools trong nhà.",
+            "note": "Mở Salvage Bench."
+          },
+          "s1": {
+            "text": "Đi theo con đường/luồng nước dẫn vào trong là cách dễ nhất để tới khu nhà có Smithing Tools."
+          },
+          "s2": {
+            "text": "Đi theo đường đá tới smithing house."
+          },
+          "s3": {
+            "text": "Blacksmith's Chest nằm trong cùng căn nhà.",
+            "note": "Blank Rune + Artificer's Orb."
+          },
+          "s4": {
+            "text": "Hạ The Executioner.",
+            "note": "Support Gem Lv1."
+          },
+          "s5": {
+            "text": "The Executioner thường nằm về phía bắc của Ogham Village."
+          },
+          "s6": {
+            "text": "Lên lầu → gạt Lever → nói chuyện với Leitis."
+          },
+          "s7": {
+            "text": "Đi vào The Manor Ramparts."
+          }
+        }
+      },
+      "act1_z14": {
+        "objectives": {
+          "s0": {
+            "text": "Tìm bí mật Gallows gần Checkpoint.",
+            "note": "Support Gem Lv1."
+          },
+          "s1": {
+            "text": "Trước khi vào Ogham Manor, nên có Flask khoảng Lv10–11 và chest khoảng Lv11 để an toàn hơn."
+          },
+          "s2": {
+            "text": "Đi vào Ogham Manor."
+          }
+        }
+      },
+      "act1_z15": {
+        "objectives": {
+          "s0": {
+            "text": "Hạ Candlemass ở tầng 1.",
+            "note": "+20 Maximum Life."
+          },
+          "s1": {
+            "text": "Sau Candlemass, tiếp tục đi sâu xuống các tầng dưới để tìm Geonor. Trong Manor có vài đoạn đường vòng nên ưu tiên bám theo hướng đi xuống."
+          },
+          "s2": {
+            "text": "Geonor: ở phase 2 ưu tiên né các đợt sát thương/cơ chế trước; đừng cố đứng yên DPS khi vùng nguy hiểm đang phủ sàn."
+          },
+          "s3": {
+            "text": "Đi xuống dưới → hạ Geonor, boss cuối Act 1."
+          },
+          "s4": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act1_z16": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với tất cả NPC."
+          },
+          "s1": {
+            "text": "Nói chuyện với The Hooded One → “Follow the Beast's Trail”."
+          },
+          "s2": {
+            "text": "Hoàn thành Act 1 → sang Act 2."
+          }
+        }
+      },
+      "act1_z17": {
+        "objectives": {}
+      },
+      "act1_z18": {
+        "objectives": {}
+      },
+      "act1_z19": {
+        "objectives": {}
+      }
+    }
+  },
+  "act2": {
+    "subtitle": "Trong Act 2, dùng Ardura Caravan và Desert Map để di chuyển giữa các khu vực. Đi theo thứ tự bên dưới để đỡ phải quay lại.",
+    "areas": {
+      "act2_z0": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với The Hooded One."
+          },
+          "s1": {
+            "text": "Hạ Rathbreaker."
+          },
+          "s2": {
+            "text": "Teleport về đầu zone."
+          },
+          "s3": {
+            "text": "Nói chuyện với Zarka.",
+            "note": "Uncut Skill Gem Lv5."
+          },
+          "s4": {
+            "text": "Đi vào The Ardura Caravan."
+          }
+        }
+      },
+      "act2_z1": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với Hooded One + Sekhema Asala (2 lần)."
+          },
+          "s1": {
+            "text": "PATCH 0.5 — Runes of Aldur: Farrow đã xuất hiện từ Act 1. Ở Caravan không còn quest Runic Alloy. Mỗi zone có Ezomyte Remnant; một số zone có Runestone để gọi Farrow và mở công thức mới."
+          },
+          "s2": {
+            "text": "RUNEFORGING: mỗi Act mở 1 tầng — Act 1 Armour Runeforging → Act 2 Runic Inscriptions → Act 3 Unique Runeforging → Act 4 Ancient Runes."
+          },
+          "s3": {
+            "text": "Dùng Desert Map → tới Halani Gates."
+          },
+          "s4": {
+            "text": "Vào Halani Gates → nói chuyện Sekhema Asala → quay lại Caravan → nói lại với Asala."
+          },
+          "s5": {
+            "text": "Đi tới Mawdun Quarry."
+          }
+        }
+      },
+      "act2_z2": {
+        "objectives": {
+          "s0": {
+            "text": "Faridun War Cache nằm gần Checkpoint.",
+            "note": "Artificer's Orb."
+          },
+          "s1": {
+            "text": "Đi vào Mawdun Mine theo checkpoints."
+          }
+        }
+      },
+      "act2_z3": {
+        "objectives": {
+          "s0": {
+            "text": "MẸO ĐƯỜNG ĐI: bám theo đường ray. Ở mỗi giao lộ, chọn nhánh nối tiếp với đường ray để giữ đúng tuyến chính."
+          },
+          "s1": {
+            "text": "Đi theo đường ray; tại giao lộ chọn nhánh nối tiếp đường ray."
+          },
+          "s2": {
+            "text": "Hạ Rudja.",
+            "note": "Uncut Skill Gem Lv6."
+          },
+          "s3": {
+            "text": "Nói chuyện với Risu trong lồng."
+          },
+          "s4": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act2_z4": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với Risu + Sekhema Asala."
+          },
+          "s1": {
+            "text": "Đi tới Traitor's Passage."
+          }
+        }
+      },
+      "act2_z5": {
+        "objectives": {
+          "s0": {
+            "text": "PATCH 0.5 PATHING: sau khi cứu Risu, không cần quay qua Halani Gates để vào Traitor's Passage nữa; route hiện tại đã dùng đường tắt mới."
+          },
+          "s1": {
+            "text": "Tương tác Ancient Seal door + Runic Seals."
+          },
+          "s2": {
+            "text": "Hạ Balbala, the Traitor.",
+            "note": "Djinn Barya + Uncut Skill Gem Lv6. Có thể bỏ qua và lấy Barya Lv28 ở Deshar."
+          },
+          "s3": {
+            "text": "Đa số build có thể bỏ Balbala lúc này; lấy Djinn Barya dự phòng từ 2 con Vulture ở Deshar sẽ dễ hơn và cho trial Lv28 tốt hơn."
+          },
+          "s4": {
+            "text": "Bell Chest nằm ở ngõ cụt.",
+            "note": "Vật phẩm rơi ngẫu nhiên."
+          },
+          "s5": {
+            "text": "Đi lên cầu thang vào The Halani Gates."
+          }
+        }
+      },
+      "act2_z6": {
+        "objectives": {
+          "s0": {
+            "text": "Triệu hồi Asala để mở cổng."
+          },
+          "s1": {
+            "text": "Tiến tới command tents để loot trước khi mở cổng."
+          },
+          "s2": {
+            "text": "Hạ Jamanra lần đầu."
+          },
+          "s3": {
+            "text": "Đi xuống cầu thang, tìm checkpoint rồi Teleport về town."
+          },
+          "s4": {
+            "text": "Nếu Asala bị kẹt phía sau đám lính đất nung, reset checkpoint để NPC dịch chuyển tới gần bạn."
+          },
+          "s5": {
+            "text": "Có thể đẩy tới khu lều chỉ huy để nhặt loot trước khi mở cổng."
+          }
+        }
+      },
+      "act2_z7": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện Shambrin, Zarka, Sekhema Asala."
+          },
+          "s1": {
+            "text": "Đi Trial of Sekhemas → lấy Waypoint, để làm sau ở Lv28."
+          },
+          "s2": {
+            "text": "Teleport về → đi Mastodon Badlands."
+          }
+        }
+      },
+      "act2_z8": {
+        "objectives": {
+          "s0": {
+            "text": "PATCH 0.5 PATHING: tìm các vết nứt trên mặt đất và đi theo chúng để tới Lightless Passage / Well of Souls."
+          },
+          "s1": {
+            "text": "Nên làm zone này TRƯỚC Keth để Kabala rơi gem Lv7."
+          },
+          "s2": {
+            "text": "Shrine of Bones nằm gần Checkpoint.",
+            "note": "Support Gem Lv2."
+          },
+          "s3": {
+            "text": "NÊN CHẠY KHU NÀY TRƯỚC KETH để đẩy level Keth lên; Kabala sẽ rơi gem Lv7, hữu ích cho mọi class."
+          },
+          "s4": {
+            "text": "Đi vào The Bone Pits."
+          }
+        }
+      },
+      "act2_z9": {
+        "objectives": {
+          "s0": {
+            "text": "RUNESTONE: tương tác Runestone ở đây sẽ gọi Farrow và mở thêm recipe."
+          },
+          "s1": {
+            "text": "Runestone Patch 0.5: tương tác để triệu hồi Farrow và mở recipe mới."
+          },
+          "s2": {
+            "text": "Loot Effigy tại checkpoint."
+          },
+          "s3": {
+            "text": "Giết hyena cho tới khi rơi Sun Clan Relic."
+          },
+          "s4": {
+            "text": "Hạ Iktab & Ekbab → lấy Mastodon Tusks."
+          },
+          "s5": {
+            "text": "Preserved Witness (Abyss) là mục tiêu tùy chọn dạng sống sót/hộ tống qua gauntlet, thường xuất hiện gần Lightless Passage / Well of Souls; phần thưởng tốt nhưng phụ thuộc build."
+          },
+          "s6": {
+            "text": "Preserved Witness / Well of Souls.",
+            "note": "Vật phẩm bậc cao."
+          },
+          "s7": {
+            "text": "Teleport  về town."
+          },
+          "s8": {
+            "text": "Trên đường đi nhớ loot Effigy tại checkpoint."
+          }
+        }
+      },
+      "act2_z10": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với Zarka."
+          },
+          "s1": {
+            "text": "Đi tới Keth."
+          }
+        }
+      },
+      "act2_z11": {
+        "objectives": {
+          "s0": {
+            "text": "RUNESTONE: tương tác Runestone ở Keth để gọi Farrow và mở recipe."
+          },
+          "s1": {
+            "text": "Runestone Patch 0.5: triệu hồi Farrow và mở recipe mới."
+          },
+          "s2": {
+            "text": "Giết snake tới khi rơi Kabala Clan Relic."
+          },
+          "s3": {
+            "text": "Abandoned Prayer.",
+            "note": "Magic Amulet."
+          },
+          "s4": {
+            "text": "Hạ Kabala, Constrictor Queen tại Venom Pit.",
+            "note": "+2 Weapon Set Skill Points; nếu làm Mastodon trước sẽ rơi Skill Gem Lv7."
+          },
+          "s5": {
+            "text": "Nếu đã làm Mastodon Badlands trước, Kabala sẽ rơi Skill Gem Lv7."
+          },
+          "s6": {
+            "text": "Đi vào The Lost City."
+          }
+        }
+      },
+      "act2_z12": {
+        "objectives": {
+          "s0": {
+            "text": "Hạ Ninth Treasure of Keth tại Galleria.",
+            "note": "Jewel."
+          },
+          "s1": {
+            "text": "Golden Tomb.",
+            "note": "Spirit Gem Lv7."
+          },
+          "s2": {
+            "text": "Đi vào Buried Shrines."
+          }
+        }
+      },
+      "act2_z13": {
+        "objectives": {
+          "s0": {
+            "text": "Quan tài có lính canh.",
+            "note": "Support Gem / Lesser Jeweller's Orb."
+          },
+          "s1": {
+            "text": "Chọn Offering hệ Fire, Water hoặc Lightning.",
+            "note": "Ring có Resistance."
+          },
+          "s2": {
+            "text": "Đi vào The Heart of Keth."
+          }
+        }
+      },
+      "act2_z14": {
+        "objectives": {
+          "s0": {
+            "text": "ĐƯỜNG ĐI: đi xuyên Vestibule với sàn sập và quái acid xuống Halani Shrine ở đáy; Azarian nằm tại đây."
+          },
+          "s1": {
+            "text": "Đi xuống qua The Vestibule tới Halani Shrine."
+          },
+          "s2": {
+            "text": "Hạ Azarian."
+          },
+          "s3": {
+            "text": "Nói chuyện Water Goddess (Halani) → lấy Everburning Cinders → ignite Goddess Essence of Water."
+          },
+          "s4": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act2_z15": {
+        "objectives": {
+          "s0": {
+            "text": "Tìm 3 Ancient Seals quanh rìa zone."
+          },
+          "s1": {
+            "text": "Tìm Medallion / Relic Altar, đặt cả 2 relic.",
+            "note": "+1 Charm Slot + chọn 30% increased Charm Charges gained HOẶC 30% increased Charm Effect Duration; có thể đổi sau."
+          },
+          "s2": {
+            "text": "Phần thưởng: +1 Charm Slot và chọn 1 trong 2 buff: +30% Charm Charges gained hoặc +30% Charm Effect Duration. Có thể đổi lại sau."
+          },
+          "s3": {
+            "text": "Relic Altar nằm trên một nhánh phụ của tuyến đi tới Ancient Seals."
+          },
+          "s4": {
+            "text": "Đi vào The Titan Grotto."
+          }
+        }
+      },
+      "act2_z16": {
+        "objectives": {
+          "s0": {
+            "text": "Hạ Zalmarath, the Colossus → lấy Flame Ruby."
+          },
+          "s1": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act2_z17": {
+        "objectives": {
+          "s0": {
+            "text": "PATCH 0.5 — ACT 2 RUNIC VAULT: tương tác Runestone để gọi Farrow → đi caravan tới Skull of the Titan (Runeseeker) → tìm cửa hang vào Runic Vault → gọi Farrow → mở Runic Inscriptions."
+          },
+          "s1": {
+            "text": "Chuỗi Runic Vault Act 2: tương tác Runestone → triệu hồi Farrow; đi caravan tới Skull of the Titan → vào Runic Vault → triệu hồi Farrow để mở Runic Inscriptions."
+          },
+          "s2": {
+            "text": "Tìm Fallen Dekhara gần tower.",
+            "note": "+2 Weapon Set Skill Points."
+          },
+          "s3": {
+            "text": "Lấy Letter từ Lihl Lima → giao Shambrin ở town."
+          },
+          "s4": {
+            "text": "Hạ 2 Vultures ở side area.",
+            "note": "Backup Djinn Barya Lv28 — đường Ascendancy dễ hơn Balbala."
+          },
+          "s5": {
+            "text": "Đây là đường Ascendancy dễ: Djinn Barya Lv28 từ Vulture thường dễ hơn nhiều so với Balbala."
+          },
+          "s6": {
+            "text": "The Unremembered nằm gần Checkpoint.",
+            "note": "Artificer's Orb."
+          },
+          "s7": {
+            "text": "Đi vào Path of Mourning."
+          }
+        }
+      },
+      "act2_z18": {
+        "objectives": {
+          "s0": {
+            "text": "ĐƯỜNG ĐI: tin vào overworld map; lối ra của zone khá thẳng, không cần vòng tìm layout."
+          },
+          "s1": {
+            "text": "Theo overworld map tới lối ra."
+          },
+          "s2": {
+            "text": "Shifting Vases / Hushed Urn.",
+            "note": "4 vật phẩm Rare + Support Gem Lv2."
+          },
+          "s3": {
+            "text": "Đi vào The Spires of Deshar."
+          }
+        }
+      },
+      "act2_z19": {
+        "objectives": {
+          "s0": {
+            "text": "Tương tác Sisters of Garukhan shrine.",
+            "note": "+10% Lightning Resistance."
+          },
+          "s1": {
+            "text": "Hạ Tor Gul."
+          },
+          "s2": {
+            "text": "Tor Gul là một trong các fight khó nhất Act 2: ưu tiên cap Lightning Resistance và né đòn của Defiler."
+          },
+          "s3": {
+            "text": "Teleport về town → nói Sekhema Asala 2 lần."
+          }
+        }
+      },
+      "act2_z20": {
+        "objectives": {
+          "s0": {
+            "text": "PATCH 0.5 QoL: Reforging Bench nằm ngay cửa Trial; Max Runic Ward được cộng vào Starting Honour."
+          },
+          "s1": {
+            "text": "Làm ở khoảng Lv28; khi vào chọn thủ công Djinn Barya Lv28 lấy từ Deshar, không dùng Barya Lv22 mặc định."
+          },
+          "s2": {
+            "text": "Ưu tiên phòng Trial: Ritual > Chalice > Hourglass > Gauntlet. Hourglass: giết rare để giảm timer; Chalice: chỉ tới vị trí rare."
+          },
+          "s3": {
+            "text": "Ưu tiên phòng: Ritual > Chalice > Hourglass > Gauntlet."
+          },
+          "s4": {
+            "text": "Hoàn thành Trial.",
+            "note": "Ascendancy đầu tiên."
+          },
+          "s5": {
+            "text": "Smith of Kitava: nên cất sẵn white chest trước khi ascend."
+          },
+          "s6": {
+            "text": "Smith of Kitava (Warrior): nên cất sẵn một white chest piece trước khi ascend vì ascendancy này có thể khiến bạn không dùng được magic/rare chest."
+          }
+        }
+      },
+      "act2_z21": {
+        "objectives": {
+          "s0": {
+            "text": "Đi tới The Dreadnought."
+          },
+          "s1": {
+            "text": "Hạ Jamanra, the Abomination — boss cuối Act 2."
+          },
+          "s2": {
+            "text": "PATCH 0.5 PATHING: khu Dreadnought thứ hai đã bị bỏ; Jamanra, the Abomination giờ được đánh trực tiếp trong The Dreadnought."
+          },
+          "s3": {
+            "text": "Jamanra, the Abomination bắt đầu trong trạng thái armor-broken; burst physical lớn có thể stun boss trước phase lightning fence."
+          },
+          "s4": {
+            "text": "Patch 0.5: khu Dreadnought thứ hai đã bị bỏ; Jamanra, the Abomination đánh trực tiếp tại đây."
+          },
+          "s5": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act2_z22": {
+        "objectives": {
+          "s0": {
+            "text": "Ra khỏi caravan phía trên trái → nói Hooded One → chờ animation."
+          },
+          "s1": {
+            "text": "Quay lại → nói Sekhema Asala → “Travel to the Sandswept Marsh”."
+          },
+          "s2": {
+            "text": "Hoàn thành Act 2 → sang Act 3."
+          }
+        }
+      },
+      "act2_z23": {
+        "objectives": {}
+      },
+      "act2_z24": {
+        "objectives": {}
+      },
+      "act2_z25": {
+        "objectives": {}
+      },
+      "act2_z26": {
+        "objectives": {}
+      },
+      "act2_z27": {
+        "objectives": {}
+      },
+      "act2_z28": {
+        "objectives": {}
+      }
+    }
+  },
+  "act3": {
+    "subtitle": "Bản đồ tổng quan có thể vẫn hiển thị bố cục cũ và sẽ được cập nhật khi có bản mới.",
+    "areas": {
+      "act3_z0": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với The Hooded One."
+          },
+          "s1": {
+            "text": "Hạ Rootdredge.",
+            "note": "Skill Gem Lv9."
+          },
+          "s2": {
+            "text": "Tìm giỏ tại Orok Campsite.",
+            "note": "Lesser Jeweller's Orb."
+          },
+          "s3": {
+            "text": "Tìm xác treo trên cây.",
+            "note": "Magic Ring + Skill Gem Lv9."
+          },
+          "s4": {
+            "text": "Đi vào Ziggurat Encampment."
+          }
+        }
+      },
+      "act3_z1": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện Alva, Oswald, The Hooded One."
+          },
+          "s1": {
+            "text": "Có thể nâng flask Lv30 từ vendor Servi."
+          },
+          "s2": {
+            "text": "LỰA CHỌN VĨNH VIỄN của Servi, không đổi lại được: +25% Stun Threshold (phổ biến) / +30% Elemental Ailment Threshold / +25% Mana Regeneration."
+          },
+          "s3": {
+            "text": "Đi Jungle Ruins bằng lối ra phía trên."
+          }
+        }
+      },
+      "act3_z2": {
+        "objectives": {
+          "s0": {
+            "text": "PATCH 0.5 PATHING: các explorer camp giờ chỉ hướng tới khu kế tiếp và destination được hiện trên minimap; giảm rất nhiều thời gian mò đường."
+          },
+          "s1": {
+            "text": "RUNES OF ALDUR: Act 3 có 3 Runestone — Jungle Ruins, Venom Crypts, Azak Bog. Lấy đủ 3 rồi quay Infested Barrens → Mystic Refuge → clear và nói Farrow để mở Unique Verisium Runeforging."
+          },
+          "s2": {
+            "text": "UNIQUE RUNEFORGING: unique Lv55 trở xuống được tăng base damage/defence hoặc Runic Ward mà không chịu trade-off base stat; giá trị tốt nhất thường trên Kalguuran uniques."
+          },
+          "s3": {
+            "text": "FATE OF THE VAAL: Jungle Ruins có Vaal Beacon đầu tiên (1/6). Clear pack quanh beacon để kích hoạt crystal."
+          },
+          "s4": {
+            "text": "Nói chuyện với Farrow ở đầu zone → Runes of Aldur / Runeseeker."
+          },
+          "s5": {
+            "text": "Patch 0.5. Đây là Runestone 1/3. Thu thập đủ 3 Runestone để mở khóa Unique Verisium Runeforging."
+          },
+          "s6": {
+            "text": "Fate of the Vaal: hoàn thành Vaal Beacon 1/6."
+          },
+          "s7": {
+            "text": "Hạ Mighty Silverfist.",
+            "note": "+2 Weapon Set Skill Points."
+          },
+          "s8": {
+            "text": "Mẹo boss: né cú slam SANG NGANG, không lùi thẳng; wave đi theo hướng attack."
+          },
+          "s9": {
+            "text": "Jungle Grave / ravaged corpse → Servi cho Rare Belt lựa chọn."
+          },
+          "s10": {
+            "text": "Troubled Camp (Gwendolyn Albright).",
+            "note": "Chắc chắn nhận được Rare Gloves."
+          },
+          "s11": {
+            "text": "Kích hoạt Jungle Ruins Runestone."
+          },
+          "s12": {
+            "text": "Tìm Waypoint gần Venom Crypts → vào The Venom Crypts."
+          }
+        }
+      },
+      "act3_z3": {
+        "objectives": {
+          "s0": {
+            "text": "FATE OF THE VAAL: Vaal Beacon thứ 2/6 nằm ở đây."
+          },
+          "s1": {
+            "text": "Fate of the Vaal: Vaal Beacon 2/6."
+          },
+          "s2": {
+            "text": "Sự kiện quan tài.",
+            "note": "Chắc chắn nhận được Support Gem Lv3."
+          },
+          "s3": {
+            "text": "Tìm corpse → lấy Orok Poison → tới safe zone A Reprieve."
+          },
+          "s4": {
+            "text": "PATCH 0.5: kích hoạt Venom Crypts Runestone nếu gặp — đây là 1 trong 3 Runestone của Act 3."
+          },
+          "s5": {
+            "text": "Kích hoạt Venom Crypts Runestone – Runestone 2/3."
+          },
+          "s6": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act3_z4": {
+        "objectives": {
+          "s0": {
+            "text": "Giao Orok Poison cho Servi.",
+            "note": "Lựa chọn VĨNH VIỄN, không đổi được."
+          },
+          "s1": {
+            "text": "Chọn một: +25% Stun Threshold / +30% Elemental Ailment Threshold / +25% Mana Regeneration."
+          },
+          "s2": {
+            "text": "Đi tới Infested Barrens (hiện tại qua Jungle Ruins)."
+          }
+        }
+      },
+      "act3_z5": {
+        "objectives": {
+          "s0": {
+            "text": "PATCH 0.5 ROUTING: hiện tại vào Infested Barrens từ Jungle Ruins; transition vẫn có thể thay đổi theo live build."
+          },
+          "s1": {
+            "text": "FATE OF THE VAAL: Vaal Beacon thứ 3/6 nằm ở đây."
+          },
+          "s2": {
+            "text": "Fate of the Vaal: Vaal Beacon 3/6."
+          },
+          "s3": {
+            "text": "Tìm/nói chuyện Alva, lấy Waypoint gần cô ấy."
+          },
+          "s4": {
+            "text": "Troubled Camp (Sebastian Carroway).",
+            "note": "Chắc chắn nhận được Rare Boots."
+          },
+          "s5": {
+            "text": "Đi vào Chimeral Wetlands."
+          }
+        }
+      },
+      "act3_z6": {
+        "objectives": {
+          "s0": {
+            "text": "FATE OF THE VAAL: Vaal Beacon thứ 4/6 nằm ở đây."
+          },
+          "s1": {
+            "text": "Fate of the Vaal: Vaal Beacon 4/6."
+          },
+          "s2": {
+            "text": "Ravaged Camp → lấy Lost Temple Logbook và mở rương Gold.",
+            "note": "Chắc chắn nhận được Rare Armour."
+          },
+          "s3": {
+            "text": "Toxic Bloom / Noxious Behemoth.",
+            "note": "Magic Amulet."
+          },
+          "s4": {
+            "text": "Cơ chế của League.",
+            "note": "Skill Gem Lv9."
+          },
+          "s5": {
+            "text": "Vào Temple of Chaos → mở Waypoint → quay lại.",
+            "note": "Mở đường Second Ascendancy."
+          },
+          "s6": {
+            "text": "Hạ Xyclucian, the Chimera → lấy Inscribed Ultimatum."
+          },
+          "s7": {
+            "text": "Đi vào Jiquani's Machinarium phía sau boss."
+          }
+        }
+      },
+      "act3_z7": {
+        "objectives": {
+          "s0": {
+            "text": "Dùng Inscribed Ultimatum tại cửa Trial."
+          },
+          "s1": {
+            "text": "Chọn mod thuận lợi; tránh lightning runes nếu Lightning Res thấp."
+          },
+          "s2": {
+            "text": "Soul Core skip: dodge roll giữa slam và twist của animation đặt core để duplicate core vào socket."
+          },
+          "s3": {
+            "text": "Hoàn thành Trial.",
+            "note": "Ascendancy thứ hai."
+          },
+          "s4": {
+            "text": "SOUL CORE SKIP: dodge roll đúng lúc giữa slam và animation đặt core có thể nhân core vào các socket."
+          }
+        }
+      },
+      "act3_z8": {
+        "objectives": {
+          "s0": {
+            "text": "LAYOUT: khu này dạng chữ U vuông, generators nằm ở hai đầu đối diện."
+          },
+          "s1": {
+            "text": "Layout dạng chữ U vuông; generators ở hai đầu đối diện."
+          },
+          "s2": {
+            "text": "Triệu hồi/nói chuyện Alva."
+          },
+          "s3": {
+            "text": "Lấy Small Soul Core → dùng trên Stone Altar cạnh Alva."
+          },
+          "s4": {
+            "text": "Lấy các Small Soul Cores còn lại (4 tổng cộng): 1 mở Sanctum, 2 cho Blackjaw/secret loot."
+          },
+          "s5": {
+            "text": "Mở cửa Blackjaw → hạ Blackjaw, the Remnant → dùng Flame Core.",
+            "note": "+10% Fire Resistance."
+          },
+          "s6": {
+            "text": "Mở cửa khác → vào Jiquani's Sanctum."
+          }
+        }
+      },
+      "act3_z9": {
+        "objectives": {
+          "s0": {
+            "text": "Triệu hồi/nói chuyện Alva."
+          },
+          "s1": {
+            "text": "Lấy 2 Medium Soul Cores, đặt vào Generators."
+          },
+          "s2": {
+            "text": "Quay lại đầu zone → click Large Soul Core → hạ Zicoatl, Warden of the Core → lấy core."
+          },
+          "s3": {
+            "text": "FATE OF THE VAAL: Vaal Beacon thứ 5/6 nằm trong Sanctum."
+          },
+          "s4": {
+            "text": "Paquate's Mechanism là corruption altar trong Sanctum, dùng kiểu Vaal Orb để corrupt item trong lúc clear."
+          },
+          "s5": {
+            "text": "Fate of the Vaal: Vaal Beacon 5/6."
+          },
+          "s6": {
+            "text": "Paquate's Mechanism: altar corruption kiểu Vaal Orb."
+          },
+          "s7": {
+            "text": "Teleport tới Jungle Ruins."
+          }
+        }
+      },
+      "act3_z10": {
+        "objectives": {
+          "s0": {
+            "text": "PATCH 0.5 ROUTING: sau Sanctum quay lại Jungle Ruins, dùng Large Soul Core trên Stone Altar để làm lộ lối vào Matlan Waterways."
+          },
+          "s1": {
+            "text": "Dùng Large Soul Core trên Stone Altar để làm xuất hiện lối vào Matlan Waterways."
+          },
+          "s2": {
+            "text": "Đi vào The Matlan Waterways."
+          }
+        }
+      },
+      "act3_z11": {
+        "objectives": {
+          "s0": {
+            "text": "Đến Narag's Hut → hạ Narag of the Vile Word.",
+            "note": "Rare Weapon + Blacksmith's Whetstone."
+          },
+          "s1": {
+            "text": "Đi qua các pressure pads (6–8 mỗi layout), tự kích hoạt khi chạm."
+          },
+          "s2": {
+            "text": "PATCH 0.5 QoL: lever đã thành pressure pad đi qua là kích hoạt; đoạn canal cuối đã drain sẵn, không cần portal-skip cũ."
+          },
+          "s3": {
+            "text": "Fate of the Vaal: Vaal Beacon thứ 6/6 nằm ở đây. Kích hoạt để mở cổng vào Vaal Ruins rồi vào ngay vì lối vào có thể biến mất."
+          },
+          "s4": {
+            "text": "Đi tới cuối zone; phần canal cuối đã được drain sẵn trong 0.5."
+          },
+          "s5": {
+            "text": "Fate of the Vaal: Vaal Beacon 6/6. Hoàn tất để mở cổng vào Vaal Ruins."
+          },
+          "s6": {
+            "text": "Ravaged Corpse nằm trên đường vào Azak Bog → triệu hồi Servi.",
+            "note": "Rare Belt chưa Identify."
+          },
+          "s7": {
+            "text": "Servi chỉ xuất hiện ở entrance; bên trong Azak Bog là Farrow giữ Runestone."
+          },
+          "s8": {
+            "text": "Đi side entrance vào Azak Bog."
+          }
+        }
+      },
+      "act3_z12": {
+        "objectives": {
+          "s0": {
+            "text": "PATCH 0.5 ROUTING: Azak Bog là side zone từ Matlan Waterways, không còn đi từ Drowned City. Đây là Runestone thứ 3 của Act 3."
+          },
+          "s1": {
+            "text": "Sau khi có đủ 3 Runestone, quay Infested Barrens → Mystic Refuge → clear → nói Farrow để mở Unique Verisium Runeforging."
+          },
+          "s2": {
+            "text": "Nói chuyện Farrow ở đầu zone."
+          },
+          "s3": {
+            "text": "Ritual tại Flameskin / Ignagduk's Harvest.",
+            "note": "Fire Res + Rarity."
+          },
+          "s4": {
+            "text": "Boss arena luôn ở góc trên-phải; hướng xoay tùy entrance. Có thể reset và farm magic packs quanh fire shrine để lấy XP."
+          },
+          "s5": {
+            "text": "Hạ Ignagduk, the Bog Witch → dùng Gemrot Skull.",
+            "note": "+30 Spirit + Uncut Spirit Gem Lv10."
+          },
+          "s6": {
+            "text": "Kích hoạt Azak Bog Runestone – Runestone 3/3."
+          },
+          "s7": {
+            "text": "Đủ 3 Runestones: quay lại Infested Barrens → Mystic Refuge → clear → nói Farrow để mở Unique Verisium Runeforging."
+          },
+          "s8": {
+            "text": "Trả Ignagduk's Ghastly Spear cho Servi ở town.",
+            "note": "Chọn 1 trong 5 Charm."
+          },
+          "s9": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act3_z13": {
+        "objectives": {
+          "s0": {
+            "text": "LAYOUT cố định và phản chiếu Utzaal; chokepoint sau cây cầu có checkpoint là nơi Viper sẽ ambush ở Utzaal."
+          },
+          "s1": {
+            "text": "Xuống dưới nói Alva → vào The Drowned City."
+          },
+          "s2": {
+            "text": "Tìm Apex of Filth → mở Waypoint → quay lại."
+          },
+          "s3": {
+            "text": "Tìm The Molten Vault → mở Waypoint → quay lại."
+          },
+          "s4": {
+            "text": "Drowned Quarters.",
+            "note": "Quái Rare, Gold, rương và Rune rơi ra."
+          },
+          "s5": {
+            "text": "Sau bridge/checkpoint có Crawler swarm phục kích. Drowning Orbs màu teal làm giảm tầm nhìn và rất nguy hiểm nếu đứng lâu — cứ di chuyển."
+          },
+          "s6": {
+            "text": "Teleport tới The Molten Vault."
+          }
+        }
+      },
+      "act3_z14": {
+        "objectives": {
+          "s0": {
+            "text": "(Nhân vật đầu tiên) Hạ Mektul, the Forgemaster.",
+            "note": "Reforging Bench + Uncut Skill Gem Lv10 + Artificer's Orb."
+          },
+          "s1": {
+            "text": "Trả Hammer of Kamasa cho Oswald để mở Reforging Bench; alt character có thể bỏ."
+          },
+          "s2": {
+            "text": "Mektul có khoảng 4 phút trước khi molten flood tràn; nên overlevel nhẹ và có Fire Resistance."
+          },
+          "s3": {
+            "text": "Đem Hammer of Kamasa về Oswald để mở Reforging Bench."
+          },
+          "s4": {
+            "text": "Đưa Frost Cores đến Stone Altars để dọn chỗ Molten Flow chặn đường → mở Gold Chests."
+          },
+          "s5": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act3_z15": {
+        "objectives": {
+          "s0": {
+            "text": "Tìm 3 Mushrooms → dùng Cauldron.",
+            "note": "Life Flask hoặc Mana Flask có Quality."
+          },
+          "s1": {
+            "text": "Sau bottleneck/checkpoint, kiểm tra các góc phía sau. Cauldron Keeper cũng là vendor ẩn bán caster gear + jewellery."
+          },
+          "s2": {
+            "text": "Hạ Queen of Filth → lấy Temple Door Idol."
+          },
+          "s3": {
+            "text": "Đứng gần Queen of Filth; đi quá xa có thể kích hoạt cú rolling slam mạnh."
+          },
+          "s4": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act3_z16": {
+        "objectives": {
+          "s0": {
+            "text": "LAYOUT: mỗi tầng là tam giác; góc xa có khoảng 50% khả năng là đường đúng — nên kiểm tra trước."
+          },
+          "s1": {
+            "text": "Xuống dưới nói Alva → qua cánh cửa phía sau vào Temple of Kopec."
+          },
+          "s2": {
+            "text": "Mỗi tầng hình tam giác; ưu tiên kiểm tra góc xa trước."
+          },
+          "s3": {
+            "text": "Hạ Ketzuli, High Priest of the Sun ở tầng trên."
+          },
+          "s4": {
+            "text": "Trong nhà, ánh nắng gây burning debuff theo stack; di chuyển giữa các vùng bóng râm khi clear pack."
+          },
+          "s5": {
+            "text": "Nói Alva, chờ lore."
+          }
+        }
+      },
+      "act3_z17": {
+        "objectives": {
+          "s0": {
+            "text": "LAYOUT giống Drowned City. Bám theo đường lát đá để tới Viper."
+          },
+          "s1": {
+            "text": "Viper rất cơ động và né cao; bait chu kỳ tấn công đầu từ một vị trí ổn định để dễ đọc hướng."
+          },
+          "s2": {
+            "text": "Dùng Gateway → xuống dưới vào Utzaal."
+          },
+          "s3": {
+            "text": "Theo paved road để tới Viper."
+          },
+          "s4": {
+            "text": "Farm Sacrificial Heart từ Vaal Goliaths."
+          },
+          "s5": {
+            "text": "Sacrificial Heart chỉ rơi từ Vaal Goliath có canister trên vai; cũng có thể rơi ở Aggorat."
+          },
+          "s6": {
+            "text": "Mở các cửa bên hông, lấy Idols bán cho Oswald."
+          },
+          "s7": {
+            "text": "Dùng Chaos Statue để lấy Inscribed Ultimatum."
+          },
+          "s8": {
+            "text": "Hạ Viper Napuatzi."
+          },
+          "s9": {
+            "text": "Đi vào Aggorat."
+          }
+        }
+      },
+      "act3_z18": {
+        "objectives": {
+          "s0": {
+            "text": "ĐỊNH HƯỚNG: tiếng town crier chanting báo hướng đúng; mép pyramid dẫn tới khu boss."
+          },
+          "s1": {
+            "text": "Nghe town crier để định hướng; rìa pyramid dẫn tới boss."
+          },
+          "s2": {
+            "text": "Tìm Sacrificial Altar phía trên phải map."
+          },
+          "s3": {
+            "text": "Đặt Sacrificial Heart → đâm bằng Dagger.",
+            "note": "+2 Weapon Set Skill Points."
+          },
+          "s4": {
+            "text": "Cơ chế League / Crag Tooth.",
+            "note": "Vaal Orb."
+          },
+          "s5": {
+            "text": "Đi vào The Black Chambers phía trên trái."
+          }
+        }
+      },
+      "act3_z19": {
+        "objectives": {
+          "s0": {
+            "text": "Hạ Doryani, Royal Thaumaturge — boss cuối Act 3."
+          },
+          "s1": {
+            "text": "Boss có 3 phase: caster → Doryani's Triumph khi dưới 50% → airborne. Chuẩn bị defensive buff trước phase mech."
+          },
+          "s2": {
+            "text": "Chờ loot khoảng 30 giây."
+          },
+          "s3": {
+            "text": "Teleport  về town."
+          }
+        }
+      },
+      "act3_z20": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với Doryani."
+          },
+          "s1": {
+            "text": "Nói Doryani lần nữa → Alva → Hooded One → Alva."
+          },
+          "s2": {
+            "text": "Hoàn thành Act 3 → sang Act 4 (Kingsmarch)."
+          }
+        }
+      }
+    }
+  },
+  "act4": {
+    "subtitle": "Dọn các khu vực có level thấp nhất trước. Nếu chưa đủ level, farm Act 3 lên Lv 44+ trước khi sang Act 4. Xem level các khu vực trên bản đồ để chọn thứ tự.",
+    "areas": {
+      "act4_z0": {
+        "objectives": {
+          "s0": {
+            "text": "Nói chuyện với Doryani."
+          },
+          "s1": {
+            "text": "Tiếp tục vào town, nói Alva (cùng Rog)."
+          },
+          "s2": {
+            "text": "Nói Tujen → nhận quest."
+          },
+          "s3": {
+            "text": "PATCH 0.5: Rog không có chức năng quest ở patch này; việc chọn thuyền/đảo do Makoru xử lý."
+          },
+          "s4": {
+            "text": "Nói Farrow → nhận Quest 4.",
+            "note": "Mở chuỗi 13 Ancient Runes qua Remnants."
+          },
+          "s5": {
+            "text": "Farrow Act 4 mở chuỗi 13 Ancient Runes thông qua Remnants. Quest chỉ hoàn thành về sau tại Plunder's Point / Deserted Post."
+          },
+          "s6": {
+            "text": "RUNEFORGING: Act 4 không có Runestone; thay vào đó thu đủ 4 Torn Map Pieces. Đây là bậc Ancient Runes sau Act 1 Armour → Act 2 Runic Inscriptions → Act 3 Unique Runeforging."
+          },
+          "s7": {
+            "text": "Nói Makoru trên tàu, chọn điểm đến."
+          }
+        }
+      },
+      "act4_z1": {
+        "objectives": {
+          "s0": {
+            "text": "Petrified Pirate nằm ở bờ biển.",
+            "note": "Torn Map Piece (1/4)."
+          },
+          "s1": {
+            "text": "Vào Shark Pit → hạ Great White One.",
+            "note": "Shark Fin; giao Kaimana để hoàn thành Tribal Medicine, nhận Uncut Gem Lv11 lựa chọn + permanent Tukuama blessing."
+          },
+          "s2": {
+            "text": "Giao Shark Fin cho Kaimana để hoàn thành Tribal Medicine; nhận lựa chọn Uncut Gem Lv11 (Skill/Spirit/Support) + Tukuama blessing vĩnh viễn."
+          },
+          "s3": {
+            "text": "Vào Crabshell Cavern → hạ Clawcrunch.",
+            "note": "Support Gem 4."
+          },
+          "s4": {
+            "text": "Đi vào Singing Caverns."
+          }
+        }
+      },
+      "act4_z2": {
+        "objectives": {
+          "s0": {
+            "text": "Mở Beckoning Clam → lấy Humming Pearl giao cho Rog."
+          },
+          "s1": {
+            "text": "Hạ Diamora, Song of Death."
+          },
+          "s2": {
+            "text": "Nói Hooded One → Waypoint về town."
+          }
+        }
+      },
+      "act4_z3": {
+        "objectives": {
+          "s0": {
+            "text": "Nói Ange → Shoreline Hideout."
+          },
+          "s1": {
+            "text": "Clear hideout, nói Ange.",
+            "note": "Mở Hideout + Trading."
+          }
+        }
+      },
+      "act4_z4": {
+        "objectives": {
+          "s0": {
+            "text": "Corpse Nest / Impaled Karui.",
+            "note": "Torn Map Piece (1/4)."
+          },
+          "s1": {
+            "text": "Hạ Scourge of the Skies."
+          },
+          "s2": {
+            "text": "Nói Hooded One → Waypoint → đi đảo tiếp."
+          }
+        }
+      },
+      "act4_z5": {
+        "objectives": {
+          "s0": {
+            "text": "Giết mob tới khi rơi Chapel Key."
+          },
+          "s1": {
+            "text": "Armoury + Forgotten Cells.",
+            "note": "Jewel + Blackstone hoặc vật phẩm rơi."
+          },
+          "s2": {
+            "text": "Mở Chapel → hạ Forael → dùng Goddess of Justice.",
+            "note": "Chọn Flask."
+          },
+          "s3": {
+            "text": "Đi vào Solitary Confinement."
+          }
+        }
+      },
+      "act4_z6": {
+        "objectives": {
+          "s0": {
+            "text": "Hạ The Prisoner."
+          },
+          "s1": {
+            "text": "Nói Hooded One → đi Isle of Kin."
+          }
+        }
+      },
+      "act4_z7": {
+        "objectives": {
+          "s0": {
+            "text": "Flayed Sailor nằm gần bờ biển.",
+            "note": "Torn Map Piece (1/4)."
+          },
+          "s1": {
+            "text": "Doomed Mine / Fossilised Formation.",
+            "note": "Lesser Jeweller's Orb."
+          },
+          "s2": {
+            "text": "Beast Pen.",
+            "note": "Skill + Support Gem."
+          },
+          "s3": {
+            "text": "Hạ Mimok the Enslaved trong Beast Pen.",
+            "note": "Chắc chắn nhận được Tier 4 Support Gem."
+          },
+          "s4": {
+            "text": "Vào Primal Arena → hạ Blind Beast.",
+            "note": "Greater Blank Rune."
+          },
+          "s5": {
+            "text": "Đi vào Volcanic Warrens."
+          }
+        }
+      },
+      "act4_z8": {
+        "objectives": {
+          "s0": {
+            "text": "Vào Volcanic Nest → hạ Magma Twins. Thứ tự hạ quyết định Ring nhận được.",
+            "note": "Lightning chết trước → Ruby Ring; Fire chết trước → Topaz Ring."
+          },
+          "s1": {
+            "text": "Hạ Krutog, Lord of Kin tại The Tyrant Throne."
+          },
+          "s2": {
+            "text": "Waypoint về Kingsmarch."
+          }
+        }
+      },
+      "act4_z9": {
+        "objectives": {
+          "s0": {
+            "text": "Nói Matiki tại cái giếng, click giếng."
+          },
+          "s1": {
+            "text": "Rương nằm sau thác nước.",
+            "note": "Spirit Gem Lv12."
+          },
+          "s2": {
+            "text": "Hoàn thành 3 Tests: Fire, Nature, Cold."
+          },
+          "s3": {
+            "text": "Silent Hall altar → Pay Respects → nói Navali.",
+            "note": "+5% Maximum Mana."
+          },
+          "s4": {
+            "text": "Đi vào Halls of the Dead."
+          },
+          "s5": {
+            "text": "Rương ẩn sau thác nước cho Spirit Gem Lv12."
+          }
+        }
+      },
+      "act4_z10": {
+        "objectives": {
+          "s0": {
+            "text": "TATTOO: đa số build nên chọn +5% Fire/Cold/Lightning Resistance; +5 Str/Dex/Int chỉ nên lấy khi thiếu stat threshold."
+          },
+          "s1": {
+            "text": "Trial of Ngakanu: hoàn thành 3 tests dạng clover-leaf, lấy Tattoo.",
+            "note": "Chọn +5% Fire/Cold/Lightning Resistance (khuyên dùng) hoặc +5 Str/Dex/Int."
+          },
+          "s2": {
+            "text": "Hạ Yama the White."
+          },
+          "s3": {
+            "text": "Đi vào Trial of Ancestors."
+          }
+        }
+      },
+      "act4_z11": {
+        "objectives": {
+          "s0": {
+            "text": "Nói Navali & Hinekora.",
+            "note": "+2 Skill Points."
+          },
+          "s1": {
+            "text": "Waypoint → đi Kedge Bay."
+          }
+        }
+      },
+      "act4_z12": {
+        "objectives": {
+          "s0": {
+            "text": "Dead Man's Chest / Smuggler's Stash.",
+            "note": "Torn Map Piece (1/4)."
+          },
+          "s1": {
+            "text": "Abandoned Ship.",
+            "note": "Vật phẩm rơi."
+          },
+          "s2": {
+            "text": "Đến Tidal Cay, nơi có Tombgrowl.",
+            "note": "Vật phẩm rơi."
+          },
+          "s3": {
+            "text": "Doran, the Deft ở gần lối vào.",
+            "note": "Vật phẩm rơi."
+          },
+          "s4": {
+            "text": "Đi vào Journey's End."
+          }
+        }
+      },
+      "act4_z13": {
+        "objectives": {
+          "s0": {
+            "text": "Nói Tujen."
+          },
+          "s1": {
+            "text": "Hạ Captain Harlin → lấy Verisium."
+          },
+          "s2": {
+            "text": "Nói Freya Hartlin."
+          },
+          "s3": {
+            "text": "Về town → Dannig → lấy Verisium Spikes."
+          },
+          "s4": {
+            "text": "Quay lại Journey's End → Freya."
+          },
+          "s5": {
+            "text": "Totem → hạ Omniphobia."
+          },
+          "s6": {
+            "text": "Omniphobia là nguồn +2 Skill Points; Blind Beast ở Isle of Kin giờ chỉ rơi Greater Blank Rune."
+          },
+          "s7": {
+            "text": "Nói Tujen ở town.",
+            "note": "+2 Skill Points."
+          }
+        }
+      },
+      "act4_z14": {
+        "objectives": {
+          "s0": {
+            "text": "GATING: chỉ vào được Plunder's Point sau khi đã turn-in đủ 4 Torn Map Pieces tại Kingsmarch."
+          },
+          "s1": {
+            "text": "KHÔNG ĐƯỢC BỎ: đây là nhánh Runekeeper mở Deserted Post → gọi Farrow → Runesmithing of Knowledge → mở 13 Ancient Runes."
+          },
+          "s2": {
+            "text": "Chỉ vào được sau khi giao đủ 4 Torn Map Pieces ở Kingsmarch."
+          },
+          "s3": {
+            "text": "Đây là nhánh Runekeeper bắt buộc để mở 13 Ancient Runes; đừng bỏ qua."
+          },
+          "s4": {
+            "text": "Nộp 4 mảnh bản đồ cho Makoru → đi thuyền → gặp Dannig → làm Expedition → đến Deserted Post → triệu hồi Farrow.",
+            "note": "Mở Runesmithing of Knowledge / 13 Ancient Runes."
+          }
+        }
+      },
+      "act4_z15": {
+        "objectives": {
+          "s0": {
+            "text": "Missionari Lorandis → đi theo → phá shield."
+          },
+          "s1": {
+            "text": "Evening / Morning Bells.",
+            "note": "Evening → 3 Exalted. Morning → 3 Regal."
+          },
+          "s2": {
+            "text": "Hạ Torvian → vào Excavation."
+          },
+          "s3": {
+            "text": "MẸO BOSS: dụ Torvian ném đá vào 2 priest phía trên để phá thế trận và mở fight."
+          },
+          "s4": {
+            "text": "Mẹo: để Torvian ném đá vào 2 priests phía trên để mở fight."
+          }
+        }
+      },
+      "act4_z16": {
+        "objectives": {
+          "s0": {
+            "text": "Hạ Benedictus tại Precursor Forge → nói Hooded One."
+          },
+          "s1": {
+            "text": "Excavated Cache nằm ở Checkpoint.",
+            "note": "Vật phẩm rơi."
+          },
+          "s2": {
+            "text": "Waypoint Kingsmarch → đi Ngakanu."
+          }
+        }
+      },
+      "act4_z17": {
+        "objectives": {
+          "s0": {
+            "text": "Abyss → Abyssal Depths.",
+            "note": "Vật phẩm rơi."
+          },
+          "s1": {
+            "text": "Mad Butcher ở trong căn lều lớn.",
+            "note": "Vật phẩm rơi."
+          },
+          "s2": {
+            "text": "Đi vào Heart of the Tribe."
+          }
+        }
+      },
+      "act4_z18": {
+        "objectives": {
+          "s0": {
+            "text": "Có rương trong Meeting House.",
+            "note": "Vật phẩm rơi."
+          },
+          "s1": {
+            "text": "Hạ Tavakai — boss cuối Act 4 → nói chuyện với hắn."
+          },
+          "s2": {
+            "text": "Quay lại nói chuyện với The Hooded One.",
+            "note": "Mở Interludes."
+          }
+        }
+      }
+    }
+  },
+  "interlude1": {
+    "subtitle": "Nhận tất cả Quest trên 3 bản đồ nhỏ. Thứ tự đề xuất là Interlude II (giữa) → Interlude I (trái) → Interlude III (phải). Khu vực giữa dài và khó nhất, nên làm khi quái còn có level thấp.",
+    "areas": {
+      "interlude1_z0": {
+        "objectives": {
+          "s0": {
+            "text": "INTERLUDE là các khu có phần thưởng vĩnh viễn và có thể bỏ lỡ — nên hoàn thành đủ cả 3 trước Maps."
+          },
+          "s1": {
+            "text": "Resistance giảm ngay khi vào Interlude; chỉ zone-in khi đã sẵn sàng chạy."
+          },
+          "s2": {
+            "text": "Tới The Refuge (Ogham) qua The Hooded One → nói The Hooded One."
+          },
+          "s3": {
+            "text": "Vào Scorched Farmlands (Waypoint). Darkness chặn lối ra Blackwood ở phía bắc. Xử lý Stones of Serle trước."
+          },
+          "s4": {
+            "text": "Holten có Altars of Omen, có thể rơi Omens / Dark Omens."
+          },
+          "s5": {
+            "text": "Hạ Isolde & Heldra ở phía đông."
+          },
+          "s6": {
+            "text": "Stones of Serle phía nam → kích hoạt 6 Runed Megaliths để gỡ Darkness."
+          },
+          "s7": {
+            "text": "Soul of the Ferryman nằm ở bến tàu tại Holten.",
+            "note": "Greater Runes, khoảng 2.000 Gold."
+          },
+          "s8": {
+            "text": "Qua Blackwood → tới Holten; Altars of Omen tại đây rơi Omens / Dark Omens."
+          },
+          "s9": {
+            "text": "Tại Holten hạ Godwin & Sigbert.",
+            "note": "Rơi Blacksmith's Whetstone."
+          },
+          "s10": {
+            "text": "Từ Holten có 2 nhánh cần clear: Wolvenhold (Oswin) và Holten Estate (story)."
+          },
+          "s11": {
+            "text": "Clear cả hai nhánh: Wolvenhold (Oswin) và Holten Estate (story)."
+          },
+          "s12": {
+            "text": "Wolvenhold → hạ Oswin, the Dread Warden → dùng Warden's Ledger.",
+            "note": "+2 Skill Points; boss còn có unique + Vaal Orb."
+          },
+          "s13": {
+            "text": "Holten Estate → lên 2 cầu thang qua maze → upper floor → hạ Thane Wulfric & Lady Elswyth."
+          },
+          "s14": {
+            "text": "Hoàn thành Interlude 5.1 → về town."
+          }
+        }
+      }
+    }
+  },
+  "interlude2": {
+    "subtitle": "Nhận tất cả Quest trên 3 bản đồ nhỏ. Thứ tự đề xuất là Interlude II (giữa) → Interlude I (trái) → Interlude III (phải). Khu vực giữa dài và khó nhất, nên làm khi quái còn có level thấp.",
+    "areas": {
+      "interlude2_z0": {
+        "objectives": {
+          "s0": {
+            "text": "Orbala's 7 Boons có thể đổi lại bất kỳ lúc nào bằng cách quay về pillar."
+          },
+          "s1": {
+            "text": "Đi Khari Crossing qua Hooded One."
+          },
+          "s2": {
+            "text": "Hạ Akthi & Anundr → nói chuyện với Risu. (Đi về góc dưới bên phải.)",
+            "note": "+2 Skill Points."
+          },
+          "s3": {
+            "text": "Navigation: beetle chests/rune drop lên cầu thang phía đông; Wayfinder's Seals chỉ hướng tây tới Pools of Kathal."
+          },
+          "s4": {
+            "text": "Torbek ở Khari Crossing.",
+            "note": "Vũ khí Rare cho người dùng phép được giảm giá."
+          },
+          "s5": {
+            "text": "Đến Pools of Kathal (Waypoint). Tại đây chắc chắn có Expedition và lối vào Sel Khari Sanctuary."
+          },
+          "s6": {
+            "text": "Sel Khari Sanctuary: (Tùy chọn) Two Wishes — đặt Yoon's Barya & Rangeen's Barya để chọn 2 rare jewelry.",
+            "note": "2× Rare Ring/Amulet/Jewel."
+          },
+          "s7": {
+            "text": "Cuối Sel Khari Sanctuary → hạ Elzarah, the Cobra Lord → Asala & Jado xuất hiện."
+          },
+          "s8": {
+            "text": "Vào Skullmaw Stairway trong Molten Shrine, tìm các Seal → kích hoạt Molten One's Gift.",
+            "note": "+5% Maximum Life."
+          },
+          "s9": {
+            "text": "Nếu Molten One's Gift bị bug, tìm đủ seals rồi reset instance. Skullmaw Stairway nằm trong Molten Shrine, phía đông-bắc."
+          },
+          "s10": {
+            "text": "Vào Qimah → dùng Orbala's Pillar → chọn 1 trong 7 Boons; có thể đổi bất cứ lúc nào."
+          },
+          "s11": {
+            "text": "Triệu hồi Jado để mở Qimah Reservoir."
+          },
+          "s12": {
+            "text": "Qimah Reservoir → tìm 2 Sacred Wells.",
+            "note": "Currency: Regal/Exalt/Alchemy."
+          },
+          "s13": {
+            "text": "Bấm vào chiếc bình lớn để triệu hồi Rare Bloodbilge.",
+            "note": "Exalt + Vaal Orb + Skill Gem."
+          },
+          "s14": {
+            "text": "Hạ boss cuối Azmadi, the Faridun Prince → tương tác Grand Barya → Jado / Asala."
+          },
+          "s15": {
+            "text": "Hoàn thành Interlude 5.2 → về town."
+          }
+        }
+      }
+    }
+  },
+  "interlude3": {
+    "subtitle": "Nhận tất cả Quest trên 3 bản đồ nhỏ. Thứ tự đề xuất là Interlude II (giữa) → Interlude I (trái) → Interlude III (phải). Khu vực giữa dài và khó nhất, nên làm khi quái còn có level thấp.",
+    "areas": {
+      "interlude3_z0": {
+        "objectives": {
+          "s0": {
+            "text": "Mount Kriar có layout/POI khá ổn định; Elder Maddox thường ở hướng 10–11 giờ."
+          },
+          "s1": {
+            "text": "Đi Mount Kriar qua Hooded One → vào Ashen Forest qua The Glade."
+          },
+          "s2": {
+            "text": "Tìm Ancient Monument trong Ashen Forest.",
+            "note": "Skill Gem, level scale theo thứ tự Interlude."
+          },
+          "s3": {
+            "text": "Đến Kriar Village → hạ Lythara, the Wayward Spear.",
+            "note": "+40 Spirit + Spirit Gem (tùy thứ tự) + Gemcrust Skull."
+          },
+          "s4": {
+            "text": "Skill/Spirit gem ở Interlude scale theo thứ tự bạn làm, nên level gem không cố định."
+          },
+          "s5": {
+            "text": "Đi Glacial Tarn → vào Howling Caves → hạ The Abominable Yeti → lấy Icy Tusks."
+          },
+          "s6": {
+            "text": "Trả Icy Tusks cho Hilda.",
+            "note": "Book of Specialization +2 Skill Points."
+          },
+          "s7": {
+            "text": "Quay lại Glacial Tarn → hạ Rakkar, the Frozen Talon phía NW để mở đường Kriar Peaks."
+          },
+          "s8": {
+            "text": "Kriar Peaks → tìm Elder Maddox khoảng hướng 10–11 giờ.",
+            "note": "Nhận 1 Unique Item miễn phí."
+          },
+          "s9": {
+            "text": "Đi Etched Ravine → hạ Stormgore, the Guardian → mở The Cuachic Vault."
+          },
+          "s10": {
+            "text": "Vào The Cuachic Vault; (Tùy chọn) Ancient Treasures: mở Sealed Vaults bằng Small Soul Cores.",
+            "note": "Currency / vật phẩm rơi."
+          },
+          "s11": {
+            "text": "Tới boss cuối Zolin & Zelina → hạ để tiếp tục Fate of the Vaal."
+          },
+          "s12": {
+            "text": "FATE OF THE VAAL: 6 Vaal Beacon nằm rải trong các zone Mount Kriar. Stormgore mở Cuachic Vault; hạ Zolin & Zelina để tiếp tục storyline."
+          },
+          "s13": {
+            "text": "Fate of the Vaal: 6 Vaal Beacons nằm rải trong các zone Mount Kriar; hoàn thành để power Temple."
+          },
+          "s14": {
+            "text": "Sau khi hoàn thành cả 3 Interludes, nói The Hooded One tại Kingsmarch.",
+            "note": "+2 Skill Points."
+          },
+          "s15": {
+            "text": "Đi Oriath → nói Farrow → The Hooded One → Doryani."
+          },
+          "s16": {
+            "text": "Mở Endgame Atlas / Maps → bắt đầu map đầu tiên (Lv58–60).",
+            "note": "Bắt đầu Endgame."
+          }
+        }
+      }
+    }
+  }
+}

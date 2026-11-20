@@ -1,6 +1,6 @@
 # PoE Exchange Path Finder
 
-A static frontend with a Cloudflare Worker backend that reads poe2scout exchange snapshot data and ranks the best 2-trade or 3-trade loops for a selected starting currency.
+A static frontend that ranks currency exchange loops for a selected starting currency in Path of Exile and Path of Exile 2. It supports a Cloudflare Worker backend and a static GitHub Pages deployment.
 
 ## Architecture
 
@@ -130,8 +130,14 @@ npm test
 
 ## Rollback
 
-The GitHub Action in `.github/workflows/update-snapshot.yml` is disabled but kept for one-league rollback. Re-enable its schedule and point the frontend back to GitHub raw URLs with `?api=0` if needed.
+The GitHub Action in `.github/workflows/update-snapshot.yml` is available for manual runs. Re-enable its schedule to publish official hourly snapshots for both games to the `snapshots` branch.
 
 ## Legacy GitHub Pages mode
 
 GitHub Pages can still serve the static frontend from `main`, reading snapshots from the `snapshots` branch. That mode does not use the Worker API or D1.
+
+The GitHub Pages mode uses completed official hourly market digests for PoE1
+`Covens` and PoE2 `Forbidden Rites`. Conservative estimates use the less
+favorable end of the recorded price range. Typical estimates use the ratio of
+quantities traded. The snapshot workflow also publishes item catalogs for both
+games, unresolved item reports, and seven days of sampled price history.

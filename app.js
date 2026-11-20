@@ -9,25 +9,31 @@ const GAME_CONFIGS = {
   poe2: {
     label: "Path of Exile 2",
     storagePrefix: "poe2",
-    defaultStartCurrency: "exalted",
+    defaultStartCurrency: "Metadata/Items/Currency/CurrencyAddModToRare",
     localSnapshotUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/snapshot.json`,
     historyUrl: `${SNAPSHOT_DATA_BASE}/data/poe2_data/price-history.json`,
     goldCostsUrl: "data/poe2_data/gold-costs.json",
-    liveSnapshotUrl: "https://api.poe2scout.com/poe2/Leagues/forbiddenrites/SnapshotPairs"
+    itemCatalogUrl: "data/poe2_data/item-catalog.json",
+    source: "https://web.poecdn.com/api/currency-exchange/poe2",
+    league: "Forbidden Rites"
   },
   poe: {
     label: "Path of Exile",
     storagePrefix: "poe",
-    defaultStartCurrency: "chaos",
+    defaultStartCurrency: "Metadata/Items/Currency/CurrencyRerollRare",
     localSnapshotUrl: `${SNAPSHOT_DATA_BASE}/data/poe_data/snapshot.json`,
     historyUrl: `${SNAPSHOT_DATA_BASE}/data/poe_data/price-history.json`,
     goldCostsUrl: "data/poe_data/gold-costs.json",
-    liveSnapshotUrl: "https://api.poe2scout.com/pc/Leagues/allflame/SnapshotPairs"
+    itemCatalogUrl: "data/poe_data/item-catalog.json",
+    source: "https://web.poecdn.com/api/currency-exchange",
+    league: "Covens"
   }
 };
 const DEFAULT_GAME_ID = "poe2";
 const EXCLUDED_STORAGE_KEY = "exchange-excluded-items";
 const INCLUDED_STORAGE_KEY = "exchange-included-items";
+const EXCLUDED_CATEGORIES_STORAGE_KEY = "exchange-excluded-categories";
+const INCLUDED_CATEGORIES_STORAGE_KEY = "exchange-included-categories";
 const RATE_OVERRIDES_STORAGE_KEY = "exchange-rate-overrides";
 const FILTER_SETTINGS_STORAGE_KEY = "exchange-filter-settings";
 const TRENDS_SETTINGS_STORAGE_KEY = "price-trends-settings";
@@ -41,6 +47,7 @@ const CATEGORY_LABELS = {
     allflameembers: "Allflame Embers",
     ancestor: "Tattoos & Omens",
     cards: "Divination Cards",
+    divinationcards: "Divination Cards",
     catalysts: "Catalysts",
     currency: "Currency",
     deliriumorbs: "Delirium Orbs",
@@ -48,6 +55,7 @@ const CATEGORY_LABELS = {
     essences: "Essences",
     expedition: "Expedition",
     fragments: "Fragments",
+    mapfragments: "Map Fragments",
     keepers: "Keepers",
     oils: "Oils",
     runegrafts: "Runegrafts"
@@ -60,6 +68,7 @@ const CATEGORY_LABELS = {
     essences: "Essences",
     expedition: "Expedition",
     fragments: "Fragments",
+    mapfragments: "Map Fragments",
     idol: "Idols",
     incursion: "Incursion",
     lineagesupportgems: "Lineage Support Gems",
@@ -76,8 +85,8 @@ const CATEGORY_LABELS = {
 const state = {
   gameId: DEFAULT_GAME_ID,
   rawPairs: [],
+  itemCatalog: {},
   items: new Map(),
-  itemPricesById: new Map(),
   priceHistory: [],
   historySnapshotCount: 0,
   totalDifferences: {},
@@ -87,12 +96,15 @@ const state = {
   goldCostsByItem: new Map(),
   edgesByFrom: new Map(),
   lastLoadedAt: null,
+  marketLoad: { phase: "loading" },
   currentPage: 1,
   trendsPage: 1,
   sortBy: "gain",
   sortDirection: "desc",
   excludedItems: new Set(),
   includedItems: new Set(),
+  excludedCategories: new Set(),
+  includedCategories: new Set(),
   rateOverrides: new Map(),
   filterSettings: null,
   trendsSettings: null,
@@ -105,6 +117,8 @@ const els = {
   startCurrency: document.querySelector("#startCurrency"),
   startAmount: document.querySelector("#startAmount"),
   pathLength: document.querySelector("#pathLength"),
+  estimateMode: document.querySelector("#estimateMode"),
+  estimateDescription: document.querySelector("#estimateDescription"),
   minVolume: document.querySelector("#minVolume"),
   minStock: document.querySelector("#minStock"),
   maxGoldCost: document.querySelector("#maxGoldCost"),
@@ -154,22 +168,25 @@ const TAB_VIEWS = {
   campaign: () => els.campaignView
 };
 
-const numberFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 4
-});
+let numberFormat;
+let percentFormat;
 
-const percentFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 2,
-  style: "percent"
-});
+function updateDisplayFormats() {
+  numberFormat = new Intl.NumberFormat(I18n.formatLocale, { maximumFractionDigits: 4 });
+  percentFormat = new Intl.NumberFormat(I18n.formatLocale, { maximumFractionDigits: 2, style: "percent" });
+}
+
+updateDisplayFormats();
 
 function currentGame() {
   return GAME_CONFIGS[state.gameId] || GAME_CONFIGS[DEFAULT_GAME_ID];
 }
 
-function historySnapshotLabel() {
-  const count = USE_API ? state.historySnapshotCount : state.priceHistory.length;
-  return count ? `${count} snapshots` : "No snapshots";
+function historySnapshotLabel(weekly = false) {
+  const count = state.historySnapshotCount;
+  return count
+    ? I18n.t(weekly ? "weeklySnapshots" : "snapshots", { count: numberFormat.format(count) })
+    : I18n.t("noSnapshots");
 }
 
 async function ensureGameConfigs() {
@@ -188,28 +205,28 @@ async function ensureGameConfigs() {
       defaultStartCurrency: game.defaultStartCurrency,
       localSnapshotUrl: `/api/snapshots/${game.id}/current`,
       historyUrl: null,
-      goldCostsUrl: `/api/data/${game.id}/gold-costs`,
-      liveSnapshotUrl: existing.liveSnapshotUrl || null
+      goldCostsUrl: `/api/data/${game.id}/gold-costs`
     };
   }
 }
 
 async function fetchPairHistoryPoints(fromId, toId) {
+  const cache = state.pairHistoryCache;
   const cacheKey = `${fromId}>${toId}`;
-  if (state.pairHistoryCache.has(cacheKey)) {
-    return state.pairHistoryCache.get(cacheKey);
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
   }
 
   const response = await fetch(
     `/api/trends/${state.gameId}/pair/${encodeURIComponent(cacheKey)}`,
     { cache: "no-store" }
-  );
-  if (!response.ok) {
+  ).catch(() => null);
+  if (!response?.ok) {
     return [];
   }
 
-  const payload = await response.json();
-  const points = (payload.points || [])
+  const payload = await response.json().catch(() => null);
+  const points = (payload?.points || [])
     .map((point) => {
       const date = new Date(point.updatedAt);
       const price = Number(point.rate);
@@ -219,25 +236,21 @@ async function fetchPairHistoryPoints(fromId, toId) {
     .filter(Boolean)
     .sort((a, b) => a.date - b.date);
 
-  state.pairHistoryCache.set(cacheKey, points);
+  cache.set(cacheKey, points);
   return points;
-}
-
-function formatSnapshotMeta(updatedAt) {
-  if (!updatedAt) return "Live snapshot";
-  const date = new Date(updatedAt);
-  if (Number.isNaN(date.getTime())) return "Snapshot loaded";
-  const stale = Date.now() - date.getTime() > STALE_SNAPSHOT_MS;
-  const label = `Updated ${date.toLocaleString()}`;
-  return stale ? `${label} (stale)` : label;
 }
 
 function gameStorageKey(key) {
   return `${currentGame().storagePrefix}-${key}`;
 }
 
+function currentMarketKey() {
+  if (USE_API) return "worker";
+  return `${currentGame().source}|${currentGame().league}`;
+}
+
 function defaultStartCurrency() {
-  return currentGame().defaultStartCurrency || "exalted";
+  return currentGame().defaultStartCurrency || "Metadata/Items/Currency/CurrencyAddModToRare";
 }
 
 function toNumber(value) {
@@ -274,22 +287,28 @@ function normalizeName(value) {
     .trim();
 }
 
+function resolvedItemName(id, name, source) {
+  const generated = id.split("/").at(-1)
+    .replace(/^(Currency|DivinationCard|MapFragment)/, "")
+    .replace(/([a-z\d])([A-Z])/g, "$1 $2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2").trim();
+  return typeof name === "string" && name.trim() && name !== id && name !== "Unknown item" &&
+    (source === "base-items" || source === "verified" || name !== generated) ? name : null;
+}
+
 function rememberItem(item) {
   if (!item?.ApiId) return;
   if (!state.items.has(item.ApiId)) {
+    const known = state.itemCatalog[item.ApiId];
+    const name = resolvedItemName(item.ApiId, known?.name, known?.nameSource) ||
+      resolvedItemName(item.ApiId, item.Text, item.NameSource);
     state.items.set(item.ApiId, {
       id: item.ApiId,
-      name: item.Text,
-      icon: item.IconUrl,
-      category: item.CategoryApiId
+      name: name || `Unknown item (${item.ApiId.split("/").at(-1)})`,
+      unknown: !name,
+      icon: known?.icon || (USE_API || state.gameId === "poe2" ? item.IconUrl : ""),
+      category: known?.category || item.CategoryApiId
     });
-  }
-}
-
-function rememberItemPrice(item, data) {
-  const price = toNumber(data?.RelativePrice);
-  if (item?.ApiId && price > 0) {
-    state.itemPricesById.set(item.ApiId, price);
   }
 }
 
@@ -304,6 +323,20 @@ function hydrateGoldCosts() {
   }
 }
 
+function estimatedRate(fromData, toData) {
+  if (els.estimateMode.value === "typical") {
+    const fromVolume = toNumber(fromData.VolumeTraded);
+    const toVolume = toNumber(toData.VolumeTraded);
+    const typicalRate = toVolume / fromVolume;
+    if (fromVolume > 0 && toVolume > 0 && Number.isFinite(typicalRate) && typicalRate > 0) {
+      return typicalRate;
+    }
+  }
+
+  const quotedRate = toNumber(fromData.RateToOther);
+  return quotedRate > 0 ? quotedRate : toNumber(fromData.RelativePrice) / toNumber(toData.RelativePrice);
+}
+
 function makeEdge(pair, fromItem, toItem, fromData, toData) {
   const fromPrice = toNumber(fromData.RelativePrice);
   const toPrice = toNumber(toData.RelativePrice);
@@ -315,7 +348,7 @@ function makeEdge(pair, fromItem, toItem, fromData, toData) {
   }
 
   const id = `${pair.CurrencyExchangeSnapshotPairId}:${fromItem.ApiId}>${toItem.ApiId}`;
-  const originalRate = fromPrice / toPrice;
+  const originalRate = estimatedRate(fromData, toData);
   const overrideRate = state.rateOverrides.get(id);
 
   return {
@@ -323,8 +356,6 @@ function makeEdge(pair, fromItem, toItem, fromData, toData) {
     pairId: pair.CurrencyExchangeSnapshotPairId,
     from: fromItem.ApiId,
     to: toItem.ApiId,
-    fromName: fromItem.Text,
-    toName: toItem.Text,
     rate: Number.isFinite(overrideRate) && overrideRate > 0 ? overrideRate : originalRate,
     originalRate,
     isRateOverridden: Number.isFinite(overrideRate) && overrideRate > 0,
@@ -337,7 +368,6 @@ function makeEdge(pair, fromItem, toItem, fromData, toData) {
 
 function buildGraph(pairs) {
   state.items.clear();
-  state.itemPricesById.clear();
   state.edgesByFrom.clear();
   state.snapshotPairs.clear();
 
@@ -346,9 +376,6 @@ function buildGraph(pairs) {
     const two = pair.CurrencyTwo;
     rememberItem(one);
     rememberItem(two);
-    rememberItemPrice(one, pair.CurrencyOneData);
-    rememberItemPrice(two, pair.CurrencyTwoData);
-
     const volume = toNumber(pair.Volume);
     if (one?.ApiId && two?.ApiId && volume > 0) {
       state.snapshotPairs.set(`${one.ApiId}>${two.ApiId}`, { volume });
@@ -399,22 +426,13 @@ function populateCurrencies() {
     .map((item) => {
       const option = document.createElement("option");
       option.value = item.id;
-      option.textContent = item.name;
+      option.textContent = itemLabel(item.id);
+      option.title = item.id;
       return option;
     });
-  const searchOptions = [...state.items.values()]
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map((item) => {
-      const option = document.createElement("option");
-      option.value = item.name;
-      option.dataset.itemId = item.id;
-      return option;
-    });
-
   els.startCurrency.replaceChildren(...options);
   els.startCurrency.value = state.items.has(current) ? current : fallback;
-  els.excludeOptions.replaceChildren(...searchOptions.map((option) => option.cloneNode(true)));
-  els.includeOptions.replaceChildren(...searchOptions);
+  refreshItemPickers();
   renderExcludedChips();
   renderIncludedChips();
   populateTrendsCurrencies();
@@ -429,8 +447,9 @@ function getSettings() {
     minStock: Math.max(toNumber(els.minStock.value), 0),
     maxGoldCost: Math.max(toNumber(els.maxGoldCost.value), 0),
     pageSize: Math.min(Math.max(Math.round(toNumber(els.pageSize.value)), 1), 100),
-    excludedItems: state.excludedItems,
-    includedItems: state.includedItems
+    excludedItems: resolveFilterItems(state.excludedItems, state.excludedCategories),
+    includedItems: resolveFilterItems(state.includedItems, state.includedCategories),
+    inclusionActive: state.includedItems.size > 0 || state.includedCategories.size > 0
   };
 }
 
@@ -469,7 +488,7 @@ function findCycles(settings) {
   return cycles
     .filter((cycle) => cycle.route.every((itemId) => !settings.excludedItems.has(itemId)))
     .filter((cycle) => (
-      settings.includedItems.size === 0
+      !(settings.inclusionActive ?? (settings.includedItems.size > 0))
       || cycle.route.some((itemId) => settings.includedItems.has(itemId))
     ))
     .filter((cycle) => cycle.multiplier > 1)
@@ -527,11 +546,20 @@ function compareCycles(a, b) {
 }
 
 function itemLabel(id) {
-  return state.items.get(id)?.name || id;
+  const item = state.items.get(id);
+  return item?.unknown ? I18n.t("unknownItem", { id: id.split("/").at(-1) }) : item?.name || id;
 }
 
 function itemIcon(id) {
   return state.items.get(id)?.icon || "";
+}
+
+function setItemIcon(image, id) {
+  const icon = itemIcon(id);
+  image.hidden = !icon;
+  if (!icon) return;
+  image.src = icon;
+  image.addEventListener("error", () => { image.hidden = true; }, { once: true });
 }
 
 async function copyItemName(name) {
@@ -545,18 +573,23 @@ async function copyItemName(name) {
   }
 }
 
-function exaltedValueFor(itemId) {
-  if (itemId === "exalted") return 1;
-  return state.itemPricesById.get(itemId) || 0;
-}
-
 function marketValueFor(itemId) {
-  if (itemId === defaultStartCurrency()) return 1;
-  return state.itemPricesById.get(itemId) || 0;
+  const baseId = defaultStartCurrency();
+  if (itemId === baseId) return 1;
+
+  const edges = state.edgesByFrom.get(itemId) || [];
+  const direct = edges.find((edge) => edge.to === baseId);
+  if (direct) return direct.originalRate;
+
+  for (const edge of edges) {
+    const second = (state.edgesByFrom.get(edge.to) || []).find((next) => next.to === baseId);
+    if (second) return edge.originalRate * second.originalRate;
+  }
+  return 0;
 }
 
 function formatDivineProfit(value) {
-  const divinePrice = marketValueFor("divine");
+  const divinePrice = marketValueFor("Metadata/Items/Currency/CurrencyModValues");
   const fallbackCurrency = state.gameId === "poe" ? "Chaos Orb" : "Exalted Orb";
   const remainderCurrency = state.gameId === "poe" ? "Chaos" : "Exalted";
   if (!divinePrice) {
@@ -574,6 +607,7 @@ function formatDivineProfit(value) {
 }
 
 function loadExcludedItems() {
+  state.excludedCategories = loadCategorySelections(EXCLUDED_CATEGORIES_STORAGE_KEY);
   try {
     const stored = JSON.parse(localStorage.getItem(gameStorageKey(EXCLUDED_STORAGE_KEY)) || "[]");
     state.excludedItems = new Set(Array.isArray(stored) ? stored.filter((itemId) => typeof itemId === "string") : []);
@@ -583,6 +617,7 @@ function loadExcludedItems() {
 }
 
 function saveExcludedItems() {
+  saveCategorySelections(EXCLUDED_CATEGORIES_STORAGE_KEY, state.excludedCategories);
   try {
     localStorage.setItem(gameStorageKey(EXCLUDED_STORAGE_KEY), JSON.stringify([...state.excludedItems]));
   } catch {
@@ -591,6 +626,7 @@ function saveExcludedItems() {
 }
 
 function loadIncludedItems() {
+  state.includedCategories = loadCategorySelections(INCLUDED_CATEGORIES_STORAGE_KEY);
   try {
     const stored = JSON.parse(localStorage.getItem(gameStorageKey(INCLUDED_STORAGE_KEY)) || "[]");
     state.includedItems = new Set(Array.isArray(stored) ? stored.filter((itemId) => typeof itemId === "string") : []);
@@ -600,6 +636,7 @@ function loadIncludedItems() {
 }
 
 function saveIncludedItems() {
+  saveCategorySelections(INCLUDED_CATEGORIES_STORAGE_KEY, state.includedCategories);
   try {
     localStorage.setItem(gameStorageKey(INCLUDED_STORAGE_KEY), JSON.stringify([...state.includedItems]));
   } catch {
@@ -633,7 +670,8 @@ function saveRateOverrides() {
 function loadFilterSettings() {
   try {
     const stored = JSON.parse(localStorage.getItem(gameStorageKey(FILTER_SETTINGS_STORAGE_KEY)) || "null");
-    state.filterSettings = stored && typeof stored === "object" ? stored : null;
+    const matchesMarket = stored?.marketKey === currentMarketKey() || (USE_API && !stored?.marketKey);
+    state.filterSettings = matchesMarket ? stored : null;
     applyFilterSettings();
   } catch {
     state.filterSettings = null;
@@ -642,9 +680,11 @@ function loadFilterSettings() {
 
 function saveFilterSettings() {
   const settings = {
+    marketKey: currentMarketKey(),
     startCurrency: els.startCurrency.value,
     startAmount: els.startAmount.value,
     pathLength: els.pathLength.value,
+    estimateMode: els.estimateMode.value,
     minVolume: els.minVolume.value,
     minStock: els.minStock.value,
     maxGoldCost: els.maxGoldCost.value,
@@ -664,6 +704,7 @@ function saveFilterSettings() {
 
 function applyFilterSettings() {
   const settings = state.filterSettings;
+  els.estimateMode.value = settings?.estimateMode === "typical" ? "typical" : "conservative";
   if (!settings) return;
 
   setInputValue(els.startAmount, settings.startAmount);
@@ -839,8 +880,8 @@ function renderExcludedTrendsTypeChips() {
     remove.type = "button";
     remove.className = "chip-remove";
     remove.textContent = "X";
-    remove.title = `Remove ${label}`;
-    remove.setAttribute("aria-label", `Remove ${label}`);
+    remove.title = I18n.t("remove", { name: label });
+    remove.setAttribute("aria-label", I18n.t("remove", { name: label }));
     remove.addEventListener("click", () => removeExcludedTrendsType(categoryId));
 
     chip.append(name, remove);
@@ -856,13 +897,20 @@ function populateTrendsCurrencies() {
     .map((item) => {
       const option = document.createElement("option");
       option.value = item.id;
-      option.textContent = item.name;
+      option.textContent = itemLabel(item.id);
+      option.title = item.id;
       return option;
     });
 
   els.trendsStartCurrency.replaceChildren(...options);
   els.trendsStartCurrency.value = state.items.has(current) ? current : fallback;
   populateTrendsTypeOptions();
+}
+
+function updateCurrencyLabels(select) {
+  for (const option of select.options) {
+    option.textContent = itemLabel(option.value);
+  }
 }
 
 function setInputValue(input, value) {
@@ -895,34 +943,224 @@ function resetRateOverrides() {
   renderResults();
 }
 
-function findItemBySearch(value) {
-  const query = value.trim().toLowerCase();
-  if (!query) return null;
-
-  const items = [...state.items.values()];
-  const exact = items.find((item) => (
-    item.name.toLowerCase() === query || item.id.toLowerCase() === query
-  ));
-  if (exact) return exact;
-
-  const partialMatches = items.filter((item) => (
-    item.name.toLowerCase().includes(query) || item.id.toLowerCase().includes(query)
-  ));
-
-  return partialMatches.length === 1 ? partialMatches[0] : null;
+function itemCategoryId(item) {
+  return String(item.category || "").trim().toLowerCase();
 }
 
-function addExcludedItem(value) {
-  const item = findItemBySearch(value);
-  if (!item) return false;
+function itemCategoryLabel(id) {
+  return id ? categoryLabel(id) : I18n.t("otherCategory");
+}
 
-  state.excludedItems.add(item.id);
-  saveExcludedItems();
-  els.excludeSearch.value = "";
+function resolveFilterItems(items, categories) {
+  const resolved = new Set(items);
+  for (const item of state.items.values()) {
+    if (categories.has(itemCategoryId(item))) resolved.add(item.id);
+  }
+  return resolved;
+}
+
+function loadCategorySelections(key) {
+  try {
+    const stored = JSON.parse(localStorage.getItem(gameStorageKey(key)) || "[]");
+    return new Set(Array.isArray(stored)
+      ? stored.filter((id) => typeof id === "string").map((id) => id.trim().toLowerCase()) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveCategorySelections(key, categories) {
+  try {
+    localStorage.setItem(gameStorageKey(key), JSON.stringify([...categories]));
+  } catch {
+    // Selections remain active for this session when storage is unavailable.
+  }
+}
+
+function itemPickerRows(value) {
+  const query = value.trim().toLowerCase();
+  const groups = new Map();
+  for (const item of state.items.values()) {
+    const id = itemCategoryId(item);
+    if (!groups.has(id)) groups.set(id, []);
+    groups.get(id).push(item);
+  }
+  const rows = [];
+  const categories = [...groups.keys()].sort((a, b) => itemCategoryLabel(a).localeCompare(itemCategoryLabel(b)));
+  for (const id of categories) {
+    const label = itemCategoryLabel(id);
+    const categoryMatches = !query || label.toLowerCase().includes(query) || id.includes(query)
+      || (!id && "other".includes(query));
+    const items = groups.get(id).filter((item) => categoryMatches
+      || item.name.toLowerCase().includes(query) || itemLabel(item.id).toLowerCase().includes(query)
+      || item.id.toLowerCase().includes(query));
+    if (!items.length) continue;
+    rows.push({ kind: "category", id, label });
+    for (const item of items.sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id))) {
+      rows.push({ kind: "item", id: item.id, label: itemLabel(item.id), categoryId: id });
+    }
+  }
+  return rows;
+}
+
+const itemPickerState = {
+  include: { active: -1, rows: [] },
+  exclude: { active: -1, rows: [] }
+};
+
+function itemPickerElements(mode) {
+  const include = mode === "include";
+  return {
+    input: include ? els.includeSearch : els.excludeSearch,
+    options: include ? els.includeOptions : els.excludeOptions,
+    chips: include ? els.includedChips : els.excludedChips,
+    items: include ? state.includedItems : state.excludedItems,
+    categories: include ? state.includedCategories : state.excludedCategories
+  };
+}
+
+function closeItemPicker(mode) {
+  const { input, options } = itemPickerElements(mode);
+  options.hidden = true;
+  input.setAttribute("aria-expanded", "false");
+  input.removeAttribute("aria-activedescendant");
+  itemPickerState[mode].active = -1;
+}
+
+function renderItemPicker(mode) {
+  const { input, options, items, categories } = itemPickerElements(mode);
+  const picker = itemPickerState[mode];
+  picker.rows = itemPickerRows(input.value);
+  picker.active = -1;
+  input.removeAttribute("aria-activedescendant");
+  options.replaceChildren();
+  for (const [index, row] of picker.rows.entries()) {
+    const option = document.createElement("div");
+    const explicit = row.kind === "category" ? categories.has(row.id) : items.has(row.id);
+    const covered = row.kind === "item" && categories.has(row.categoryId);
+    option.id = `${mode}-option-${index}`;
+    option.className = `item-option item-option-${row.kind}`;
+    option.setAttribute("role", "option");
+    option.setAttribute("aria-selected", String(explicit || covered));
+    option.textContent = `${row.label}${explicit ? " ✓" : covered ? ` (${I18n.t("categorySelected")})` : ""}`;
+    option.title = row.kind === "category" ? I18n.t("selectCategory", { name: row.label }) : row.id;
+    option.addEventListener("pointerdown", (event) => event.preventDefault());
+    option.addEventListener("click", () => selectItemPickerRow(mode, row));
+    options.append(option);
+  }
+  if (!picker.rows.length) {
+    const empty = document.createElement("div");
+    empty.className = "item-options-empty";
+    empty.setAttribute("role", "presentation");
+    empty.textContent = I18n.t("noPickerResults");
+    options.append(empty);
+  }
+  options.hidden = false;
+  input.setAttribute("aria-expanded", "true");
+}
+
+function refreshItemPickers() {
+  for (const mode of ["include", "exclude"]) {
+    if (!itemPickerElements(mode).options.hidden) renderItemPicker(mode);
+  }
+}
+
+function updateItemSelection(mode) {
+  if (mode === "include") {
+    saveIncludedItems();
+    renderIncludedChips();
+  } else {
+    saveExcludedItems();
+    renderExcludedChips();
+  }
   state.currentPage = 1;
-  renderExcludedChips();
   renderResults();
-  return true;
+}
+
+function selectItemPickerRow(mode, row) {
+  const { input, items, categories } = itemPickerElements(mode);
+  if (row.kind === "category") categories.add(row.id);
+  else items.add(row.id);
+  input.value = "";
+  updateItemSelection(mode);
+  input.focus();
+  renderItemPicker(mode);
+}
+
+function renderCategoryChips(mode) {
+  const { chips, categories } = itemPickerElements(mode);
+  for (const id of [...categories].sort((a, b) => itemCategoryLabel(a).localeCompare(itemCategoryLabel(b)))) {
+    const label = itemCategoryLabel(id);
+    const chip = document.createElement("span");
+    chip.className = "exclude-chip category-chip";
+    const name = document.createElement("span");
+    name.textContent = I18n.t("categoryChip", { name: label });
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "chip-remove";
+    remove.textContent = "X";
+    remove.setAttribute("aria-label", I18n.t("removeCategory", { name: label }));
+    remove.addEventListener("click", () => {
+      categories.delete(id);
+      updateItemSelection(mode);
+    });
+    chip.append(name, remove);
+    chips.append(chip);
+  }
+}
+
+function setupItemPickers() {
+  for (const mode of ["include", "exclude"]) {
+    const { input, options } = itemPickerElements(mode);
+    input.addEventListener("focus", () => {
+      closeItemPicker(mode === "include" ? "exclude" : "include");
+      renderItemPicker(mode);
+    });
+    input.addEventListener("input", () => renderItemPicker(mode));
+    input.addEventListener("click", () => {
+      if (options.hidden) renderItemPicker(mode);
+    });
+    input.addEventListener("blur", () => closeItemPicker(mode));
+    input.addEventListener("keydown", (event) => {
+      const picker = itemPickerState[mode];
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeItemPicker(mode);
+      } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        if (options.hidden) renderItemPicker(mode);
+        if (!picker.rows.length) return;
+        picker.active = picker.active < 0
+          ? (event.key === "ArrowDown" ? 0 : picker.rows.length - 1)
+          : (picker.active + (event.key === "ArrowDown" ? 1 : -1) + picker.rows.length) % picker.rows.length;
+        for (const [index, option] of [...options.children].entries()) {
+          option.classList.toggle("active", index === picker.active);
+        }
+        const active = options.children[picker.active];
+        input.setAttribute("aria-activedescendant", active.id);
+        active.scrollIntoView({ block: "nearest" });
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        if (options.hidden) renderItemPicker(mode);
+        let row = picker.rows[picker.active];
+        if (!row) {
+          const query = input.value.trim().toLowerCase();
+          if (!query) return;
+          const exact = picker.rows.filter((entry) => entry.label.toLowerCase() === query || entry.id.toLowerCase() === query);
+          if (exact.length === 1) row = exact[0];
+          else if (picker.rows.filter((entry) => entry.kind === "item").length === 1) {
+            row = picker.rows.find((entry) => entry.kind === "item");
+          }
+        }
+        if (row) selectItemPickerRow(mode, row);
+      }
+    });
+  }
+  document.addEventListener("pointerdown", (event) => {
+    for (const mode of ["include", "exclude"]) {
+      if (!itemPickerElements(mode).input.closest(".exclude-picker").contains(event.target)) closeItemPicker(mode);
+    }
+  });
 }
 
 function removeExcludedItem(itemId) {
@@ -935,6 +1173,7 @@ function removeExcludedItem(itemId) {
 
 function renderExcludedChips() {
   els.excludedChips.replaceChildren();
+  renderCategoryChips("exclude");
 
   for (const itemId of [...state.excludedItems].sort((a, b) => itemLabel(a).localeCompare(itemLabel(b)))) {
     const item = state.items.get(itemId);
@@ -945,30 +1184,18 @@ function renderExcludedChips() {
     const remove = document.createElement("button");
 
     chip.className = "exclude-chip";
-    name.textContent = item.name;
+    name.textContent = itemLabel(item.id);
     remove.type = "button";
     remove.className = "chip-remove";
     remove.textContent = "X";
-    remove.title = `Remove ${item.name}`;
-    remove.setAttribute("aria-label", `Remove ${item.name}`);
+    remove.title = I18n.t("remove", { name: itemLabel(item.id) });
+    remove.setAttribute("aria-label", I18n.t("remove", { name: itemLabel(item.id) }));
     remove.addEventListener("click", () => removeExcludedItem(item.id));
 
     chip.append(name, remove);
     els.excludedChips.append(chip);
   }
-}
-
-function addIncludedItem(value) {
-  const item = findItemBySearch(value);
-  if (!item) return false;
-
-  state.includedItems.add(item.id);
-  saveIncludedItems();
-  els.includeSearch.value = "";
-  state.currentPage = 1;
-  renderIncludedChips();
-  renderResults();
-  return true;
+  refreshItemPickers();
 }
 
 function removeIncludedItem(itemId) {
@@ -981,6 +1208,7 @@ function removeIncludedItem(itemId) {
 
 function renderIncludedChips() {
   els.includedChips.replaceChildren();
+  renderCategoryChips("include");
 
   for (const itemId of [...state.includedItems].sort((a, b) => itemLabel(a).localeCompare(itemLabel(b)))) {
     const item = state.items.get(itemId);
@@ -991,20 +1219,24 @@ function renderIncludedChips() {
     const remove = document.createElement("button");
 
     chip.className = "exclude-chip";
-    name.textContent = item.name;
+    name.textContent = itemLabel(item.id);
     remove.type = "button";
     remove.className = "chip-remove";
     remove.textContent = "X";
-    remove.title = `Remove ${item.name}`;
-    remove.setAttribute("aria-label", `Remove ${item.name}`);
+    remove.title = I18n.t("remove", { name: itemLabel(item.id) });
+    remove.setAttribute("aria-label", I18n.t("remove", { name: itemLabel(item.id) }));
     remove.addEventListener("click", () => removeIncludedItem(item.id));
 
     chip.append(name, remove);
     els.includedChips.append(chip);
   }
+  refreshItemPickers();
 }
 
-function renderResults() {
+function renderResults(expandedRoutes = new Set()) {
+  els.estimateDescription.textContent = els.estimateMode.value === "typical"
+    ? I18n.t("typicalDescription")
+    : I18n.t("conservativeDescription");
   const settings = getSettings();
   let cycles = findCycles(settings);
 
@@ -1033,13 +1265,20 @@ function renderResults() {
   updateSortButtons();
 
   if (!settings.start) {
-    renderEmpty("No currencies are available yet.");
+    renderEmpty(I18n.t("noCurrencies"));
     return;
   }
 
   if (!cycles.length) {
-    const lengthText = settings.length === "both" ? "2 or 3 trade" : `${settings.length} trade`;
-    renderEmpty(`No profitable ${lengthText} loops match these filters.`);
+    if (USE_API) {
+      renderEmpty(I18n.t("noWorkerLoops"));
+      return;
+    }
+    if (settings.length === "2") {
+      renderEmpty(I18n.t("twoTradeUnavailable"));
+      return;
+    }
+    renderEmpty(I18n.t("noProfitableLoops"));
     return;
   }
 
@@ -1055,7 +1294,7 @@ function renderResults() {
 
     rank.textContent = `#${startIndex + index + 1}`;
     title.textContent = `${numberFormat.format(cycle.input)} ${itemLabel(settings.start)} -> ${numberFormat.format(cycle.output)} ${itemLabel(settings.start)}`;
-    path.textContent = `${cycle.route.map(itemLabel).join(" > ")} | gold ${numberFormat.format(Math.ceil(cycle.goldCost))}`;
+    path.textContent = `${cycle.route.map(itemLabel).join(" > ")} | ${I18n.t("gold", { count: numberFormat.format(Math.ceil(cycle.goldCost)) })}`;
     gain.textContent = `+${percentFormat.format(cycle.multiplier - 1)}`;
     profitScore.textContent = formatDivineProfit(cycle.profitPerMillionGoldValue);
     card.style.setProperty("--accent", cycle.multiplier > 1.1 ? "#d7a84f" : "#5bbf98");
@@ -1069,7 +1308,9 @@ function renderResults() {
     card.tabIndex = 0;
     card.setAttribute("role", "button");
     card.setAttribute("aria-expanded", "false");
-    card.title = "Show 7 day price history";
+    card.dataset.route = JSON.stringify(cycle.route);
+    if (expandedRoutes.has(card.dataset.route)) toggleHistoryCard(card, cycle);
+    card.title = I18n.t("showHistory");
     card.addEventListener("click", (event) => toggleHistoryCard(card, cycle, event));
     card.addEventListener("keydown", (event) => {
       if (event.target?.closest("button, input, select, a, label")) return;
@@ -1123,7 +1364,7 @@ function renderHistoryPanel(cycle) {
 
   panel.className = "history-panel";
   header.className = "history-header";
-  title.textContent = "7 day price history";
+  title.textContent = I18n.t("history");
   meta.textContent = historySnapshotLabel();
   chart.className = "history-chart";
   legend.className = "history-legend";
@@ -1136,7 +1377,7 @@ function renderHistoryPanel(cycle) {
       chart.replaceChildren();
       const empty = document.createElement("p");
       empty.className = "history-empty";
-      empty.textContent = "Historical prices will appear here after the snapshot workflow runs.";
+      empty.textContent = I18n.t("historyUnavailable");
       panel.querySelector(".history-empty")?.remove();
       panel.append(empty);
       return;
@@ -1150,7 +1391,7 @@ function renderHistoryPanel(cycle) {
       chip.className = "history-legend-chip";
       chip.style.setProperty("--series-color", historyColor(index));
       chip.setAttribute("aria-pressed", "true");
-      chip.title = "Toggle this line";
+      chip.title = I18n.t("toggleHistoryLine");
       chip.textContent = `${entry.name} ${formatHistoryChange(entry.points)}`;
       chip.addEventListener("click", () => {
         const next = chip.getAttribute("aria-pressed") === "false";
@@ -1178,7 +1419,7 @@ function renderHistoryPanel(cycle) {
     return panel;
   }
 
-  chart.textContent = "Loading history...";
+  chart.textContent = I18n.t("loadingHistory");
   Promise.all(
     edgeSeries.map(async (entry) => ({
       name: entry.name,
@@ -1206,12 +1447,12 @@ function pairRateAt(snapshot, fromId, toId) {
   if (pairs) {
     const direct = pairs[`${fromId}>${toId}`];
     if (direct) {
-      const rate = Number(direct.onePrice) / Number(direct.twoPrice);
+      const rate = Number(direct.forwardRate || Number(direct.onePrice) / Number(direct.twoPrice));
       if (Number.isFinite(rate) && rate > 0) return rate;
     }
     const reverse = pairs[`${toId}>${fromId}`];
     if (reverse) {
-      const rate = Number(reverse.twoPrice) / Number(reverse.onePrice);
+      const rate = Number(reverse.reverseRate || Number(reverse.twoPrice) / Number(reverse.onePrice));
       if (Number.isFinite(rate) && rate > 0) return rate;
     }
   }
@@ -1343,7 +1584,7 @@ function renderHistoryChart(container, series) {
   const svg = document.createElementNS(namespace, "svg");
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
   svg.setAttribute("role", "img");
-  svg.setAttribute("aria-label", "Seven day price history chart");
+  svg.setAttribute("aria-label", I18n.t("historyChart"));
 
   const gridLayer = document.createElementNS(namespace, "g");
   const seriesLayer = document.createElementNS(namespace, "g");
@@ -1531,7 +1772,18 @@ function attachHistoryInteractions(ctx) {
       focus.setAttribute("cx", snapX.toFixed(2));
       focus.setAttribute("cy", yFor(price).toFixed(2));
       focus.style.opacity = "1";
-      rows.push(`<div class="history-tooltip-row"><span class="history-tooltip-dot" style="background:${seriesColor(entry, index)}"></span><span class="history-tooltip-name">${entry.name}</span><strong>${numberFormat.format(price)}</strong></div>`);
+      const row = document.createElement("div");
+      const dot = document.createElement("span");
+      const name = document.createElement("span");
+      const value = document.createElement("strong");
+      row.className = "history-tooltip-row";
+      dot.className = "history-tooltip-dot";
+      dot.style.background = seriesColor(entry, index);
+      name.className = "history-tooltip-name";
+      name.textContent = entry.name;
+      value.textContent = numberFormat.format(price);
+      row.append(dot, name, value);
+      rows.push(row);
     }
 
     if (!rows.length) {
@@ -1539,7 +1791,12 @@ function attachHistoryInteractions(ctx) {
       return;
     }
 
-    tooltip.innerHTML = `<div class="history-tooltip-time">${new Date(nearest).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>${rows.join("")}`;
+    const time = document.createElement("div");
+    time.className = "history-tooltip-time";
+    time.textContent = new Date(nearest).toLocaleString(I18n.formatLocale, {
+      month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+    });
+    tooltip.replaceChildren(time, ...rows);
     tooltip.hidden = false;
 
     const containerRect = container.getBoundingClientRect();
@@ -1619,15 +1876,19 @@ function niceTimeTicks(minTime, maxTime, targetCount) {
 
 function formatAxisNumber(value, step) {
   const decimals = Math.min(6, Math.max(0, -Math.floor(Math.log10(step))));
-  return value.toFixed(decimals);
+  return value.toLocaleString(I18n.formatLocale, {
+    useGrouping: false,
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  });
 }
 
 function formatAxisTime(time, stepMs) {
   const date = new Date(time);
   if (stepMs < 24 * 60 * 60 * 1000) {
-    return date.toLocaleString([], { month: "short", day: "numeric", hour: "2-digit" });
+    return date.toLocaleString(I18n.formatLocale, { month: "short", day: "numeric", hour: "2-digit" });
   }
-  return date.toLocaleDateString([], { month: "short", day: "numeric" });
+  return date.toLocaleDateString(I18n.formatLocale, { month: "short", day: "numeric" });
 }
 
 function appendHistoryAxisText(svg, x, y, value, anchor = "start") {
@@ -1741,22 +2002,23 @@ function renderPriceTrends() {
   const pageSize = getTrendsPageSize();
 
   if (!state.items.size) {
-    renderTrendsEmpty("Load exchange data to view price trends.");
-    els.trendsStatus.textContent = "Waiting for exchange data...";
+    renderTrendsEmpty(I18n.t("loadTrends"));
+    els.trendsStatus.textContent = I18n.t("waitingForData");
     els.trendsMeta.textContent = "";
     return;
   }
 
   if (!startId || !state.items.has(startId)) {
-    renderTrendsEmpty("Select a starting currency to view price trends.");
-    els.trendsStatus.textContent = "Select a starting currency.";
+    renderTrendsEmpty(I18n.t("selectTrendsCurrency"));
+    els.trendsStatus.textContent = I18n.t("selectCurrency");
     els.trendsMeta.textContent = "";
     return;
   }
 
   let entries = buildTrendEntries(startId);
   if (search) {
-    entries = entries.filter((entry) => entry.name.toLowerCase().includes(search));
+    entries = entries.filter((entry) => entry.name.toLowerCase().includes(search)
+      || itemLabel(entry.itemId).toLowerCase().includes(search));
   }
 
   const totalResults = entries.length;
@@ -1765,19 +2027,22 @@ function renderPriceTrends() {
 
   const startName = itemLabel(startId);
   const excludedTypeCount = state.excludedTrendsTypes.size;
+  const excluded = excludedTypeCount
+    ? I18n.t(excludedTypeCount === 1 ? "oneTypeExcluded" : "typesExcluded", { count: numberFormat.format(excludedTypeCount) })
+    : "";
+  const volume = numberFormat.format(TRENDS_MIN_DAILY_VOLUME);
   els.trendsStatus.textContent = totalResults
-    ? `${totalResults.toLocaleString()} items vs ${startName} (vol > ${TRENDS_MIN_DAILY_VOLUME}${excludedTypeCount ? `, ${excludedTypeCount} type${excludedTypeCount === 1 ? "" : "s"} excluded` : ""}), sorted by total difference`
+    ? I18n.t("trendResults", { count: numberFormat.format(totalResults), name: startName, volume, excluded })
     : search
-      ? `No items match "${els.trendsSearch.value.trim()}"`
-      : `No historical pairs found vs ${startName} with volume > ${TRENDS_MIN_DAILY_VOLUME}`;
-  const snapshotLabel = historySnapshotLabel();
-  els.trendsMeta.textContent = snapshotLabel === "No snapshots" ? snapshotLabel : `${snapshotLabel} (7 day)`;
+      ? I18n.t("noSearchResults", { search: els.trendsSearch.value.trim() })
+      : I18n.t("noHistoricalPairs", { name: startName, volume });
+  els.trendsMeta.textContent = historySnapshotLabel(true);
 
   if (!totalResults) {
     renderTrendsEmpty(
-      historySnapshotLabel() !== "No snapshots"
-        ? "No matching items with price history and volume over 100 for the current filters."
-        : "Historical prices will appear here after the snapshot workflow runs."
+      state.historySnapshotCount
+        ? I18n.t("noHistoricalMatches")
+        : I18n.t("historyUnavailable")
     );
     return;
   }
@@ -1808,22 +2073,22 @@ function renderTrendCardChart(card, chart, entry, startName, points) {
   if (points.length >= 2) {
     const changeValue = historyChangeValue(points);
     change.textContent = changeText;
-    change.title = "7 day change";
+    change.title = I18n.t("weeklyChange");
     change.classList.toggle("down", changeValue < 0);
     change.classList.toggle("up", changeValue > 0);
   } else {
-    change.textContent = "n/a";
+    change.textContent = I18n.t("unavailable");
     change.classList.add("muted");
   }
 
   forecast.className = "trends-card-forecast";
   if (prediction) {
     forecast.textContent = `+${FORECAST_CHECKPOINT_COUNT} ${formatSignedPercent(prediction.change)}`;
-    forecast.title = `Linear forecast for the next ${FORECAST_CHECKPOINT_COUNT} checkpoints`;
+    forecast.title = I18n.t("forecast", { count: numberFormat.format(FORECAST_CHECKPOINT_COUNT) });
     forecast.classList.toggle("down", prediction.change < 0);
     forecast.classList.toggle("up", prediction.change > 0);
   } else {
-    forecast.textContent = `+${FORECAST_CHECKPOINT_COUNT} n/a`;
+    forecast.textContent = `+${FORECAST_CHECKPOINT_COUNT} ${I18n.t("unavailable")}`;
     forecast.classList.add("muted");
   }
 
@@ -1831,14 +2096,14 @@ function renderTrendCardChart(card, chart, entry, startName, points) {
 
   const chartSeries = [
     {
-      name: `${entry.name} / ${startName}`,
+      name: `${itemLabel(entry.itemId)} / ${startName}`,
       points
     }
   ];
 
   if (prediction) {
     chartSeries.push({
-      name: `+${FORECAST_CHECKPOINT_COUNT} checkpoint forecast`,
+      name: I18n.t("forecast", { count: numberFormat.format(FORECAST_CHECKPOINT_COUNT) }),
       points: prediction.points,
       predicted: true,
       color: HISTORY_PREDICTION_COLOR
@@ -1864,18 +2129,19 @@ function makeTrendCard(entry, startName, startId) {
   card.className = "trends-card";
   header.className = "trends-card-header";
   identity.className = "trends-card-identity";
-  icon.src = itemIcon(entry.itemId);
+  setItemIcon(icon, entry.itemId);
   icon.alt = "";
   icon.className = "trends-card-icon";
   titleWrap.className = "trends-card-titles";
-  title.textContent = entry.name;
+  title.textContent = itemLabel(entry.itemId);
+  title.title = entry.itemId;
   subtitle.className = "trends-card-subtitle";
-  subtitle.textContent = `Price in ${startName}`;
+  subtitle.textContent = I18n.t("priceIn", { name: startName });
   metrics.className = "trends-card-metrics";
   change.className = "trends-card-change muted";
-  change.textContent = USE_API && !entry.points.length ? "Loading..." : "n/a";
+  change.textContent = I18n.t(USE_API && !entry.points.length ? "loadingHistory" : "unavailable");
   forecast.className = "trends-card-forecast muted";
-  forecast.textContent = `+${FORECAST_CHECKPOINT_COUNT} n/a`;
+  forecast.textContent = `+${FORECAST_CHECKPOINT_COUNT} ${I18n.t("unavailable")}`;
   chart.className = "history-chart trends-card-chart";
 
   titleWrap.append(title, subtitle);
@@ -1893,7 +2159,7 @@ function makeTrendCard(entry, startName, startId) {
   if (entry.points.length) {
     renderPoints(entry.points);
   } else if (USE_API) {
-    chart.textContent = "Loading chart...";
+    chart.textContent = I18n.t("loadingHistory");
     fetchPairHistoryPoints(entry.itemId, startId).then(renderPoints);
   }
 
@@ -1901,15 +2167,19 @@ function makeTrendCard(entry, startName, startId) {
 }
 
 function renderTrendsPagination(totalResults, totalPages, pageSize) {
-  const previous = makeTrendsPageButton("Previous", state.trendsPage - 1, state.trendsPage === 1);
-  const next = makeTrendsPageButton("Next", state.trendsPage + 1, state.trendsPage === totalPages);
+  const previous = makeTrendsPageButton(I18n.t("previous"), state.trendsPage - 1, state.trendsPage === 1);
+  const next = makeTrendsPageButton(I18n.t("next"), state.trendsPage + 1, state.trendsPage === totalPages);
   const summary = document.createElement("span");
   const pages = document.createElement("div");
   const firstResult = (state.trendsPage - 1) * pageSize + 1;
   const lastResult = Math.min(state.trendsPage * pageSize, totalResults);
 
   summary.className = "pagination-summary";
-  summary.textContent = `${numberFormat.format(firstResult)}-${numberFormat.format(lastResult)} of ${numberFormat.format(totalResults)} results`;
+  summary.textContent = I18n.t("pageSummary", {
+    first: numberFormat.format(firstResult),
+    last: numberFormat.format(lastResult),
+    total: numberFormat.format(totalResults)
+  });
   pages.className = "page-numbers";
 
   for (const page of getVisiblePages(totalPages, state.trendsPage)) {
@@ -1923,7 +2193,7 @@ function renderTrendsPagination(totalResults, totalPages, pageSize) {
 
     const pageButton = makeTrendsPageButton(String(page), page, page === state.trendsPage);
     pageButton.classList.add("page-number");
-    pageButton.setAttribute("aria-label", `Go to page ${page}`);
+    pageButton.setAttribute("aria-label", I18n.t("goToPage", { page }));
     if (page === state.trendsPage) {
       pageButton.setAttribute("aria-current", "page");
     }
@@ -1956,7 +2226,7 @@ function updateSortButtons() {
     const isActive = button.dataset.sort === state.sortBy;
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
-    button.textContent = `${button.dataset.sort === "profit" ? "Profit / 1M gold" : "Gain %"}${isActive ? (state.sortDirection === "desc" ? " v" : " ^") : ""}`;
+    button.textContent = `${I18n.t(button.dataset.sort === "profit" ? "profitGold" : "gain")}${isActive ? (state.sortDirection === "desc" ? " v" : " ^") : ""}`;
   }
 }
 
@@ -1969,15 +2239,19 @@ function renderEmpty(message) {
 }
 
 function renderPagination(totalResults, totalPages, pageSize) {
-  const previous = makePageButton("Previous", state.currentPage - 1, state.currentPage === 1);
-  const next = makePageButton("Next", state.currentPage + 1, state.currentPage === totalPages);
+  const previous = makePageButton(I18n.t("previous"), state.currentPage - 1, state.currentPage === 1);
+  const next = makePageButton(I18n.t("next"), state.currentPage + 1, state.currentPage === totalPages);
   const summary = document.createElement("span");
   const pages = document.createElement("div");
   const firstResult = (state.currentPage - 1) * pageSize + 1;
   const lastResult = Math.min(state.currentPage * pageSize, totalResults);
 
   summary.className = "pagination-summary";
-  summary.textContent = `${numberFormat.format(firstResult)}-${numberFormat.format(lastResult)} of ${numberFormat.format(totalResults)} results`;
+  summary.textContent = I18n.t("pageSummary", {
+    first: numberFormat.format(firstResult),
+    last: numberFormat.format(lastResult),
+    total: numberFormat.format(totalResults)
+  });
   pages.className = "page-numbers";
 
   for (const page of getVisiblePages(totalPages, state.currentPage)) {
@@ -1991,7 +2265,7 @@ function renderPagination(totalResults, totalPages, pageSize) {
 
     const pageButton = makePageButton(String(page), page, page === state.currentPage);
     pageButton.classList.add("page-number");
-    pageButton.setAttribute("aria-label", `Go to page ${page}`);
+    pageButton.setAttribute("aria-label", I18n.t("goToPage", { page }));
     if (page === state.currentPage) {
       pageButton.setAttribute("aria-current", "page");
     }
@@ -2046,31 +2320,33 @@ function makeStepItems(edge) {
   const toIcon = document.createElement("img");
 
   wrap.className = "step-items";
-  fromIcon.src = itemIcon(edge.from);
+  setItemIcon(fromIcon, edge.from);
   fromIcon.alt = "";
   arrow.className = "arrow";
   arrow.textContent = "->";
-  toIcon.src = itemIcon(edge.to);
+  setItemIcon(toIcon, edge.to);
   toIcon.alt = "";
 
-  wrap.append(fromIcon, makeCopyableItemName(edge.fromName), arrow, toIcon, makeCopyableItemName(edge.toName));
+  wrap.append(fromIcon, makeCopyableItemName(itemLabel(edge.from), edge.from), arrow, toIcon, makeCopyableItemName(itemLabel(edge.to), edge.to));
   return wrap;
 }
 
-function makeCopyableItemName(name) {
+function makeCopyableItemName(name, id) {
+  const copyText = state.items.get(id)?.unknown ? id : name;
+  const title = state.items.get(id)?.unknown ? I18n.t("unknownCopy", { id }) : I18n.t("copy", { name });
   const button = document.createElement("button");
   button.type = "button";
   button.className = "copy-item-name";
   button.textContent = name;
-  button.title = `Copy ${name}`;
-  button.setAttribute("aria-label", `Copy ${name}`);
+  button.title = title;
+  button.setAttribute("aria-label", I18n.t("copy", { name }));
   button.addEventListener("click", async () => {
-    const copied = await copyItemName(name);
+    const copied = await copyItemName(copyText);
     button.classList.toggle("copied", copied);
-    button.title = copied ? `Copied ${name}` : `Could not copy ${name}`;
+    button.title = copied ? I18n.t("copied", { name }) : I18n.t("copyFailed", { name });
     window.setTimeout(() => {
       button.classList.remove("copied");
-      button.title = `Copy ${name}`;
+      button.title = title;
     }, 1200);
   });
   return button;
@@ -2079,10 +2355,10 @@ function makeCopyableItemName(name) {
 function makeStepMeta(edge, stepIndex, stepAmount) {
   const wrap = document.createElement("div");
   const values = [
-    `Trade ${stepIndex + 1}`,
-    `vol ${numberFormat.format(edge.volume)}`,
-    `stock ${numberFormat.format(edge.stock)}`,
-    `gold ${numberFormat.format(Math.ceil(stepAmount?.goldCost || 0))}`
+    I18n.t("tradeNumber", { count: stepIndex + 1 }),
+    I18n.t("volume", { count: numberFormat.format(edge.volume) }),
+    I18n.t("stock", { count: numberFormat.format(edge.stock) }),
+    I18n.t("gold", { count: numberFormat.format(Math.ceil(stepAmount?.goldCost || 0)) })
   ];
 
   wrap.className = "step-meta";
@@ -2106,15 +2382,15 @@ function makeRateEditor(edge) {
   wrap.className = "rate-editor";
   wrap.classList.toggle("overridden", edge.isRateOverridden);
   wrap.title = edge.isRateOverridden
-    ? `Override rate. Original: ${numberFormat.format(edge.originalRate)}x`
-    : "Edit this exchange rate";
+    ? I18n.t("overrideRate", { rate: numberFormat.format(edge.originalRate) })
+    : I18n.t("editRate");
 
   input.className = "rate-input";
   input.type = "text";
   input.inputMode = "decimal";
   input.pattern = "\\s*\\d*\\.?\\d+(\\s*/\\s*\\d*\\.?\\d+)?\\s*";
   input.value = value;
-  input.setAttribute("aria-label", `Rate for ${edge.fromName} to ${edge.toName}`);
+  input.setAttribute("aria-label", I18n.t("rateFor", { from: itemLabel(edge.from), to: itemLabel(edge.to) }));
 
   suffix.className = "rate-suffix";
   suffix.textContent = "x";
@@ -2196,18 +2472,24 @@ function resetControlsToDefaults() {
 
 function resetExchangeState() {
   state.rawPairs = [];
+  state.itemCatalog = {};
   state.items.clear();
-  state.itemPricesById.clear();
   state.priceHistory = [];
   state.historySnapshotCount = 0;
   state.totalDifferences = {};
   state.snapshotPairs.clear();
-  state.pairHistoryCache.clear();
+  state.pairHistoryCache = new Map();
   state.goldCostsByName.clear();
   state.goldCostsByItem.clear();
   state.edgesByFrom.clear();
   state.excludedItems.clear();
   state.includedItems.clear();
+  state.excludedCategories.clear();
+  state.includedCategories.clear();
+  for (const mode of ["include", "exclude"]) {
+    closeItemPicker(mode);
+    itemPickerElements(mode).input.value = "";
+  }
   state.rateOverrides.clear();
   els.startCurrency.replaceChildren();
   els.trendsStartCurrency.replaceChildren();
@@ -2221,7 +2503,7 @@ function resetExchangeState() {
   els.trendsResults.replaceChildren();
   els.trendsPagination.replaceChildren();
   els.snapshotMeta.textContent = "";
-  els.trendsStatus.textContent = "Select a starting currency to view price trends.";
+  els.trendsStatus.textContent = I18n.t("selectTrendsCurrency");
   els.trendsMeta.textContent = "";
   renderExcludedTrendsTypeChips();
 }
@@ -2244,25 +2526,76 @@ function switchGame(gameId) {
   loadData();
 }
 
-async function loadData() {
-  const requestedGameId = state.gameId;
-  const game = currentGame();
-  els.refreshButton.disabled = true;
-  els.status.textContent = `Loading ${game.label} exchange data...`;
+function renderMarketStatus() {
+  const game = currentGame().label;
+  const { phase, error, dataChangedAt } = state.marketLoad;
   els.snapshotMeta.textContent = "";
+  if (phase === "loading") {
+    els.status.textContent = I18n.t("loadingMarket", { game });
+    return;
+  }
+  if (phase === "error") {
+    els.status.textContent = I18n.t("marketError", { game });
+    els.snapshotMeta.textContent = error;
+    renderEmpty(I18n.t("marketRetry"));
+    renderTrendsEmpty(I18n.t("marketUnreachable"));
+    return;
+  }
+
+  els.status.textContent = I18n.t(USE_API ? "loadedWorkerMarket" : "loadedMarket", {
+    count: numberFormat.format(state.rawPairs.length),
+    game
+  });
+  const costs = I18n.t("matchedGold", { count: numberFormat.format(state.goldCostsByItem.size) });
+  const stale = USE_API && Date.now() - new Date(dataChangedAt).getTime() > STALE_SNAPSHOT_MS;
+  els.snapshotMeta.textContent = dataChangedAt
+    ? I18n.t(USE_API ? (stale ? "staleMarketUpdatedAt" : "marketUpdatedAt") : "marketHour", {
+      date: new Date(dataChangedAt).toLocaleString(I18n.formatLocale, { dateStyle: "medium", timeStyle: "short" }),
+      costs
+    })
+    : I18n.t("marketLoadedAt", {
+      date: state.lastLoadedAt.toLocaleTimeString(I18n.formatLocale, { hour: "2-digit", minute: "2-digit" }),
+      costs
+    });
+}
+
+function renderLocalizedViews() {
+  updateDisplayFormats();
+  const expandedRoutes = new Set(
+    Array.from(els.results.querySelectorAll(".result-card.expanded"), (card) => card.dataset.route)
+  );
+  updateCurrencyLabels(els.startCurrency);
+  updateCurrencyLabels(els.trendsStartCurrency);
+  renderExcludedChips();
+  renderIncludedChips();
+  renderExcludedTrendsTypeChips();
+  renderResults(expandedRoutes);
+  renderPriceTrends();
+  renderMarketStatus();
+  window.CampaignModule?.updateLanguage(els);
+}
+
+async function loadData() {
+  const request = { phase: "loading" };
+  state.marketLoad = request;
+  els.refreshButton.disabled = true;
+  renderMarketStatus();
 
   try {
-    const [loaded, goldCosts, history] = await Promise.all([
+    const [loaded, goldCosts, history, itemCatalog] = await Promise.all([
       fetchSnapshot(),
       fetchGoldCosts(),
-      fetchPriceHistory()
+      fetchPriceHistory(),
+      fetchItemCatalog()
     ]);
 
-    if (requestedGameId !== state.gameId) return;
+    if (state.marketLoad !== request) return;
 
     state.rawPairs = loaded.pairs;
+    state.itemCatalog = itemCatalog;
     state.priceHistory = history.snapshots || [];
-    state.historySnapshotCount = history.snapshotCount || history.snapshots?.length || 0;
+    state.historySnapshotCount = USE_API ? history.snapshotCount : state.priceHistory.length;
+    state.pairHistoryCache = new Map();
     state.totalDifferences = history.totalDifferences || {};
     state.goldCostsByName = goldCosts.costsByName;
     state.lastLoadedAt = new Date();
@@ -2272,31 +2605,20 @@ async function loadData() {
     renderResults();
     renderPriceTrends();
 
-    els.status.textContent = `${state.rawPairs.length.toLocaleString()} ${game.label} exchange pairs loaded`;
-    const matchedGoldCosts = `${state.goldCostsByItem.size.toLocaleString()} gold costs matched`;
-    const dataChangedAt = USE_API
-      ? loaded.updatedAt
-      : lastDataChangedAt(
-        loaded.pairs,
-        history.snapshots || [],
-        loaded.updatedAt,
-        state.lastLoadedAt?.toISOString()
-      );
-    const snapshotLabel = !dataChangedAt
-      ? `Loaded ${state.lastLoadedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
-      : USE_API
-        ? formatSnapshotMeta(dataChangedAt)
-        : `Data updated ${new Date(dataChangedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`;
-    els.snapshotMeta.textContent = `${snapshotLabel} | ${matchedGoldCosts}`;
+    request.dataChangedAt = USE_API ? loaded.updatedAt : lastDataChangedAt(
+      loaded.pairs,
+      history.snapshots || [],
+      loaded.updatedAt,
+      state.lastLoadedAt?.toISOString()
+    );
+    request.phase = "loaded";
   } catch (error) {
-    if (requestedGameId !== state.gameId) return;
-
-    els.status.textContent = `Could not load ${game.label} poe2scout data.`;
-    els.snapshotMeta.textContent = error.message;
-    renderEmpty("The exchange snapshot could not be reached from this browser. Refresh again or try the other game tab.");
-    renderTrendsEmpty("The exchange snapshot could not be reached from this browser.");
+    if (state.marketLoad !== request) return;
+    request.phase = "error";
+    request.error = error.message;
   } finally {
-    if (requestedGameId === state.gameId) {
+    if (state.marketLoad === request) {
+      renderMarketStatus();
       els.refreshButton.disabled = false;
     }
   }
@@ -2324,6 +2646,28 @@ async function fetchGoldCosts() {
   };
 }
 
+async function fetchItemCatalog() {
+  const url = currentGame().itemCatalogUrl;
+  if (!url) return {};
+  const read = async (catalogUrl) => {
+    try {
+      const response = await fetch(catalogUrl, { cache: "no-store" });
+      const catalog = response.ok ? await response.json() : null;
+      return catalog && typeof catalog === "object" && !Array.isArray(catalog) ? catalog : {};
+    } catch {
+      return {};
+    }
+  };
+  const [local, published] = await Promise.all([read(url), read(`${SNAPSHOT_DATA_BASE}/${url}`)]);
+  const catalog = { ...local };
+  for (const [id, item] of Object.entries(published)) {
+    if (resolvedItemName(id, item?.name, item?.nameSource) || !resolvedItemName(id, local[id]?.name, local[id]?.nameSource)) {
+      catalog[id] = item;
+    }
+  }
+  return catalog;
+}
+
 function normalizeTotalDifferences(payload) {
   const raw = payload?.totalDifferences;
   if (!raw || typeof raw !== "object") return {};
@@ -2334,21 +2678,6 @@ function normalizeTotalDifferences(payload) {
     if (key && Number.isFinite(total)) totalDifferences[key] = total;
   }
   return totalDifferences;
-}
-
-function buildPriceMapFromRawPairs(pairs) {
-  const prices = {};
-  for (const pair of pairs) {
-    for (const [item, data] of [
-      [pair?.CurrencyOne, pair?.CurrencyOneData],
-      [pair?.CurrencyTwo, pair?.CurrencyTwoData]
-    ]) {
-      const apiId = item?.ApiId;
-      const price = toNumber(data?.RelativePrice);
-      if (apiId && price > 0) prices[apiId] = price;
-    }
-  }
-  return prices;
 }
 
 function buildPairMapFromRawPairs(pairs) {
@@ -2363,7 +2692,12 @@ function buildPairMapFromRawPairs(pairs) {
     const volume = toNumber(pair?.Volume);
     if (onePrice <= 0 || twoPrice <= 0) continue;
 
-    result[`${oneId}>${twoId}`] = { onePrice, twoPrice, volume };
+    result[`${oneId}>${twoId}`] = {
+      one: oneId, two: twoId, onePrice, twoPrice,
+      forwardRate: toNumber(pair?.CurrencyOneData?.RateToOther),
+      reverseRate: toNumber(pair?.CurrencyTwoData?.RateToOther),
+      volume
+    };
   }
   return result;
 }
@@ -2378,17 +2712,11 @@ function sortObjectKeys(object) {
 }
 
 function snapshotDataFingerprint(snapshot) {
-  const prices = Array.isArray(snapshot?.pairs)
-    ? buildPriceMapFromRawPairs(snapshot.pairs)
-    : (snapshot?.prices && typeof snapshot.prices === "object" ? snapshot.prices : {});
   const pairs = Array.isArray(snapshot?.pairs)
     ? buildPairMapFromRawPairs(snapshot.pairs)
     : (snapshot?.pairs && typeof snapshot.pairs === "object" ? snapshot.pairs : {});
 
-  return JSON.stringify({
-    prices: sortObjectKeys(prices),
-    pairs: sortObjectKeys(pairs)
-  });
+  return JSON.stringify(sortObjectKeys(pairs));
 }
 
 function lastDataChangedAt(rawPairs, historySnapshots, snapshotUpdatedAt, loadedAt = null) {
@@ -2437,6 +2765,7 @@ async function fetchPriceHistory() {
   if (!response?.ok) return empty;
 
   const payload = await response.json();
+  if (payload?.source !== game.source || payload?.league !== game.league) return empty;
   const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const snapshots = Array.isArray(payload?.snapshots) ? payload.snapshots : [];
 
@@ -2465,34 +2794,15 @@ function normalizeSnapshotPayload(payload) {
 async function fetchSnapshot() {
   const game = currentGame();
 
-  if (game.localSnapshotUrl) {
-    const localResponse = await fetch(game.localSnapshotUrl, { cache: "no-store" }).catch(() => null);
-    if (localResponse?.ok) {
-      const normalized = normalizeSnapshotPayload(await localResponse.json());
-      if (normalized.pairs.length) {
-        return normalized;
-      }
-    }
+  const response = await fetch(game.localSnapshotUrl, { cache: "no-store" });
+  if (!response.ok) throw new Error(`snapshot HTTP ${response.status}`);
+  const payload = await response.json();
+  if (!USE_API && (payload?.source !== game.source || payload?.league !== game.league)) {
+    throw new Error(`The ${game.league} official exchange snapshot has not been published yet.`);
   }
-
-  if (!game.liveSnapshotUrl) {
-    throw new Error("Snapshot unavailable");
-  }
-
-  const liveResponse = await fetch(game.liveSnapshotUrl, {
-    headers: {
-      accept: "application/json"
-    }
-  });
-
-  if (!liveResponse.ok) {
-    throw new Error(`live API HTTP ${liveResponse.status}`);
-  }
-
-  return {
-    ...normalizeSnapshotPayload(await liveResponse.json()),
-    updatedAt: null
-  };
+  const snapshot = normalizeSnapshotPayload(payload);
+  if (!snapshot.pairs.length) throw new Error(`No ${game.league} exchange pairs in the snapshot.`);
+  return snapshot;
 }
 
 function handleFilterChange() {
@@ -2503,29 +2813,10 @@ function handleFilterChange() {
 
 function handleControlsInput(event) {
   if (event.target === els.excludeSearch || event.target === els.includeSearch) return;
+  if (event.target === els.estimateMode) {
+    buildGraph(state.rawPairs);
+  }
   handleFilterChange();
-}
-
-function handleExcludeKeydown(event) {
-  if (event.key !== "Enter") return;
-
-  event.preventDefault();
-  addExcludedItem(els.excludeSearch.value);
-}
-
-function handleExcludeChange() {
-  addExcludedItem(els.excludeSearch.value);
-}
-
-function handleIncludeKeydown(event) {
-  if (event.key !== "Enter") return;
-
-  event.preventDefault();
-  addIncludedItem(els.includeSearch.value);
-}
-
-function handleIncludeChange() {
-  addIncludedItem(els.includeSearch.value);
 }
 
 function handleSortClick(event) {
@@ -2569,21 +2860,31 @@ for (const button of els.gameButtons) {
 }
 
 document.querySelector("#controls").addEventListener("input", handleControlsInput);
+const estimateHelp = document.querySelector(".estimate-help");
+estimateHelp.addEventListener("pointerenter", () => delete estimateHelp.dataset.dismissed);
+estimateHelp.addEventListener("focusin", () => delete estimateHelp.dataset.dismissed);
+estimateHelp.querySelector("button").addEventListener("click", () => delete estimateHelp.dataset.dismissed);
+estimateHelp.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    estimateHelp.dataset.dismissed = "true";
+    event.stopPropagation();
+  }
+});
 document.querySelector("#controls").addEventListener("change", handleControlsInput);
 els.trendsControls.addEventListener("input", handleTrendsControlsChange);
 els.trendsControls.addEventListener("change", handleTrendsControlsChange);
 els.trendsExcludeTypeSearch.addEventListener("keydown", handleTrendsExcludeTypeKeydown);
 els.trendsExcludeTypeSearch.addEventListener("change", handleTrendsExcludeTypeChange);
-els.excludeSearch.addEventListener("keydown", handleExcludeKeydown);
-els.excludeSearch.addEventListener("change", handleExcludeChange);
-els.includeSearch.addEventListener("keydown", handleIncludeKeydown);
-els.includeSearch.addEventListener("change", handleIncludeChange);
+setupItemPickers();
 for (const button of els.sortButtons) {
   button.addEventListener("click", handleSortClick);
 }
 els.refreshButton.addEventListener("click", loadData);
 els.resetOverridesButton.addEventListener("click", resetRateOverrides);
 
+I18n.init(renderLocalizedViews);
+updateDisplayFormats();
+updateSortButtons();
 loadExcludedItems();
 loadIncludedItems();
 loadRateOverrides();
@@ -2596,6 +2897,7 @@ window.CampaignModule?.initCampaign(els);
 async function bootstrap() {
   try {
     if (USE_API) {
+      els.estimateMode.closest(".estimate-field").hidden = true;
       await ensureGameConfigs();
     }
     await loadData();

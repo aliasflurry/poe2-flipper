@@ -6,12 +6,12 @@ function pairRateAt(snapshot, fromId, toId) {
   if (pairs) {
     const direct = pairs[`${fromId}>${toId}`];
     if (direct) {
-      const rate = Number(direct.onePrice) / Number(direct.twoPrice);
+      const rate = Number(direct.forwardRate || Number(direct.onePrice) / Number(direct.twoPrice));
       if (Number.isFinite(rate) && rate > 0) return rate;
     }
     const reverse = pairs[`${toId}>${fromId}`];
     if (reverse) {
-      const rate = Number(reverse.twoPrice) / Number(reverse.onePrice);
+      const rate = Number(reverse.reverseRate || Number(reverse.twoPrice) / Number(reverse.onePrice));
       if (Number.isFinite(rate) && rate > 0) return rate;
     }
   }
