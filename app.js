@@ -27,6 +27,8 @@ const GAME_CONFIGS = {
 const DEFAULT_GAME_ID = "poe2";
 const EXCLUDED_STORAGE_KEY = "exchange-excluded-items";
 const INCLUDED_STORAGE_KEY = "exchange-included-items";
+const EXCLUDED_CATEGORIES_STORAGE_KEY = "exchange-excluded-categories";
+const INCLUDED_CATEGORIES_STORAGE_KEY = "exchange-included-categories";
 const RATE_OVERRIDES_STORAGE_KEY = "exchange-rate-overrides";
 const FILTER_SETTINGS_STORAGE_KEY = "exchange-filter-settings";
 const TRENDS_SETTINGS_STORAGE_KEY = "price-trends-settings";
@@ -86,12 +88,15 @@ const state = {
   goldCostsByItem: new Map(),
   edgesByFrom: new Map(),
   lastLoadedAt: null,
+  marketLoad: { phase: "loading" },
   currentPage: 1,
   trendsPage: 1,
   sortBy: "gain",
   sortDirection: "desc",
   excludedItems: new Set(),
   includedItems: new Set(),
+  excludedCategories: new Set(),
+  includedCategories: new Set(),
   rateOverrides: new Map(),
   filterSettings: null,
   trendsSettings: null,
@@ -155,14 +160,15 @@ const TAB_VIEWS = {
   campaign: () => els.campaignView
 };
 
-const numberFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 4
-});
+let numberFormat;
+let percentFormat;
 
-const percentFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 2,
-  style: "percent"
-});
+function updateDisplayFormats() {
+  numberFormat = new Intl.NumberFormat(I18n.formatLocale, { maximumFractionDigits: 4 });
+  percentFormat = new Intl.NumberFormat(I18n.formatLocale, { maximumFractionDigits: 2, style: "percent" });
+}
+
+updateDisplayFormats();
 
 function currentGame() {
   return GAME_CONFIGS[state.gameId] || GAME_CONFIGS[DEFAULT_GAME_ID];
@@ -283,8 +289,6 @@ function makeEdge(pair, fromItem, toItem, fromData, toData) {
     pairId: pair.CurrencyExchangeSnapshotPairId,
     from: fromItem.ApiId,
     to: toItem.ApiId,
-    fromName: itemLabel(fromItem.ApiId),
-    toName: itemLabel(toItem.ApiId),
     rate: Number.isFinite(overrideRate) && overrideRate > 0 ? overrideRate : originalRate,
     originalRate,
     isRateOverridden: Number.isFinite(overrideRate) && overrideRate > 0,
@@ -348,25 +352,13 @@ function populateCurrencies() {
     .map((item) => {
       const option = document.createElement("option");
       option.value = item.id;
-      option.textContent = item.name;
+      option.textContent = itemLabel(item.id);
       option.title = item.id;
       return option;
     });
-  const searchOptions = [...state.items.values()]
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map((item) => {
-      const option = document.createElement("option");
-      option.value = item.unknown ? item.id : item.name;
-      option.label = item.name;
-      option.title = item.id;
-      option.dataset.itemId = item.id;
-      return option;
-    });
-
   els.startCurrency.replaceChildren(...options);
   els.startCurrency.value = state.items.has(current) ? current : fallback;
-  els.excludeOptions.replaceChildren(...searchOptions.map((option) => option.cloneNode(true)));
-  els.includeOptions.replaceChildren(...searchOptions);
+  refreshItemPickers();
   renderExcludedChips();
   renderIncludedChips();
   populateTrendsCurrencies();
@@ -381,8 +373,9 @@ function getSettings() {
     minStock: Math.max(toNumber(els.minStock.value), 0),
     maxGoldCost: Math.max(toNumber(els.maxGoldCost.value), 0),
     pageSize: Math.min(Math.max(Math.round(toNumber(els.pageSize.value)), 1), 100),
-    excludedItems: state.excludedItems,
-    includedItems: state.includedItems
+    excludedItems: resolveFilterItems(state.excludedItems, state.excludedCategories),
+    includedItems: resolveFilterItems(state.includedItems, state.includedCategories),
+    inclusionActive: state.includedItems.size > 0 || state.includedCategories.size > 0
   };
 }
 
@@ -421,7 +414,7 @@ function findCycles(settings) {
   return cycles
     .filter((cycle) => cycle.route.every((itemId) => !settings.excludedItems.has(itemId)))
     .filter((cycle) => (
-      settings.includedItems.size === 0
+      !(settings.inclusionActive ?? (settings.includedItems.size > 0))
       || cycle.route.some((itemId) => settings.includedItems.has(itemId))
     ))
     .filter((cycle) => cycle.multiplier > 1)
@@ -479,7 +472,8 @@ function compareCycles(a, b) {
 }
 
 function itemLabel(id) {
-  return state.items.get(id)?.name || id;
+  const item = state.items.get(id);
+  return item?.unknown ? I18n.t("unknownItem", { id: id.split("/").at(-1) }) : item?.name || id;
 }
 
 function itemIcon(id) {
@@ -539,6 +533,7 @@ function formatDivineProfit(value) {
 }
 
 function loadExcludedItems() {
+  state.excludedCategories = loadCategorySelections(EXCLUDED_CATEGORIES_STORAGE_KEY);
   try {
     const stored = JSON.parse(localStorage.getItem(gameStorageKey(EXCLUDED_STORAGE_KEY)) || "[]");
     state.excludedItems = new Set(Array.isArray(stored) ? stored.filter((itemId) => typeof itemId === "string") : []);
@@ -548,6 +543,7 @@ function loadExcludedItems() {
 }
 
 function saveExcludedItems() {
+  saveCategorySelections(EXCLUDED_CATEGORIES_STORAGE_KEY, state.excludedCategories);
   try {
     localStorage.setItem(gameStorageKey(EXCLUDED_STORAGE_KEY), JSON.stringify([...state.excludedItems]));
   } catch {
@@ -556,6 +552,7 @@ function saveExcludedItems() {
 }
 
 function loadIncludedItems() {
+  state.includedCategories = loadCategorySelections(INCLUDED_CATEGORIES_STORAGE_KEY);
   try {
     const stored = JSON.parse(localStorage.getItem(gameStorageKey(INCLUDED_STORAGE_KEY)) || "[]");
     state.includedItems = new Set(Array.isArray(stored) ? stored.filter((itemId) => typeof itemId === "string") : []);
@@ -565,6 +562,7 @@ function loadIncludedItems() {
 }
 
 function saveIncludedItems() {
+  saveCategorySelections(INCLUDED_CATEGORIES_STORAGE_KEY, state.includedCategories);
   try {
     localStorage.setItem(gameStorageKey(INCLUDED_STORAGE_KEY), JSON.stringify([...state.includedItems]));
   } catch {
@@ -807,8 +805,8 @@ function renderExcludedTrendsTypeChips() {
     remove.type = "button";
     remove.className = "chip-remove";
     remove.textContent = "X";
-    remove.title = `Remove ${label}`;
-    remove.setAttribute("aria-label", `Remove ${label}`);
+    remove.title = I18n.t("remove", { name: label });
+    remove.setAttribute("aria-label", I18n.t("remove", { name: label }));
     remove.addEventListener("click", () => removeExcludedTrendsType(categoryId));
 
     chip.append(name, remove);
@@ -824,7 +822,7 @@ function populateTrendsCurrencies() {
     .map((item) => {
       const option = document.createElement("option");
       option.value = item.id;
-      option.textContent = item.name;
+      option.textContent = itemLabel(item.id);
       option.title = item.id;
       return option;
     });
@@ -832,6 +830,12 @@ function populateTrendsCurrencies() {
   els.trendsStartCurrency.replaceChildren(...options);
   els.trendsStartCurrency.value = state.items.has(current) ? current : fallback;
   populateTrendsTypeOptions();
+}
+
+function updateCurrencyLabels(select) {
+  for (const option of select.options) {
+    option.textContent = itemLabel(option.value);
+  }
 }
 
 function setInputValue(input, value) {
@@ -864,34 +868,224 @@ function resetRateOverrides() {
   renderResults();
 }
 
-function findItemBySearch(value) {
-  const query = value.trim().toLowerCase();
-  if (!query) return null;
-
-  const items = [...state.items.values()];
-  const exact = items.find((item) => (
-    item.name.toLowerCase() === query || item.id.toLowerCase() === query
-  ));
-  if (exact) return exact;
-
-  const partialMatches = items.filter((item) => (
-    item.name.toLowerCase().includes(query) || item.id.toLowerCase().includes(query)
-  ));
-
-  return partialMatches.length === 1 ? partialMatches[0] : null;
+function itemCategoryId(item) {
+  return String(item.category || "").trim().toLowerCase();
 }
 
-function addExcludedItem(value) {
-  const item = findItemBySearch(value);
-  if (!item) return false;
+function itemCategoryLabel(id) {
+  return id ? categoryLabel(id) : I18n.t("otherCategory");
+}
 
-  state.excludedItems.add(item.id);
-  saveExcludedItems();
-  els.excludeSearch.value = "";
+function resolveFilterItems(items, categories) {
+  const resolved = new Set(items);
+  for (const item of state.items.values()) {
+    if (categories.has(itemCategoryId(item))) resolved.add(item.id);
+  }
+  return resolved;
+}
+
+function loadCategorySelections(key) {
+  try {
+    const stored = JSON.parse(localStorage.getItem(gameStorageKey(key)) || "[]");
+    return new Set(Array.isArray(stored)
+      ? stored.filter((id) => typeof id === "string").map((id) => id.trim().toLowerCase()) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveCategorySelections(key, categories) {
+  try {
+    localStorage.setItem(gameStorageKey(key), JSON.stringify([...categories]));
+  } catch {
+    // Selections remain active for this session when storage is unavailable.
+  }
+}
+
+function itemPickerRows(value) {
+  const query = value.trim().toLowerCase();
+  const groups = new Map();
+  for (const item of state.items.values()) {
+    const id = itemCategoryId(item);
+    if (!groups.has(id)) groups.set(id, []);
+    groups.get(id).push(item);
+  }
+  const rows = [];
+  const categories = [...groups.keys()].sort((a, b) => itemCategoryLabel(a).localeCompare(itemCategoryLabel(b)));
+  for (const id of categories) {
+    const label = itemCategoryLabel(id);
+    const categoryMatches = !query || label.toLowerCase().includes(query) || id.includes(query)
+      || (!id && "other".includes(query));
+    const items = groups.get(id).filter((item) => categoryMatches
+      || item.name.toLowerCase().includes(query) || itemLabel(item.id).toLowerCase().includes(query)
+      || item.id.toLowerCase().includes(query));
+    if (!items.length) continue;
+    rows.push({ kind: "category", id, label });
+    for (const item of items.sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id))) {
+      rows.push({ kind: "item", id: item.id, label: itemLabel(item.id), categoryId: id });
+    }
+  }
+  return rows;
+}
+
+const itemPickerState = {
+  include: { active: -1, rows: [] },
+  exclude: { active: -1, rows: [] }
+};
+
+function itemPickerElements(mode) {
+  const include = mode === "include";
+  return {
+    input: include ? els.includeSearch : els.excludeSearch,
+    options: include ? els.includeOptions : els.excludeOptions,
+    chips: include ? els.includedChips : els.excludedChips,
+    items: include ? state.includedItems : state.excludedItems,
+    categories: include ? state.includedCategories : state.excludedCategories
+  };
+}
+
+function closeItemPicker(mode) {
+  const { input, options } = itemPickerElements(mode);
+  options.hidden = true;
+  input.setAttribute("aria-expanded", "false");
+  input.removeAttribute("aria-activedescendant");
+  itemPickerState[mode].active = -1;
+}
+
+function renderItemPicker(mode) {
+  const { input, options, items, categories } = itemPickerElements(mode);
+  const picker = itemPickerState[mode];
+  picker.rows = itemPickerRows(input.value);
+  picker.active = -1;
+  input.removeAttribute("aria-activedescendant");
+  options.replaceChildren();
+  for (const [index, row] of picker.rows.entries()) {
+    const option = document.createElement("div");
+    const explicit = row.kind === "category" ? categories.has(row.id) : items.has(row.id);
+    const covered = row.kind === "item" && categories.has(row.categoryId);
+    option.id = `${mode}-option-${index}`;
+    option.className = `item-option item-option-${row.kind}`;
+    option.setAttribute("role", "option");
+    option.setAttribute("aria-selected", String(explicit || covered));
+    option.textContent = `${row.label}${explicit ? " ✓" : covered ? ` (${I18n.t("categorySelected")})` : ""}`;
+    option.title = row.kind === "category" ? I18n.t("selectCategory", { name: row.label }) : row.id;
+    option.addEventListener("pointerdown", (event) => event.preventDefault());
+    option.addEventListener("click", () => selectItemPickerRow(mode, row));
+    options.append(option);
+  }
+  if (!picker.rows.length) {
+    const empty = document.createElement("div");
+    empty.className = "item-options-empty";
+    empty.setAttribute("role", "presentation");
+    empty.textContent = I18n.t("noPickerResults");
+    options.append(empty);
+  }
+  options.hidden = false;
+  input.setAttribute("aria-expanded", "true");
+}
+
+function refreshItemPickers() {
+  for (const mode of ["include", "exclude"]) {
+    if (!itemPickerElements(mode).options.hidden) renderItemPicker(mode);
+  }
+}
+
+function updateItemSelection(mode) {
+  if (mode === "include") {
+    saveIncludedItems();
+    renderIncludedChips();
+  } else {
+    saveExcludedItems();
+    renderExcludedChips();
+  }
   state.currentPage = 1;
-  renderExcludedChips();
   renderResults();
-  return true;
+}
+
+function selectItemPickerRow(mode, row) {
+  const { input, items, categories } = itemPickerElements(mode);
+  if (row.kind === "category") categories.add(row.id);
+  else items.add(row.id);
+  input.value = "";
+  updateItemSelection(mode);
+  input.focus();
+  renderItemPicker(mode);
+}
+
+function renderCategoryChips(mode) {
+  const { chips, categories } = itemPickerElements(mode);
+  for (const id of [...categories].sort((a, b) => itemCategoryLabel(a).localeCompare(itemCategoryLabel(b)))) {
+    const label = itemCategoryLabel(id);
+    const chip = document.createElement("span");
+    chip.className = "exclude-chip category-chip";
+    const name = document.createElement("span");
+    name.textContent = I18n.t("categoryChip", { name: label });
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "chip-remove";
+    remove.textContent = "X";
+    remove.setAttribute("aria-label", I18n.t("removeCategory", { name: label }));
+    remove.addEventListener("click", () => {
+      categories.delete(id);
+      updateItemSelection(mode);
+    });
+    chip.append(name, remove);
+    chips.append(chip);
+  }
+}
+
+function setupItemPickers() {
+  for (const mode of ["include", "exclude"]) {
+    const { input, options } = itemPickerElements(mode);
+    input.addEventListener("focus", () => {
+      closeItemPicker(mode === "include" ? "exclude" : "include");
+      renderItemPicker(mode);
+    });
+    input.addEventListener("input", () => renderItemPicker(mode));
+    input.addEventListener("click", () => {
+      if (options.hidden) renderItemPicker(mode);
+    });
+    input.addEventListener("blur", () => closeItemPicker(mode));
+    input.addEventListener("keydown", (event) => {
+      const picker = itemPickerState[mode];
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeItemPicker(mode);
+      } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        if (options.hidden) renderItemPicker(mode);
+        if (!picker.rows.length) return;
+        picker.active = picker.active < 0
+          ? (event.key === "ArrowDown" ? 0 : picker.rows.length - 1)
+          : (picker.active + (event.key === "ArrowDown" ? 1 : -1) + picker.rows.length) % picker.rows.length;
+        for (const [index, option] of [...options.children].entries()) {
+          option.classList.toggle("active", index === picker.active);
+        }
+        const active = options.children[picker.active];
+        input.setAttribute("aria-activedescendant", active.id);
+        active.scrollIntoView({ block: "nearest" });
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        if (options.hidden) renderItemPicker(mode);
+        let row = picker.rows[picker.active];
+        if (!row) {
+          const query = input.value.trim().toLowerCase();
+          if (!query) return;
+          const exact = picker.rows.filter((entry) => entry.label.toLowerCase() === query || entry.id.toLowerCase() === query);
+          if (exact.length === 1) row = exact[0];
+          else if (picker.rows.filter((entry) => entry.kind === "item").length === 1) {
+            row = picker.rows.find((entry) => entry.kind === "item");
+          }
+        }
+        if (row) selectItemPickerRow(mode, row);
+      }
+    });
+  }
+  document.addEventListener("pointerdown", (event) => {
+    for (const mode of ["include", "exclude"]) {
+      if (!itemPickerElements(mode).input.closest(".exclude-picker").contains(event.target)) closeItemPicker(mode);
+    }
+  });
 }
 
 function removeExcludedItem(itemId) {
@@ -904,6 +1098,7 @@ function removeExcludedItem(itemId) {
 
 function renderExcludedChips() {
   els.excludedChips.replaceChildren();
+  renderCategoryChips("exclude");
 
   for (const itemId of [...state.excludedItems].sort((a, b) => itemLabel(a).localeCompare(itemLabel(b)))) {
     const item = state.items.get(itemId);
@@ -914,30 +1109,18 @@ function renderExcludedChips() {
     const remove = document.createElement("button");
 
     chip.className = "exclude-chip";
-    name.textContent = item.name;
+    name.textContent = itemLabel(item.id);
     remove.type = "button";
     remove.className = "chip-remove";
     remove.textContent = "X";
-    remove.title = `Remove ${item.name}`;
-    remove.setAttribute("aria-label", `Remove ${item.name}`);
+    remove.title = I18n.t("remove", { name: itemLabel(item.id) });
+    remove.setAttribute("aria-label", I18n.t("remove", { name: itemLabel(item.id) }));
     remove.addEventListener("click", () => removeExcludedItem(item.id));
 
     chip.append(name, remove);
     els.excludedChips.append(chip);
   }
-}
-
-function addIncludedItem(value) {
-  const item = findItemBySearch(value);
-  if (!item) return false;
-
-  state.includedItems.add(item.id);
-  saveIncludedItems();
-  els.includeSearch.value = "";
-  state.currentPage = 1;
-  renderIncludedChips();
-  renderResults();
-  return true;
+  refreshItemPickers();
 }
 
 function removeIncludedItem(itemId) {
@@ -950,6 +1133,7 @@ function removeIncludedItem(itemId) {
 
 function renderIncludedChips() {
   els.includedChips.replaceChildren();
+  renderCategoryChips("include");
 
   for (const itemId of [...state.includedItems].sort((a, b) => itemLabel(a).localeCompare(itemLabel(b)))) {
     const item = state.items.get(itemId);
@@ -960,23 +1144,24 @@ function renderIncludedChips() {
     const remove = document.createElement("button");
 
     chip.className = "exclude-chip";
-    name.textContent = item.name;
+    name.textContent = itemLabel(item.id);
     remove.type = "button";
     remove.className = "chip-remove";
     remove.textContent = "X";
-    remove.title = `Remove ${item.name}`;
-    remove.setAttribute("aria-label", `Remove ${item.name}`);
+    remove.title = I18n.t("remove", { name: itemLabel(item.id) });
+    remove.setAttribute("aria-label", I18n.t("remove", { name: itemLabel(item.id) }));
     remove.addEventListener("click", () => removeIncludedItem(item.id));
 
     chip.append(name, remove);
     els.includedChips.append(chip);
   }
+  refreshItemPickers();
 }
 
-function renderResults() {
+function renderResults(expandedRoutes = new Set()) {
   els.estimateDescription.textContent = els.estimateMode.value === "typical"
-    ? "Showing typical estimates. Only routes with a positive estimated return and matching filters appear."
-    : "Showing conservative estimates. Only routes with a positive estimated return and matching filters appear, so an item can be present in the data without appearing in a route.";
+    ? I18n.t("typicalDescription")
+    : I18n.t("conservativeDescription");
   const settings = getSettings();
   let cycles = findCycles(settings);
 
@@ -1005,16 +1190,16 @@ function renderResults() {
   updateSortButtons();
 
   if (!settings.start) {
-    renderEmpty("No currencies are available yet.");
+    renderEmpty(I18n.t("noCurrencies"));
     return;
   }
 
   if (!cycles.length) {
     if (settings.length === "2") {
-      renderEmpty("Two-trade loops are unavailable from the official hourly market feed. Choose 3 trades.");
+      renderEmpty(I18n.t("twoTradeUnavailable"));
       return;
     }
-    renderEmpty("No profitable 3-trade loops match these filters. Try lowering minimum volume or stock.");
+    renderEmpty(I18n.t("noProfitableLoops"));
     return;
   }
 
@@ -1030,7 +1215,7 @@ function renderResults() {
 
     rank.textContent = `#${startIndex + index + 1}`;
     title.textContent = `${numberFormat.format(cycle.input)} ${itemLabel(settings.start)} -> ${numberFormat.format(cycle.output)} ${itemLabel(settings.start)}`;
-    path.textContent = `${cycle.route.map(itemLabel).join(" > ")} | gold ${numberFormat.format(Math.ceil(cycle.goldCost))}`;
+    path.textContent = `${cycle.route.map(itemLabel).join(" > ")} | ${I18n.t("gold", { count: numberFormat.format(Math.ceil(cycle.goldCost)) })}`;
     gain.textContent = `+${percentFormat.format(cycle.multiplier - 1)}`;
     profitScore.textContent = formatDivineProfit(cycle.profitPerMillionGoldValue);
     card.style.setProperty("--accent", cycle.multiplier > 1.1 ? "#d7a84f" : "#5bbf98");
@@ -1044,7 +1229,9 @@ function renderResults() {
     card.tabIndex = 0;
     card.setAttribute("role", "button");
     card.setAttribute("aria-expanded", "false");
-    card.title = "Show 7 day price history";
+    card.dataset.route = JSON.stringify(cycle.route);
+    if (expandedRoutes.has(card.dataset.route)) toggleHistoryCard(card, cycle);
+    card.title = I18n.t("showHistory");
     card.addEventListener("click", (event) => toggleHistoryCard(card, cycle, event));
     card.addEventListener("keydown", (event) => {
       if (event.target?.closest("button, input, select, a, label")) return;
@@ -1098,10 +1285,10 @@ function renderHistoryPanel(cycle) {
 
   panel.className = "history-panel";
   header.className = "history-header";
-  title.textContent = "7 day price history";
+  title.textContent = I18n.t("history");
   meta.textContent = state.priceHistory.length
-    ? `${state.priceHistory.length} snapshots`
-    : "No snapshots";
+    ? I18n.t("snapshots", { count: numberFormat.format(state.priceHistory.length) })
+    : I18n.t("noSnapshots");
   chart.className = "history-chart";
   legend.className = "history-legend";
   header.append(title, meta);
@@ -1109,7 +1296,7 @@ function renderHistoryPanel(cycle) {
   if (!series.length) {
     const empty = document.createElement("p");
     empty.className = "history-empty";
-    empty.textContent = "Historical prices will appear here after the snapshot workflow runs.";
+    empty.textContent = I18n.t("historyUnavailable");
     panel.append(header, empty);
     return panel;
   }
@@ -1121,7 +1308,7 @@ function renderHistoryPanel(cycle) {
     chip.className = "history-legend-chip";
     chip.style.setProperty("--series-color", historyColor(index));
     chip.setAttribute("aria-pressed", "true");
-    chip.title = "Toggle this line";
+    chip.title = I18n.t("toggleHistoryLine");
     chip.textContent = `${entry.name} ${formatHistoryChange(entry.points)}`;
     chip.addEventListener("click", () => {
       const next = chip.getAttribute("aria-pressed") === "false";
@@ -1282,7 +1469,7 @@ function renderHistoryChart(container, series) {
   const svg = document.createElementNS(namespace, "svg");
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
   svg.setAttribute("role", "img");
-  svg.setAttribute("aria-label", "Seven day price history chart");
+  svg.setAttribute("aria-label", I18n.t("historyChart"));
 
   const gridLayer = document.createElementNS(namespace, "g");
   const seriesLayer = document.createElementNS(namespace, "g");
@@ -1470,7 +1657,18 @@ function attachHistoryInteractions(ctx) {
       focus.setAttribute("cx", snapX.toFixed(2));
       focus.setAttribute("cy", yFor(price).toFixed(2));
       focus.style.opacity = "1";
-      rows.push(`<div class="history-tooltip-row"><span class="history-tooltip-dot" style="background:${seriesColor(entry, index)}"></span><span class="history-tooltip-name">${entry.name}</span><strong>${numberFormat.format(price)}</strong></div>`);
+      const row = document.createElement("div");
+      const dot = document.createElement("span");
+      const name = document.createElement("span");
+      const value = document.createElement("strong");
+      row.className = "history-tooltip-row";
+      dot.className = "history-tooltip-dot";
+      dot.style.background = seriesColor(entry, index);
+      name.className = "history-tooltip-name";
+      name.textContent = entry.name;
+      value.textContent = numberFormat.format(price);
+      row.append(dot, name, value);
+      rows.push(row);
     }
 
     if (!rows.length) {
@@ -1478,7 +1676,12 @@ function attachHistoryInteractions(ctx) {
       return;
     }
 
-    tooltip.innerHTML = `<div class="history-tooltip-time">${new Date(nearest).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</div>${rows.join("")}`;
+    const time = document.createElement("div");
+    time.className = "history-tooltip-time";
+    time.textContent = new Date(nearest).toLocaleString(I18n.formatLocale, {
+      month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+    });
+    tooltip.replaceChildren(time, ...rows);
     tooltip.hidden = false;
 
     const containerRect = container.getBoundingClientRect();
@@ -1558,15 +1761,19 @@ function niceTimeTicks(minTime, maxTime, targetCount) {
 
 function formatAxisNumber(value, step) {
   const decimals = Math.min(6, Math.max(0, -Math.floor(Math.log10(step))));
-  return value.toFixed(decimals);
+  return value.toLocaleString(I18n.formatLocale, {
+    useGrouping: false,
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  });
 }
 
 function formatAxisTime(time, stepMs) {
   const date = new Date(time);
   if (stepMs < 24 * 60 * 60 * 1000) {
-    return date.toLocaleString([], { month: "short", day: "numeric", hour: "2-digit" });
+    return date.toLocaleString(I18n.formatLocale, { month: "short", day: "numeric", hour: "2-digit" });
   }
-  return date.toLocaleDateString([], { month: "short", day: "numeric" });
+  return date.toLocaleDateString(I18n.formatLocale, { month: "short", day: "numeric" });
 }
 
 function appendHistoryAxisText(svg, x, y, value, anchor = "start") {
@@ -1666,22 +1873,23 @@ function renderPriceTrends() {
   const pageSize = getTrendsPageSize();
 
   if (!state.items.size) {
-    renderTrendsEmpty("Load exchange data to view price trends.");
-    els.trendsStatus.textContent = "Waiting for exchange data...";
+    renderTrendsEmpty(I18n.t("loadTrends"));
+    els.trendsStatus.textContent = I18n.t("waitingForData");
     els.trendsMeta.textContent = "";
     return;
   }
 
   if (!startId || !state.items.has(startId)) {
-    renderTrendsEmpty("Select a starting currency to view price trends.");
-    els.trendsStatus.textContent = "Select a starting currency.";
+    renderTrendsEmpty(I18n.t("selectTrendsCurrency"));
+    els.trendsStatus.textContent = I18n.t("selectCurrency");
     els.trendsMeta.textContent = "";
     return;
   }
 
   let entries = buildTrendEntries(startId);
   if (search) {
-    entries = entries.filter((entry) => entry.name.toLowerCase().includes(search));
+    entries = entries.filter((entry) => entry.name.toLowerCase().includes(search)
+      || itemLabel(entry.itemId).toLowerCase().includes(search));
   }
 
   const totalResults = entries.length;
@@ -1690,20 +1898,24 @@ function renderPriceTrends() {
 
   const startName = itemLabel(startId);
   const excludedTypeCount = state.excludedTrendsTypes.size;
+  const excluded = excludedTypeCount
+    ? I18n.t(excludedTypeCount === 1 ? "oneTypeExcluded" : "typesExcluded", { count: numberFormat.format(excludedTypeCount) })
+    : "";
+  const volume = numberFormat.format(TRENDS_MIN_DAILY_VOLUME);
   els.trendsStatus.textContent = totalResults
-    ? `${totalResults.toLocaleString()} items vs ${startName} (vol > ${TRENDS_MIN_DAILY_VOLUME}${excludedTypeCount ? `, ${excludedTypeCount} type${excludedTypeCount === 1 ? "" : "s"} excluded` : ""}), sorted by total difference`
+    ? I18n.t("trendResults", { count: numberFormat.format(totalResults), name: startName, volume, excluded })
     : search
-      ? `No items match "${els.trendsSearch.value.trim()}"`
-      : `No historical pairs found vs ${startName} with volume > ${TRENDS_MIN_DAILY_VOLUME}`;
+      ? I18n.t("noSearchResults", { search: els.trendsSearch.value.trim() })
+      : I18n.t("noHistoricalPairs", { name: startName, volume });
   els.trendsMeta.textContent = state.priceHistory.length
-    ? `${state.priceHistory.length} snapshots (7 day)`
-    : "No snapshots";
+    ? I18n.t("weeklySnapshots", { count: numberFormat.format(state.priceHistory.length) })
+    : I18n.t("noSnapshots");
 
   if (!totalResults) {
     renderTrendsEmpty(
       state.priceHistory.length
-        ? "No matching items with price history and volume over 100 for the current filters."
-        : "Historical prices will appear here after the snapshot workflow runs."
+        ? I18n.t("noHistoricalMatches")
+        : I18n.t("historyUnavailable")
     );
     return;
   }
@@ -1724,6 +1936,7 @@ function renderTrendsEmpty(message) {
 }
 
 function makeTrendCard(entry, startName) {
+  const displayName = itemLabel(entry.itemId);
   const card = document.createElement("article");
   const header = document.createElement("div");
   const identity = document.createElement("div");
@@ -1745,30 +1958,30 @@ function makeTrendCard(entry, startName) {
   icon.alt = "";
   icon.className = "trends-card-icon";
   titleWrap.className = "trends-card-titles";
-  title.textContent = entry.name;
+  title.textContent = displayName;
   title.title = entry.itemId;
   subtitle.className = "trends-card-subtitle";
-  subtitle.textContent = `Price in ${startName}`;
+  subtitle.textContent = I18n.t("priceIn", { name: startName });
   metrics.className = "trends-card-metrics";
   change.className = "trends-card-change";
   if (entry.change !== null) {
     change.textContent = changeText;
-    change.title = "7 day change";
+    change.title = I18n.t("weeklyChange");
     change.classList.toggle("down", entry.change < 0);
     change.classList.toggle("up", entry.change > 0);
   } else {
-    change.textContent = "n/a";
+    change.textContent = I18n.t("unavailable");
     change.classList.add("muted");
   }
 
   forecast.className = "trends-card-forecast";
   if (prediction) {
     forecast.textContent = `+${FORECAST_CHECKPOINT_COUNT} ${formatSignedPercent(prediction.change)}`;
-    forecast.title = `Linear forecast for the next ${FORECAST_CHECKPOINT_COUNT} checkpoints`;
+    forecast.title = I18n.t("forecast", { count: numberFormat.format(FORECAST_CHECKPOINT_COUNT) });
     forecast.classList.toggle("down", prediction.change < 0);
     forecast.classList.toggle("up", prediction.change > 0);
   } else {
-    forecast.textContent = `+${FORECAST_CHECKPOINT_COUNT} n/a`;
+    forecast.textContent = `+${FORECAST_CHECKPOINT_COUNT} ${I18n.t("unavailable")}`;
     forecast.classList.add("muted");
   }
 
@@ -1782,7 +1995,7 @@ function makeTrendCard(entry, startName) {
 
   const chartSeries = [
     {
-      name: `${entry.name} / ${startName}`,
+      name: `${displayName} / ${startName}`,
       points: entry.points
     }
   ];
@@ -1802,15 +2015,19 @@ function makeTrendCard(entry, startName) {
 }
 
 function renderTrendsPagination(totalResults, totalPages, pageSize) {
-  const previous = makeTrendsPageButton("Previous", state.trendsPage - 1, state.trendsPage === 1);
-  const next = makeTrendsPageButton("Next", state.trendsPage + 1, state.trendsPage === totalPages);
+  const previous = makeTrendsPageButton(I18n.t("previous"), state.trendsPage - 1, state.trendsPage === 1);
+  const next = makeTrendsPageButton(I18n.t("next"), state.trendsPage + 1, state.trendsPage === totalPages);
   const summary = document.createElement("span");
   const pages = document.createElement("div");
   const firstResult = (state.trendsPage - 1) * pageSize + 1;
   const lastResult = Math.min(state.trendsPage * pageSize, totalResults);
 
   summary.className = "pagination-summary";
-  summary.textContent = `${numberFormat.format(firstResult)}-${numberFormat.format(lastResult)} of ${numberFormat.format(totalResults)} results`;
+  summary.textContent = I18n.t("pageSummary", {
+    first: numberFormat.format(firstResult),
+    last: numberFormat.format(lastResult),
+    total: numberFormat.format(totalResults)
+  });
   pages.className = "page-numbers";
 
   for (const page of getVisiblePages(totalPages, state.trendsPage)) {
@@ -1824,7 +2041,7 @@ function renderTrendsPagination(totalResults, totalPages, pageSize) {
 
     const pageButton = makeTrendsPageButton(String(page), page, page === state.trendsPage);
     pageButton.classList.add("page-number");
-    pageButton.setAttribute("aria-label", `Go to page ${page}`);
+    pageButton.setAttribute("aria-label", I18n.t("goToPage", { page }));
     if (page === state.trendsPage) {
       pageButton.setAttribute("aria-current", "page");
     }
@@ -1857,7 +2074,7 @@ function updateSortButtons() {
     const isActive = button.dataset.sort === state.sortBy;
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
-    button.textContent = `${button.dataset.sort === "profit" ? "Profit / 1M gold" : "Gain %"}${isActive ? (state.sortDirection === "desc" ? " v" : " ^") : ""}`;
+    button.textContent = `${I18n.t(button.dataset.sort === "profit" ? "profitGold" : "gain")}${isActive ? (state.sortDirection === "desc" ? " v" : " ^") : ""}`;
   }
 }
 
@@ -1870,15 +2087,19 @@ function renderEmpty(message) {
 }
 
 function renderPagination(totalResults, totalPages, pageSize) {
-  const previous = makePageButton("Previous", state.currentPage - 1, state.currentPage === 1);
-  const next = makePageButton("Next", state.currentPage + 1, state.currentPage === totalPages);
+  const previous = makePageButton(I18n.t("previous"), state.currentPage - 1, state.currentPage === 1);
+  const next = makePageButton(I18n.t("next"), state.currentPage + 1, state.currentPage === totalPages);
   const summary = document.createElement("span");
   const pages = document.createElement("div");
   const firstResult = (state.currentPage - 1) * pageSize + 1;
   const lastResult = Math.min(state.currentPage * pageSize, totalResults);
 
   summary.className = "pagination-summary";
-  summary.textContent = `${numberFormat.format(firstResult)}-${numberFormat.format(lastResult)} of ${numberFormat.format(totalResults)} results`;
+  summary.textContent = I18n.t("pageSummary", {
+    first: numberFormat.format(firstResult),
+    last: numberFormat.format(lastResult),
+    total: numberFormat.format(totalResults)
+  });
   pages.className = "page-numbers";
 
   for (const page of getVisiblePages(totalPages, state.currentPage)) {
@@ -1892,7 +2113,7 @@ function renderPagination(totalResults, totalPages, pageSize) {
 
     const pageButton = makePageButton(String(page), page, page === state.currentPage);
     pageButton.classList.add("page-number");
-    pageButton.setAttribute("aria-label", `Go to page ${page}`);
+    pageButton.setAttribute("aria-label", I18n.t("goToPage", { page }));
     if (page === state.currentPage) {
       pageButton.setAttribute("aria-current", "page");
     }
@@ -1954,23 +2175,23 @@ function makeStepItems(edge) {
   setItemIcon(toIcon, edge.to);
   toIcon.alt = "";
 
-  wrap.append(fromIcon, makeCopyableItemName(edge.fromName, edge.from), arrow, toIcon, makeCopyableItemName(edge.toName, edge.to));
+  wrap.append(fromIcon, makeCopyableItemName(itemLabel(edge.from), edge.from), arrow, toIcon, makeCopyableItemName(itemLabel(edge.to), edge.to));
   return wrap;
 }
 
 function makeCopyableItemName(name, id) {
   const copyText = state.items.get(id)?.unknown ? id : name;
-  const title = state.items.get(id)?.unknown ? `Unknown item: ${id}. Click to copy ID` : `Copy ${name}`;
+  const title = state.items.get(id)?.unknown ? I18n.t("unknownCopy", { id }) : I18n.t("copy", { name });
   const button = document.createElement("button");
   button.type = "button";
   button.className = "copy-item-name";
   button.textContent = name;
   button.title = title;
-  button.setAttribute("aria-label", `Copy ${name}`);
+  button.setAttribute("aria-label", I18n.t("copy", { name }));
   button.addEventListener("click", async () => {
     const copied = await copyItemName(copyText);
     button.classList.toggle("copied", copied);
-    button.title = copied ? `Copied ${name}` : `Could not copy ${name}`;
+    button.title = copied ? I18n.t("copied", { name }) : I18n.t("copyFailed", { name });
     window.setTimeout(() => {
       button.classList.remove("copied");
       button.title = title;
@@ -1982,10 +2203,10 @@ function makeCopyableItemName(name, id) {
 function makeStepMeta(edge, stepIndex, stepAmount) {
   const wrap = document.createElement("div");
   const values = [
-    `Trade ${stepIndex + 1}`,
-    `vol ${numberFormat.format(edge.volume)}`,
-    `stock ${numberFormat.format(edge.stock)}`,
-    `gold ${numberFormat.format(Math.ceil(stepAmount?.goldCost || 0))}`
+    I18n.t("tradeNumber", { count: stepIndex + 1 }),
+    I18n.t("volume", { count: numberFormat.format(edge.volume) }),
+    I18n.t("stock", { count: numberFormat.format(edge.stock) }),
+    I18n.t("gold", { count: numberFormat.format(Math.ceil(stepAmount?.goldCost || 0)) })
   ];
 
   wrap.className = "step-meta";
@@ -2009,15 +2230,15 @@ function makeRateEditor(edge) {
   wrap.className = "rate-editor";
   wrap.classList.toggle("overridden", edge.isRateOverridden);
   wrap.title = edge.isRateOverridden
-    ? `Override rate. Original: ${numberFormat.format(edge.originalRate)}x`
-    : "Edit this exchange rate";
+    ? I18n.t("overrideRate", { rate: numberFormat.format(edge.originalRate) })
+    : I18n.t("editRate");
 
   input.className = "rate-input";
   input.type = "text";
   input.inputMode = "decimal";
   input.pattern = "\\s*\\d*\\.?\\d+(\\s*/\\s*\\d*\\.?\\d+)?\\s*";
   input.value = value;
-  input.setAttribute("aria-label", `Rate for ${edge.fromName} to ${edge.toName}`);
+  input.setAttribute("aria-label", I18n.t("rateFor", { from: itemLabel(edge.from), to: itemLabel(edge.to) }));
 
   suffix.className = "rate-suffix";
   suffix.textContent = "x";
@@ -2108,6 +2329,12 @@ function resetExchangeState() {
   state.edgesByFrom.clear();
   state.excludedItems.clear();
   state.includedItems.clear();
+  state.excludedCategories.clear();
+  state.includedCategories.clear();
+  for (const mode of ["include", "exclude"]) {
+    closeItemPicker(mode);
+    itemPickerElements(mode).input.value = "";
+  }
   state.rateOverrides.clear();
   els.startCurrency.replaceChildren();
   els.trendsStartCurrency.replaceChildren();
@@ -2121,7 +2348,7 @@ function resetExchangeState() {
   els.trendsResults.replaceChildren();
   els.trendsPagination.replaceChildren();
   els.snapshotMeta.textContent = "";
-  els.trendsStatus.textContent = "Select a starting currency to view price trends.";
+  els.trendsStatus.textContent = I18n.t("selectTrendsCurrency");
   els.trendsMeta.textContent = "";
   renderExcludedTrendsTypeChips();
 }
@@ -2144,12 +2371,56 @@ function switchGame(gameId) {
   loadData();
 }
 
-async function loadData() {
-  const requestedGameId = state.gameId;
-  const game = currentGame();
-  els.refreshButton.disabled = true;
-  els.status.textContent = `Loading ${game.label} exchange data...`;
+function renderMarketStatus() {
+  const game = currentGame().label;
+  const { phase, error, dataChangedAt } = state.marketLoad;
   els.snapshotMeta.textContent = "";
+  if (phase === "loading") {
+    els.status.textContent = I18n.t("loadingMarket", { game });
+    return;
+  }
+  if (phase === "error") {
+    els.status.textContent = I18n.t("marketError", { game });
+    els.snapshotMeta.textContent = error;
+    renderEmpty(I18n.t("marketRetry"));
+    renderTrendsEmpty(I18n.t("marketUnreachable"));
+    return;
+  }
+
+  els.status.textContent = I18n.t("loadedMarket", { count: numberFormat.format(state.rawPairs.length), game });
+  const costs = I18n.t("matchedGold", { count: numberFormat.format(state.goldCostsByItem.size) });
+  els.snapshotMeta.textContent = dataChangedAt
+    ? I18n.t("marketHour", {
+      date: new Date(dataChangedAt).toLocaleString(I18n.formatLocale, { dateStyle: "medium", timeStyle: "short" }),
+      costs
+    })
+    : I18n.t("marketLoadedAt", {
+      date: state.lastLoadedAt.toLocaleTimeString(I18n.formatLocale, { hour: "2-digit", minute: "2-digit" }),
+      costs
+    });
+}
+
+function renderLocalizedViews() {
+  updateDisplayFormats();
+  const expandedRoutes = new Set(
+    Array.from(els.results.querySelectorAll(".result-card.expanded"), (card) => card.dataset.route)
+  );
+  updateCurrencyLabels(els.startCurrency);
+  updateCurrencyLabels(els.trendsStartCurrency);
+  renderExcludedChips();
+  renderIncludedChips();
+  renderExcludedTrendsTypeChips();
+  renderResults(expandedRoutes);
+  renderPriceTrends();
+  renderMarketStatus();
+  window.CampaignModule?.updateLanguage(els);
+}
+
+async function loadData() {
+  const request = { phase: "loading" };
+  state.marketLoad = request;
+  els.refreshButton.disabled = true;
+  renderMarketStatus();
 
   try {
     const [loaded, goldCosts, history, itemCatalog] = await Promise.all([
@@ -2159,7 +2430,7 @@ async function loadData() {
       fetchItemCatalog()
     ]);
 
-    if (requestedGameId !== state.gameId) return;
+    if (state.marketLoad !== request) return;
 
     state.rawPairs = loaded.pairs;
     state.itemCatalog = itemCatalog;
@@ -2173,26 +2444,20 @@ async function loadData() {
     renderResults();
     renderPriceTrends();
 
-    els.status.textContent = `${state.rawPairs.length.toLocaleString()} ${game.label} hourly market pairs loaded (estimated rates)`;
-    const matchedGoldCosts = `${state.goldCostsByItem.size.toLocaleString()} gold costs matched`;
-    const dataChangedAt = lastDataChangedAt(
+    request.dataChangedAt = lastDataChangedAt(
       loaded.pairs,
       history.snapshots || [],
       loaded.updatedAt,
       state.lastLoadedAt?.toISOString()
     );
-    els.snapshotMeta.textContent = dataChangedAt
-      ? `Market hour ${new Date(dataChangedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} | ${matchedGoldCosts}`
-      : `Loaded ${state.lastLoadedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} | ${matchedGoldCosts}`;
+    request.phase = "loaded";
   } catch (error) {
-    if (requestedGameId !== state.gameId) return;
-
-    els.status.textContent = `Could not load ${game.label} exchange data.`;
-    els.snapshotMeta.textContent = error.message;
-    renderEmpty("The exchange snapshot could not be reached from this browser. Refresh again or try the other game tab.");
-    renderTrendsEmpty("The exchange snapshot could not be reached from this browser.");
+    if (state.marketLoad !== request) return;
+    request.phase = "error";
+    request.error = error.message;
   } finally {
-    if (requestedGameId === state.gameId) {
+    if (state.marketLoad === request) {
+      renderMarketStatus();
       els.refreshButton.disabled = false;
     }
   }
@@ -2379,28 +2644,6 @@ function handleControlsInput(event) {
   handleFilterChange();
 }
 
-function handleExcludeKeydown(event) {
-  if (event.key !== "Enter") return;
-
-  event.preventDefault();
-  addExcludedItem(els.excludeSearch.value);
-}
-
-function handleExcludeChange() {
-  addExcludedItem(els.excludeSearch.value);
-}
-
-function handleIncludeKeydown(event) {
-  if (event.key !== "Enter") return;
-
-  event.preventDefault();
-  addIncludedItem(els.includeSearch.value);
-}
-
-function handleIncludeChange() {
-  addIncludedItem(els.includeSearch.value);
-}
-
 function handleSortClick(event) {
   const sortBy = event.currentTarget.dataset.sort;
   if (!sortBy) return;
@@ -2457,16 +2700,16 @@ els.trendsControls.addEventListener("input", handleTrendsControlsChange);
 els.trendsControls.addEventListener("change", handleTrendsControlsChange);
 els.trendsExcludeTypeSearch.addEventListener("keydown", handleTrendsExcludeTypeKeydown);
 els.trendsExcludeTypeSearch.addEventListener("change", handleTrendsExcludeTypeChange);
-els.excludeSearch.addEventListener("keydown", handleExcludeKeydown);
-els.excludeSearch.addEventListener("change", handleExcludeChange);
-els.includeSearch.addEventListener("keydown", handleIncludeKeydown);
-els.includeSearch.addEventListener("change", handleIncludeChange);
+setupItemPickers();
 for (const button of els.sortButtons) {
   button.addEventListener("click", handleSortClick);
 }
 els.refreshButton.addEventListener("click", loadData);
 els.resetOverridesButton.addEventListener("click", resetRateOverrides);
 
+I18n.init(renderLocalizedViews);
+updateDisplayFormats();
+updateSortButtons();
 loadExcludedItems();
 loadIncludedItems();
 loadRateOverrides();

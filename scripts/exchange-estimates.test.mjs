@@ -5,6 +5,7 @@ import vm from "node:vm";
 import { marketToPair } from "./update-official-snapshots.mjs";
 
 const source = readFileSync(new URL("../app.js", import.meta.url), "utf8");
+const i18n = readFileSync(new URL("../i18n.js", import.meta.url), "utf8");
 // Load the app functions without registering browser events or fetching data.
 const functions = source.slice(0, source.lastIndexOf("for (const button of els.tabButtons)"));
 
@@ -25,11 +26,62 @@ function app() {
       setItem: (key, value) => storage.set(key, value)
     }
   });
+  vm.runInContext(i18n, context);
   vm.runInContext(functions, context);
   return { context, run: (code) => vm.runInContext(code, context) };
 }
 
 for (const game of ["poe", "poe2"]) {
+  test(`${game}: picker groups and searches categories, items, IDs, and uncategorized items`, () => {
+    const { run } = app();
+    run(`state.gameId = '${game}'; state.items = new Map([
+      ['b', {id: 'b', name: 'Divine Orb', category: 'Currency'}],
+      ['a', {id: 'a', name: 'Chaos Orb', category: 'currency'}],
+      ['thread-id', {id: 'thread-id', name: 'Silk', category: 'thread'}],
+      ['unknown', {id: 'unknown', name: 'Mystery'}]
+    ]);`);
+    assert.equal(run("JSON.stringify(itemPickerRows('currency').map(row => row.label))"), JSON.stringify(['Currency', 'Chaos Orb', 'Divine Orb']));
+    assert.equal(run("JSON.stringify(itemPickerRows('divine').map(row => row.label))"), JSON.stringify(['Currency', 'Divine Orb']));
+    assert.equal(run("itemPickerRows('thread-id')[1].label"), 'Silk');
+    assert.equal(run("itemPickerRows('Other')[1].label"), 'Mystery');
+    assert.equal(run("itemPickerRows('no match').length"), 0);
+  });
+
+  test(`${game}: category selection covers new items and removal preserves explicit items`, () => {
+    const { run } = app();
+    run(`state.gameId = '${game}'; renderIncludedChips = () => {}; renderExcludedChips = () => {}; renderResults = () => {};
+      els.includeSearch.focus = () => {}; renderItemPicker = () => {};
+      state.items = new Map([['a', {id: 'a', name: 'Chaos Orb', category: 'currency'}]]);
+      selectItemPickerRow('include', {kind: 'item', id: 'a'});
+      selectItemPickerRow('include', {kind: 'category', id: 'currency'});
+      selectItemPickerRow('include', {kind: 'category', id: 'currency'});`);
+    assert.equal(run("state.includedCategories.size"), 1);
+    run("state.items.set('b', {id: 'b', category: 'currency'});");
+    assert.equal(run("getSettings().includedItems.has('b')"), true);
+    run("state.includedCategories.clear();");
+    assert.equal(run("getSettings().includedItems.has('a')"), true);
+    assert.equal(run("getSettings().includedItems.has('b')"), false);
+    run("state.excludedCategories.add(''); state.items.set('unknown', {id: 'unknown'});");
+    assert.equal(run("getSettings().excludedItems.has('unknown')"), true);
+  });
+
+  test(`${game}: category inclusion filters routes and exclusion takes precedence`, () => {
+    const { run } = app();
+    run(`state.gameId = '${game}'; state.items = new Map([
+      ['a', {id: 'a', category: 'currency'}], ['b', {id: 'b', category: 'thread'}]
+    ]);
+    els.startCurrency.value = 'a'; els.startAmount.value = '1'; els.pathLength.value = '2';
+    state.edgesByFrom = new Map([
+      ['a', [{from: 'a', to: 'b', pairId: 'one', rate: 2, volume: 100, stock: 100, goldCost: 0}]],
+      ['b', [{from: 'b', to: 'a', pairId: 'two', rate: 1, volume: 100, stock: 100, goldCost: 0}]]
+    ]); state.includedCategories.add('thread');`);
+    assert.equal(run("findCycles(getSettings()).length"), 1);
+    run("state.excludedCategories.add('thread');");
+    assert.equal(run("findCycles(getSettings()).length"), 0);
+    run("state.excludedCategories.clear(); state.includedCategories = new Set(['absent']);");
+    assert.equal(run("findCycles(getSettings()).length"), 0);
+  });
+
   test(`${game}: published catalogs refresh names and local names survive remote failure`, async () => {
     const { context, run } = app();
     context.game = game;
@@ -111,6 +163,20 @@ for (const game of ["poe", "poe2"]) {
     }
   });
 }
+
+test('category and legacy item selections persist independently for both games', () => {
+  const { run } = app();
+  run(`state.gameId = 'poe2'; state.includedItems.add('legacy'); state.includedCategories.add('currency');
+    state.excludedCategories.add('thread'); saveIncludedItems(); saveExcludedItems();
+    state.gameId = 'poe'; loadIncludedItems(); loadExcludedItems();`);
+  assert.equal(run('state.includedItems.size + state.includedCategories.size + state.excludedCategories.size'), 0);
+  run(`state.includedCategories.add('essences'); saveIncludedItems(); state.gameId = 'poe2'; loadIncludedItems(); loadExcludedItems();`);
+  assert.equal(run("state.includedItems.has('legacy') && state.includedCategories.has('currency') && state.excludedCategories.has('thread')"), true);
+  run("state.gameId = 'poe'; loadIncludedItems();");
+  assert.equal(run("state.includedCategories.has('essences')"), true);
+  run("localStorage.setItem(gameStorageKey(INCLUDED_CATEGORIES_STORAGE_KEY), '{broken'); loadIncludedItems();");
+  assert.equal(run('state.includedCategories.size'), 0);
+});
 
 test("estimate preferences persist separately for both games and default safely", () => {
   const { run } = app();

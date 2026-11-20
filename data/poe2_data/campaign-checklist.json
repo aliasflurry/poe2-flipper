@@ -1718,7 +1718,7 @@
           "objectives": [
             {
               "id": "s0",
-              "text": "Giao Orok Poison cho Servi.",
+              "text": "Give Orok Poison to Servi.",
               "note": "PERMANENT, irreversible selection."
             },
             {
@@ -2532,7 +2532,7 @@
           "objectives": [
             {
               "id": "s0",
-              "text": "Beckoning Clam → Humming Pearl, giao Rog.",
+              "text": "Open Beckoning Clam → give Humming Pearl to Rog.",
               "optional": true
             },
             {

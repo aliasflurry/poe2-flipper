@@ -1,8 +1,12 @@
 const CAMPAIGN_STORAGE_KEY = "poe2-campaign-v4";
 const CAMPAIGN_DATA_URL = "data/poe2_data/campaign-checklist.json";
+const CAMPAIGN_VI_URL = "data/poe2_data/campaign-checklist.vi.json";
 
 const campaignState = {
   data: null,
+  translations: null,
+  translationRequest: null,
+  error: null,
   completed: new Map(),
   collapsedActs: new Set(),
   filter: "all", // all | required | optional
@@ -138,12 +142,12 @@ function createActProgressBar(done, total) {
 }
 
 function rewardLabel(rewardType) {
-  if (rewardType === "permanent") return "Permanent";
+  if (rewardType === "permanent") return I18n.t("permanent");
   if (rewardType === "points") return "Skill Points";
   if (rewardType === "ascendancy") return "Ascendancy";
-  if (rewardType === "choice") return "Choice";
-  if (rewardType === "unlocks") return "Unlocks";
-  return "Reward";
+  if (rewardType === "choice") return I18n.t("choice");
+  if (rewardType === "unlocks") return I18n.t("unlocks");
+  return I18n.t("reward");
 }
 
 function createRewardPill(reward, rewardType) {
@@ -175,7 +179,11 @@ function renderCampaignSummary(els) {
   const progress = countOverallProgress();
   const percent = progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0;
 
-  els.campaignSummary.textContent = `${progress.done} of ${progress.total} objectives complete - ${percent}%`;
+  els.campaignSummary.textContent = I18n.t("campaignProgress", {
+    done: progress.done,
+    total: progress.total,
+    percent: (percent / 100).toLocaleString(I18n.formatLocale, { style: "percent" })
+  });
 
   const bar = document.getElementById("campaignOverallBar");
   if (bar) {
@@ -186,6 +194,7 @@ function renderCampaignSummary(els) {
 }
 
 function renderArea(act, area, els, sectionNum) {
+  const translation = localizedCampaignAct(act.id)?.areas?.[area.id];
   const visible = area.objectives.filter((o) => matchesCampaignFilter(o));
 
   if (!visible.length) {
@@ -223,7 +232,7 @@ function renderArea(act, area, els, sectionNum) {
   if (area.note) {
     const noteEl = document.createElement("span");
     noteEl.className = "campaign-area-note";
-    noteEl.textContent = area.note;
+    noteEl.textContent = translation?.note ?? area.note;
     headerLeft.append(noteEl);
   }
 
@@ -248,18 +257,18 @@ function renderArea(act, area, els, sectionNum) {
 
     const label = document.createElement("div");
     label.className = "campaign-guide-note-label";
-    label.textContent =
-      style === "warning" ? "Warning" : style === "tip" ? "Tip" : style === "system" ? "Note" : "Tip";
+    label.textContent = I18n.t(style === "warning" ? "warning" : style === "system" ? "note" : "tip");
 
     const body = document.createElement("div");
     body.className = "campaign-guide-note-text";
-    body.textContent = obj.text;
+    body.textContent = translation?.objectives?.[obj.id]?.text ?? obj.text;
 
     note.append(label, body);
     return note;
   }
 
   function createObjectiveItem(obj) {
+    const localized = translation?.objectives?.[obj.id];
     const item = document.createElement("li");
     const classes = ["campaign-objective"];
     if (obj.optional) classes.push("optional");
@@ -282,7 +291,7 @@ function renderArea(act, area, els, sectionNum) {
 
     const text = document.createElement("span");
     text.className = "campaign-objective-text";
-    text.textContent = obj.text;
+    text.textContent = localized?.text ?? obj.text;
     textRow.append(text);
 
     if (obj.boss || obj.waypoint) {
@@ -308,7 +317,7 @@ function renderArea(act, area, els, sectionNum) {
     if (obj.note) {
       const tip = document.createElement("span");
       tip.className = "campaign-objective-note";
-      tip.textContent = obj.note;
+      tip.textContent = localized?.note ?? obj.note;
       textWrap.append(tip);
     }
 
@@ -388,7 +397,7 @@ function renderCampaignActs(els) {
   if (!campaignState.data?.acts?.length) {
     const empty = document.createElement("p");
     empty.className = "empty";
-    empty.textContent = "No campaign checklist data is available.";
+    empty.textContent = I18n.t("noCampaign");
     els.campaignActs.append(empty);
     return;
   }
@@ -431,12 +440,13 @@ function renderCampaignActs(els) {
     titleRow.append(title, count);
     titleGroup.append(titleRow);
 
-    if (act.subtitle) {
+    const guideSubtitle = localizedCampaignAct(act.id)?.subtitle ?? act.subtitle;
+    if (guideSubtitle) {
       const subtitle = document.createElement("p");
       subtitle.className = "campaign-act-subtitle";
-      subtitle.textContent = act.subtitle.split("\n")[0].trim();
-      if (act.subtitle.includes("\n")) {
-        subtitle.title = act.subtitle.replace(/\n+/g, " · ");
+      subtitle.textContent = guideSubtitle.split("\n")[0].trim();
+      if (guideSubtitle.includes("\n")) {
+        subtitle.title = guideSubtitle.replace(/\n+/g, " · ");
       }
       titleGroup.append(subtitle);
     }
@@ -463,10 +473,10 @@ function renderCampaignActs(els) {
       empty.className = "campaign-filter-empty";
       empty.textContent =
         campaignState.filter === "required"
-          ? "No required objectives in this act."
+          ? I18n.t("noRequired")
           : campaignState.filter === "optional"
-            ? "No optional objectives in this act."
-            : "No objectives in this act.";
+            ? I18n.t("noOptional")
+            : I18n.t("noObjectives");
       body.append(empty);
     }
 
@@ -501,6 +511,30 @@ function renderCampaignActs(els) {
 function renderCampaign(els) {
   renderCampaignSummary(els);
   renderCampaignActs(els);
+}
+
+function localizedCampaignAct(id) {
+  return I18n.locale === "vi" ? campaignState.translations?.[id] : undefined;
+}
+
+function updateCampaignLanguage(els) {
+  if (I18n.locale === "vi" && !campaignState.translationRequest) {
+    campaignState.translationRequest = fetch(CAMPAIGN_VI_URL)
+      .then((response) => response.ok ? response.json() : null)
+      .then((translations) => {
+        campaignState.translations = translations;
+        if (translations && campaignState.data && I18n.locale === "vi") renderCampaign(els);
+      })
+      .catch(() => {
+        // The English checklist is available when the translation cannot load.
+      });
+  }
+  if (campaignState.data) {
+    els.campaignStatus.textContent = "";
+    renderCampaign(els);
+  } else {
+    els.campaignStatus.textContent = I18n.t(campaignState.error ? "campaignError" : "loadingCampaign");
+  }
 }
 
 function setCampaignFilter(filter, els) {
@@ -539,7 +573,7 @@ async function initCampaign(els) {
   loadCampaignProgress();
 
   els.campaignResetButton?.addEventListener("click", () => {
-    if (window.confirm("Reset all campaign checklist progress?")) {
+    if (window.confirm(I18n.t("confirmResetProgress"))) {
       resetCampaignProgress(els);
     }
   });
@@ -550,7 +584,7 @@ async function initCampaign(els) {
     });
   });
 
-  els.campaignStatus.textContent = "Loading campaign checklist...";
+  updateCampaignLanguage(els);
 
   try {
     const response = await fetch(CAMPAIGN_DATA_URL, { cache: "no-store" });
@@ -559,11 +593,11 @@ async function initCampaign(els) {
     }
 
     campaignState.data = await response.json();
-    els.campaignStatus.textContent = "";
     els.campaignMeta.textContent = "";
-    renderCampaign(els);
+    updateCampaignLanguage(els);
   } catch (error) {
-    els.campaignStatus.textContent = "Could not load campaign checklist.";
+    campaignState.error = error;
+    updateCampaignLanguage(els);
     els.campaignMeta.textContent = error.message;
     els.campaignActs.replaceChildren();
   }
@@ -572,5 +606,6 @@ async function initCampaign(els) {
 window.CampaignModule = {
   initCampaign,
   setCampaignTabVisible,
-  renderCampaign
+  renderCampaign,
+  updateLanguage: updateCampaignLanguage
 };

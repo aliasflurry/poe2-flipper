@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PoE Exchange Path Finder</title>
+    <title data-i18n="pageTitle">PoE Exchange Path Finder</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="shell">
       <section class="workspace" data-game="poe2">
-        <nav class="game-tabs" aria-label="Game">
+        <nav class="game-tabs" aria-label="Game" data-i18n-aria-label="game">
           <button class="game-tab-button active" type="button" data-game="poe2" aria-pressed="true">Path of Exile 2</button>
           <button class="game-tab-button" type="button" data-game="poe" aria-pressed="false">Path of Exile</button>
         </nav>
@@ -17,170 +17,175 @@
         <header class="topbar">
           <div>
             <p id="gameEyebrow" class="eyebrow">Path of Exile 2</p>
-            <h1>Exchange Path Finder</h1>
+            <h1 data-i18n="appTitle">Exchange Path Finder</h1>
           </div>
           <div class="topbar-actions">
-            <button id="resetOverridesButton" class="text-button" type="button">Reset overrides</button>
-            <button id="refreshButton" class="icon-button" type="button" title="Refresh prices" aria-label="Refresh prices">
+            <select id="languageSelect" aria-label="Language" data-i18n-aria-label="language">
+              <option value="auto" data-i18n="auto">Auto</option>
+              <option value="en" lang="en">English</option>
+              <option value="vi" lang="vi">Tiếng Việt</option>
+            </select>
+            <button id="resetOverridesButton" class="text-button" type="button" data-i18n="resetOverrides">Reset overrides</button>
+            <button id="refreshButton" class="icon-button" type="button" title="Refresh prices" data-i18n-title="refresh" aria-label="Refresh prices" data-i18n-aria-label="refresh">
               <span aria-hidden="true">R</span>
             </button>
           </div>
         </header>
 
-        <nav class="tabs" aria-label="Tools">
-          <button class="tab-button active" type="button" data-tab="exchange" aria-pressed="true">Exchange</button>
-          <button class="tab-button" type="button" data-tab="price-trends" aria-pressed="false">Price trends</button>
-          <button class="tab-button" type="button" data-tab="campaign" data-poe2-only aria-pressed="false">Campaign</button>
+        <nav class="tabs" aria-label="Tools" data-i18n-aria-label="tools">
+          <button class="tab-button active" type="button" data-tab="exchange" aria-pressed="true" data-i18n="exchange">Exchange</button>
+          <button class="tab-button" type="button" data-tab="price-trends" aria-pressed="false" data-i18n="trends">Price trends</button>
+          <button class="tab-button" type="button" data-tab="campaign" data-poe2-only aria-pressed="false" data-i18n="campaign">Campaign</button>
         </nav>
 
         <section id="exchangeView" class="tab-view active">
           <form class="controls" id="controls">
             <label>
-              Start currency
+              <span data-i18n="startCurrency">Start currency</span>
               <select id="startCurrency"></select>
             </label>
 
             <label>
-              Starting amount
+              <span data-i18n="startAmount">Starting amount</span>
               <input id="startAmount" type="number" min="0" step="0.01" value="1">
             </label>
 
             <label>
-              Path length
+              <span data-i18n="pathLength">Path length</span>
               <select id="pathLength">
-                <option value="both">2 and 3 trades</option>
-                <option value="2">2 trades</option>
-                <option value="3">3 trades</option>
+                <option value="both" data-i18n="bothTrades">2 and 3 trades</option>
+                <option value="2" data-i18n="twoTrades">2 trades</option>
+                <option value="3" data-i18n="threeTrades">3 trades</option>
               </select>
             </label>
 
             <div class="estimate-field">
               <div class="estimate-heading">
-                <label for="estimateMode">Estimate</label>
+                <label for="estimateMode" data-i18n="estimate">Estimate</label>
                 <div class="estimate-help">
-                  <button type="button" class="estimate-help-button" aria-label="About estimate types" aria-describedby="estimateHelp estimateDescription">?</button>
+                  <button type="button" class="estimate-help-button" aria-label="About estimate types" data-i18n-aria-label="aboutEstimate" aria-describedby="estimateHelp estimateDescription">?</button>
                   <div class="estimate-description" role="tooltip">
                     <div id="estimateHelp">
-                      <p><strong>Conservative:</strong> Uses the less favorable end of the recorded hourly price range for each trade. This lowers estimated returns and can hide routes that would be profitable at better prices.</p>
-                      <p><strong>Typical:</strong> Uses the average exchange ratio calculated from the quantities traded during the hour. This can reveal more potential routes, but you may not be able to trade at those average prices.</p>
-                      <p>Both modes use historical data, not live offers. Hourly highs, lows, and averages may come from different moments. Check every trade's price and available stock in game; estimated profit is not guaranteed. Your manual rate edits take priority in either mode.</p>
+                      <p><strong data-i18n="conservativeHeading">Conservative:</strong> <span data-i18n="conservativeHelp">Uses the less favorable end of the recorded hourly price range for each trade. This lowers estimated returns and can hide routes that would be profitable at better prices.</span></p>
+                      <p><strong data-i18n="typicalHeading">Typical:</strong> <span data-i18n="typicalHelp">Uses the average exchange ratio calculated from the quantities traded during the hour. This can reveal more potential routes, but you may not be able to trade at those average prices.</span></p>
+                      <p data-i18n="estimateDisclaimer">Both modes use historical data, not live offers. Hourly highs, lows, and averages may come from different moments. Check every trade's price and available stock in game; estimated profit is not guaranteed. Your manual rate edits take priority in either mode.</p>
                     </div>
                     <p id="estimateDescription" aria-live="polite"></p>
                   </div>
                 </div>
               </div>
               <select id="estimateMode" aria-describedby="estimateHelp estimateDescription">
-                <option value="conservative">Conservative</option>
-                <option value="typical">Typical</option>
+                <option value="conservative" data-i18n="conservative">Conservative</option>
+                <option value="typical" data-i18n="typical">Typical</option>
               </select>
             </div>
 
             <label>
-              Minimum volume
+              <span data-i18n="minVolume">Minimum volume</span>
               <input id="minVolume" type="number" min="0" step="1" value="10">
             </label>
 
             <label>
-              Minimum stock
+              <span data-i18n="minStock">Minimum stock</span>
               <input id="minStock" type="number" min="0" step="1" value="1">
             </label>
 
             <label>
-              Max gold cost
+              <span data-i18n="maxGold">Max gold cost</span>
               <input id="maxGoldCost" type="number" min="0" step="1" value="0">
             </label>
 
             <label>
-              Per page
+              <span data-i18n="perPage">Per page</span>
               <input id="pageSize" type="number" min="1" max="100" step="1" value="25">
             </label>
 
-            <label class="exclude-field" for="excludeSearch">
-              Exclude items
+            <div class="exclude-field">
+              <label for="excludeSearch" data-i18n="excludeItems">Exclude items</label>
               <div class="exclude-picker">
                 <div id="excludedChips" class="excluded-chips" aria-live="polite"></div>
-                <input id="excludeSearch" list="excludeOptions" type="search" placeholder="Search item to exclude">
-                <datalist id="excludeOptions"></datalist>
+                <input id="excludeSearch" type="search" placeholder="Search item or category to exclude" data-i18n-placeholder="excludeSearch" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="excludeOptions">
+                <div id="excludeOptions" class="item-options" role="listbox" aria-multiselectable="true" aria-label="Items or categories to exclude" data-i18n-aria-label="excludeOptions" hidden></div>
               </div>
-            </label>
+            </div>
 
-            <label class="exclude-field" for="includeSearch">
-              Include items
+            <div class="exclude-field">
+              <label for="includeSearch" data-i18n="includeItems">Include items</label>
               <div class="exclude-picker">
                 <div id="includedChips" class="excluded-chips" aria-live="polite"></div>
-                <input id="includeSearch" list="includeOptions" type="search" placeholder="Search item to include">
-                <datalist id="includeOptions"></datalist>
+                <input id="includeSearch" type="search" placeholder="Search item or category to include" data-i18n-placeholder="includeSearch" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="includeOptions">
+                <div id="includeOptions" class="item-options" role="listbox" aria-multiselectable="true" aria-label="Items or categories to include" data-i18n-aria-label="includeOptions" hidden></div>
               </div>
-            </label>
+            </div>
           </form>
 
           <section class="status-line" aria-live="polite">
-            <span id="status">Loading exchange data...</span>
+            <span id="status" data-i18n="loadingExchange">Loading exchange data...</span>
             <span id="snapshotMeta"></span>
           </section>
 
-          <section class="sort-bar" aria-label="Sort results">
-            <span>Sort by</span>
-            <button class="sort-button active" type="button" data-sort="gain">Gain %</button>
-            <button class="sort-button" type="button" data-sort="profit">Profit</button>
+          <section class="sort-bar" aria-label="Sort results" data-i18n-aria-label="sortResults">
+            <span data-i18n="sortBy">Sort by</span>
+            <button class="sort-button active" type="button" data-sort="gain" data-i18n="gain">Gain %</button>
+            <button class="sort-button" type="button" data-sort="profit" data-i18n="profit">Profit</button>
           </section>
 
           <section id="results" class="results"></section>
-          <nav id="pagination" class="pagination" aria-label="Result pages"></nav>
+          <nav id="pagination" class="pagination" aria-label="Result pages" data-i18n-aria-label="resultPages"></nav>
         </section>
 
         <section id="priceTrendsView" class="tab-view">
           <form class="controls trends-controls" id="trendsControls">
             <label>
-              Start currency
+              <span data-i18n="startCurrency">Start currency</span>
               <select id="trendsStartCurrency"></select>
             </label>
 
             <label class="trends-search-field">
-              Search items
-              <input id="trendsSearch" type="search" placeholder="Filter by item name" autocomplete="off">
+              <span data-i18n="searchItems">Search items</span>
+              <input id="trendsSearch" type="search" placeholder="Filter by item name" data-i18n-placeholder="filterByName" autocomplete="off">
             </label>
 
             <label>
-              Per page
+              <span data-i18n="perPage">Per page</span>
               <input id="trendsPageSize" type="number" min="1" max="100" step="1" value="10">
             </label>
 
             <label class="exclude-field" for="trendsExcludeTypeSearch">
-              Excluded types
+              <span data-i18n="excludedTypes">Excluded types</span>
               <div class="exclude-picker">
                 <div id="trendsExcludedTypeChips" class="excluded-chips" aria-live="polite"></div>
-                <input id="trendsExcludeTypeSearch" list="trendsExcludeTypeOptions" type="search" placeholder="Search type to exclude" autocomplete="off">
+                <input id="trendsExcludeTypeSearch" list="trendsExcludeTypeOptions" type="search" placeholder="Search type to exclude" data-i18n-placeholder="excludeTypeSearch" autocomplete="off">
                 <datalist id="trendsExcludeTypeOptions"></datalist>
               </div>
             </label>
           </form>
 
           <section class="status-line" aria-live="polite">
-            <span id="trendsStatus">Select a starting currency to view price trends.</span>
+            <span id="trendsStatus" data-i18n="selectTrendsCurrency">Select a starting currency to view price trends.</span>
             <span id="trendsMeta"></span>
           </section>
 
           <section id="trendsResults" class="trends-results"></section>
-          <nav id="trendsPagination" class="pagination" aria-label="Price trends pages"></nav>
+          <nav id="trendsPagination" class="pagination" aria-label="Price trends pages" data-i18n-aria-label="trendsPages"></nav>
         </section>
 
         <section id="campaignView" class="tab-view">
           <header class="campaign-header">
             <div class="campaign-header-left">
-              <h2>Campaign Leveling Guide</h2>
-              <p id="campaignSummary" class="campaign-summary">Loading progress...</p>
-              <div class="campaign-overall-progress" role="progressbar" aria-label="Overall progress">
+              <h2 data-i18n="campaignGuide">Campaign Leveling Guide</h2>
+              <p id="campaignSummary" class="campaign-summary" data-i18n="loadingProgress">Loading progress...</p>
+              <div class="campaign-overall-progress" role="progressbar" aria-label="Overall progress" data-i18n-aria-label="overallProgress">
                 <div id="campaignOverallBar" class="campaign-overall-progress-fill" style="width:0%"></div>
               </div>
             </div>
             <div class="campaign-header-actions">
-              <div class="campaign-filters" role="group" aria-label="Campaign filters">
-                <button class="campaign-filter active" type="button" data-campaign-filter="all" aria-pressed="true">All</button>
-                <button class="campaign-filter" type="button" data-campaign-filter="required" aria-pressed="false">Required</button>
-                <button class="campaign-filter" type="button" data-campaign-filter="optional" aria-pressed="false">Optional</button>
+              <div class="campaign-filters" role="group" aria-label="Campaign filters" data-i18n-aria-label="campaignFilters">
+                <button class="campaign-filter active" type="button" data-campaign-filter="all" aria-pressed="true" data-i18n="all">All</button>
+                <button class="campaign-filter" type="button" data-campaign-filter="required" aria-pressed="false" data-i18n="required">Required</button>
+                <button class="campaign-filter" type="button" data-campaign-filter="optional" aria-pressed="false" data-i18n="optional">Optional</button>
               </div>
-              <button id="campaignResetButton" class="text-button" type="button">Reset progress</button>
+              <button id="campaignResetButton" class="text-button" type="button" data-i18n="resetProgress">Reset progress</button>
             </div>
           </header>
 
@@ -192,7 +197,7 @@
           <section id="campaignActs" class="campaign-acts"></section>
         </section>
       </section>
-      <p class="third-party-notice">This product isn't affiliated with or endorsed by Grinding Gear Games in any way.</p>
+      <p class="third-party-notice" data-i18n="thirdParty">This product isn't affiliated with or endorsed by Grinding Gear Games in any way.</p>
     </main>
 
     <template id="resultTemplate">
@@ -206,11 +211,11 @@
             </div>
             <div class="result-metrics">
               <div class="metric">
-                <span>Gain %</span>
+                <span data-i18n="gain">Gain %</span>
                 <strong class="gain"></strong>
               </div>
               <div class="metric">
-                <span>Profit / 1M gold</span>
+                <span data-i18n="profitGold">Profit / 1M gold</span>
                 <strong class="profit-score"></strong>
               </div>
             </div>
@@ -220,6 +225,7 @@
       </article>
     </template>
 
+    <script src="i18n.js"></script>
     <script src="campaign.js"></script>
     <script src="app.js"></script>
   </body>
