@@ -2292,13 +2292,25 @@ function switchTab(tabName) {
     renderPriceTrends();
   }
   if (activeTab === "crafting") {
-    craftingModule ??= import("./crafting.mjs");
+    const status = els.craftingView.querySelector("#craftingStatus");
+    const retry = els.craftingView.querySelector("#craftingRetry");
+    if (location.protocol === "file:") {
+      status.textContent = I18n.t("craftingLocalFileError");
+      status.hidden = false;
+      return;
+    }
+    craftingModule ??= import("./crafting.mjs?v=crafting-pool-2");
     craftingModule.then(({ createCrafting }) => {
+      retry.onclick = null;
       craftingTool ??= createCrafting(els.craftingView, I18n);
-      craftingTool.open();
-    }).catch(() => {
+      return craftingTool.open();
+    }).catch((error) => {
+      console.error("Could not start the PoE1 crafting tool", error);
       craftingModule = undefined;
-      els.craftingView.querySelector("#craftingStatus").textContent = I18n.t("craftingLoadError");
+      status.textContent = I18n.t("craftingStartupError");
+      status.hidden = false;
+      retry.hidden = false;
+      retry.onclick = () => location.reload();
     });
   }
 }

@@ -1012,6 +1012,12 @@ h2 {
   display: none;
 }
 
+@media (min-width: 621px) {
+  .shell:has(#craftingView.active) {
+    width: min(1720px, calc(100% - 32px));
+  }
+}
+
 .workspace:has(.tab-button[data-tab="crafting"][aria-pressed="true"]) .topbar {
   gap: 12px;
   padding-block: 12px;
@@ -1073,13 +1079,15 @@ h2 {
   gap: 12px;
 }
 
-.crafting-workspace {
-  display: grid;
-  align-items: start;
-  gap: 16px;
+.crafting-tools {
+  grid-template-columns: minmax(0, 1fr);
 }
 
-.crafting-workspace > .crafting-card {
+.crafting-modes {
+  grid-column: 1 / -1;
+}
+
+.crafting-pool-card {
   container-type: inline-size;
 }
 
@@ -1094,6 +1102,51 @@ h2 {
 
 .crafting-mod-filters {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 136px), 1fr));
+}
+
+.crafting-tag-filter summary {
+  width: fit-content;
+  margin-bottom: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.crafting-tag-choices,
+.crafting-origin-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.crafting-origin-filter {
+  display: grid;
+  gap: 8px;
+}
+
+.crafting-filter-chip {
+  padding: 5px 9px;
+  min-height: 32px;
+  border: 1px solid #5e544b;
+  border-radius: 5px;
+  background: #282421;
+  color: var(--tag-color, var(--text));
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.crafting-filter-chip:hover,
+.crafting-filter-chip[aria-pressed="true"] {
+  border-color: var(--tag-color, var(--gold));
+  background: color-mix(in srgb, var(--tag-color, var(--gold)) 16%, #282421);
+}
+
+.crafting-filter-chip[aria-pressed="true"] {
+  box-shadow: inset 0 -2px var(--tag-color, var(--gold));
+}
+
+.crafting-filter-chip:focus-visible {
+  outline: 2px solid var(--tag-color, var(--gold));
+  outline-offset: 2px;
 }
 
 .crafting-tools .crafting-fields {
@@ -1122,7 +1175,10 @@ h2 {
 
 .crafting-pool {
   display: grid;
-  gap: 20px;
+  gap: 22px;
+  --crafting-row: #272422;
+  --crafting-table-edge: #413b37;
+  --crafting-mod-color: #c2bbf4;
 }
 
 .crafting-pool-origin,
@@ -1134,6 +1190,7 @@ h2 {
 }
 
 .crafting-pool-columns {
+  align-items: stretch;
   gap: 16px;
 }
 
@@ -1144,20 +1201,17 @@ h2 {
 }
 
 .crafting-pool-origin h4 {
-  padding-block-end: 6px;
-  border-bottom: 1px solid var(--line);
-}
-
-.crafting-pool-column {
-  min-width: 0;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  overflow: hidden;
+  color: var(--gold);
+  font-size: 0.875rem;
 }
 
 .crafting-table-frame {
-  max-block-size: clamp(12rem, 32vh, 22rem);
-  overflow: auto;
+  min-width: 0;
+  overflow-x: auto;
+  border: 1px solid var(--crafting-table-edge);
+  border-radius: 8px;
+  background: #1c1917;
+  scrollbar-color: #756a5e #1c1917;
 }
 
 .crafting-table-frame:focus-visible {
@@ -1168,68 +1222,165 @@ h2 {
 .crafting-mod-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
-}
-
-.crafting-mod-table caption {
-  padding: 8px;
-  color: var(--gold);
-  text-align: left;
-  font-weight: 800;
+  font-size: 0.8125rem;
+  line-height: 1.4;
 }
 
 .crafting-mod-table :is(th, td) {
-  padding: 6px 8px;
-  border-top: 1px solid var(--line);
+  padding: 5px 8px;
   text-align: left;
 }
 
-.crafting-mod-table :is(thead th, tbody td):first-child {
-  min-inline-size: 7rem;
+.crafting-mod-table :is(tbody, tfoot) :is(th, td) {
+  border-top: 1px solid var(--crafting-table-edge);
 }
 
 .crafting-mod-table thead th {
-  font-size: 0.75rem;
+  padding-block: 9px;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.crafting-mod-table thead th:first-child {
+  min-inline-size: 8rem;
+  color: var(--text);
+  font-size: 0.875rem;
 }
 
 .crafting-mod-table :is(th, td):not(:first-child) {
-  padding-inline: 5px;
+  padding-inline: 6px;
   text-align: right;
   font-variant-numeric: tabular-nums;
-}
-
-.crafting-mod-table tbody td:not(:first-child) {
-  font-size: 0.75rem;
   white-space: nowrap;
 }
 
-.crafting-mod-table tbody th {
-  background: var(--panel-strong);
+.crafting-mod-table :is(tbody, tfoot) :is(td, th):not(:first-child) {
+  font-size: 0.75rem;
+}
+
+.crafting-mod-family {
+  background: var(--crafting-row);
+}
+
+.crafting-mod-family:has([aria-expanded="true"]) {
+  background: #332d2a;
+}
+
+.crafting-tier-rows {
+  background: #201d1b;
+}
+
+.crafting-tier-rows[hidden] {
+  display: none;
+}
+
+.crafting-tier-rows td:first-child {
+  padding-inline-start: 18px;
+}
+
+.crafting-tier-locked,
+.crafting-tier-locked .crafting-mod-text {
+  color: var(--muted);
+}
+
+.crafting-mod-table tfoot {
+  font-weight: 700;
+}
+
+.crafting-mod-label {
+  display: block;
   overflow-wrap: anywhere;
 }
 
+.crafting-mod-text {
+  color: var(--crafting-mod-color);
+}
+
+.crafting-mod-tags {
+  display: inline;
+}
+
+.crafting-mod-tag {
+  display: inline-block;
+  margin: 2px 0 2px 4px;
+  padding: 0 4px;
+  border: 1px solid #4a413a;
+  border-radius: 4px;
+  background: #1d1a19;
+  color: var(--tag-color, #d5cdc2);
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.crafting-tag-color:is([data-tag="fire"], [data-tag="damage"]) { --tag-color: #ff9b86; }
+.crafting-tag-color:is([data-tag="cold"], [data-tag="energy_shield"]) { --tag-color: #9ccbff; }
+.crafting-tag-color:is([data-tag="chaos"], [data-tag="caster"], [data-tag="curse"]) { --tag-color: #dbb0ff; }
+.crafting-tag-color:is([data-tag="physical"], [data-tag="defences"], [data-tag="attack"]) { --tag-color: #ecc58c; }
+.crafting-tag-color:is([data-tag="lightning"], [data-tag="drop"]) { --tag-color: #f3de7a; }
+.crafting-tag-color:is([data-tag="attribute"], [data-tag="critical"], [data-tag="gem"]) { --tag-color: #d1e983; }
+.crafting-tag-color:is([data-tag="life"], [data-tag="minion"], [data-tag="aura"]) { --tag-color: #ffabd7; }
+.crafting-tag-color:is([data-tag="mana"], [data-tag="speed"], [data-tag="ailment"]) { --tag-color: #90e1ce; }
+
+.crafting-tier-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  min-height: 26px;
+  padding: 2px 5px;
+  border: 1px solid #5d534a;
+  border-radius: 4px;
+  background: #1d1a19;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.crafting-tier-toggle::after {
+  content: "";
+  width: 5px;
+  height: 5px;
+  margin-block-start: -3px;
+  border: solid currentColor;
+  border-width: 0 1px 1px 0;
+  rotate: 45deg;
+}
+
+.crafting-tier-toggle[aria-expanded="true"]::after {
+  margin-block-start: 3px;
+  rotate: 225deg;
+}
+
+.crafting-tier-toggle:hover,
+.crafting-tier-toggle:focus-visible {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+.crafting-mod-family:has(+ .crafting-tier-rows [aria-pressed="true"]) .crafting-mod-text {
+  color: var(--gold);
+}
+
 .crafting-tier.text-button {
-  display: block;
-  width: 100%;
+  display: inline;
   height: auto;
-  min-height: 32px;
-  padding: 4px 6px;
+  padding: 1px 2px;
+  margin-inline-start: -2px;
   background: transparent;
   border-color: transparent;
+  color: var(--crafting-mod-color);
+  font-size: inherit;
+  font-weight: inherit;
   text-align: left;
   overflow-wrap: anywhere;
 }
 
-.crafting-tier[aria-pressed="true"] {
+.crafting-tier.text-button:hover:not(:disabled),
+.crafting-tier.text-button[aria-pressed="true"] {
   border-color: var(--gold);
   color: var(--gold);
-}
-
-.crafting-tier small {
-  display: block;
-  margin-top: 3px;
-  color: var(--muted);
-  font-weight: 400;
 }
 
 .crafting-preview {
@@ -1394,9 +1545,15 @@ h2 {
   font-weight: 800;
 }
 
-@media (min-width: 1160px) {
-  .crafting-workspace:has(> .crafting-tools:not([hidden])) {
-    grid-template-columns: minmax(0, 1fr) clamp(310px, 27vw, 340px);
+@media (min-width: 720px) {
+  .crafting-tools {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1240px) {
+  .crafting-tools {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
@@ -1407,12 +1564,33 @@ h2 {
 }
 
 @media (max-width: 510px) {
-  .crafting-mod-table :is(thead th, tbody td):first-child {
+  .crafting-panel,
+  .crafting-pool-card {
+    padding-inline: 12px;
+  }
+
+  .crafting-mod-table thead th:first-child {
     min-inline-size: 6.25rem;
   }
 
   .crafting-mod-table :is(th, td):not(:first-child) {
-    padding-inline: 4px;
+    padding-inline: 3px;
+  }
+
+  .crafting-mod-table :is(th, td):last-child:not([colspan]) {
+    padding-inline: 2px;
+  }
+
+  .crafting-mod-table :is(tbody, tfoot) :is(td, th):not(:first-child) {
+    font-size: 0.6875rem;
+  }
+
+  .crafting-mod-tag {
+    white-space: normal;
+  }
+
+  .crafting-tier-rows td:first-child {
+    padding-inline-start: 11px;
   }
 
   .crafting-route-fields {

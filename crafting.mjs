@@ -29,6 +29,10 @@ function tagLabel(tag) {
   return tag.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function modifierText(text) {
+  return text.replaceAll("\n", " / ").replace(/\[[^\]|]+\|([^\]]+)\]/g, "$1");
+}
+
 function element(tag, text, className) {
   const node = document.createElement(tag);
   if (text) node.textContent = text;
@@ -57,22 +61,56 @@ function field(text, input) {
 }
 
 function targetLabel(target, t) {
-  const text = target.text.replaceAll("\n", " / ");
-  if (target.scope === "exact") return `${target.name} · ${text}`;
+  const text = modifierText(target.text);
+  if (target.scope === "exact") return text;
   if (target.scope === "minimum") return `${text} · ${t("craftingMinimum")}`;
   return `${familyText(text)} · ${t("craftingFamily")}`;
 }
 
 function familyText(text) {
-  return text.replaceAll("\n", " / ").replace(/\(-?\d+(?:\.\d+)?\s*[-–]\s*-?\d+(?:\.\d+)?\)|-?\d+(?:\.\d+)?/g, "#");
+  return modifierText(text).replace(/-?\(-?\d+(?:\.\d+)?\s*[-–]\s*-?\d+(?:\.\d+)?\)|-?\d+(?:\.\d+)?/g, "#");
+}
+
+function groupModifierTiers(mods) {
+  const families = new Map();
+  for (const mod of mods) {
+    const key = `${mod.side}:${mod.family}`;
+    if (!families.has(key)) families.set(key, []);
+    families.get(key).push(mod);
+  }
+
+  const groups = new Map();
+  const highestFirst = (a, b) => b.level - a.level;
+  for (const tiers of families.values()) {
+    tiers.sort(highestFirst);
+    const { side, text } = tiers[0];
+    const label = familyText(text);
+    const key = `${side}:${label.toLowerCase()}`;
+    if (!groups.has(key)) groups.set(key, { key, side, label, tiers: [] });
+    groups.get(key).tiers.push(...tiers);
+  }
+  for (const group of groups.values()) group.tiers.sort(highestFirst);
+  return [...groups.values()].sort((a, b) => a.label.localeCompare(b.label));
 }
 
 export function createCrafting(view, i18n) {
   const { t } = i18n;
-  const names = ["Status", "Retry", "Form", "Group", "Class", "Base", "Level", "Bench", "Tools", "BrowseOnly", "Search", "ModifierType", "ModifierTag", "Pool", "PoolCount", "TierPicker", "Tier", "PoolHelp",
+  const names = ["Status", "Retry", "Form", "Group", "Class", "Base", "Level", "Bench", "Tools", "BrowseOnly", "Search", "ModifierType", "ModifierTags", "Origins", "Pool", "PoolCount", "LockedHelp", "TierPicker", "Tier", "PoolHelp",
     "Targets", "Match", "OpenPrefixes", "OpenSuffixes", "Currency", "CalculatePreview", "Calculator", "Simulator", "Rarity", "Steps", "AddStep", "Trials", "Run",
     "Cancel", "Results", "DataSource", "Preview", "PreviewCurrency", "PreviewHint", "Undo", "Reset", "PreviewStatus", "Transfer", "RestorePlan"];
   const ui = Object.fromEntries(names.map((name) => [name, view.querySelector(`#crafting${name}`)]));
+  // An already-open page can still load this module with the previous crafting markup.
+  if (ui.Status && ui.Retry && names.some((name) => !ui[name])) {
+    const showReload = () => {
+      const key = "craftingOutdatedPage";
+      const message = t(key);
+      ui.Status.textContent = message === key ? "Crafting has been updated. Reload the page to continue." : message;
+      ui.Status.hidden = false;
+      ui.Retry.hidden = false;
+    };
+    ui.Retry.addEventListener("click", () => location.reload());
+    return { open: showReload, updateLanguage: showReload };
+  }
   const modeButtons = [...view.querySelectorAll("[data-crafting-mode]")];
   let nextStepId = 1;
   const makeStep = (action, count = 1, when = "always") => ({ id: `step-${nextStepId++}`, action, count, when });
@@ -87,7 +125,10 @@ export function createCrafting(view, i18n) {
   let pool = [];
   let allTiers = [];
   let referencePools = new Map();
+  let tagFilter = "";
+  let originFilter = "";
   let modsById = new Map();
+  const expandedFamilies = new Set();
   let preview = { rarity: "normal", mods: [] };
   let previewBase;
   let previewHistory = [];
@@ -117,7 +158,7 @@ export function createCrafting(view, i18n) {
     loadStatus = "craftingLoading";
     updateLoadStatus();
     try {
-      const response = await fetch(new URL("data/poe_data/crafting.json", import.meta.url));
+      const response = await fetch(new URL("data/poe_data/crafting.json", import.meta.url), { cache: "no-cache" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const catalog = await response.json();
       if (!catalog.bases?.length || !catalog.mods?.length) throw new Error("Missing crafting data");
@@ -130,7 +171,8 @@ export function createCrafting(view, i18n) {
       updateLanguage();
       ui.Form.hidden = false;
       loadStatus = "";
-    } catch {
+    } catch (error) {
+      console.error("Could not load the PoE1 crafting catalog", error);
       data = undefined;
       loadStatus = "craftingLoadError";
     } finally {
@@ -164,6 +206,7 @@ export function createCrafting(view, i18n) {
     if (!ui.Base.value) {
       targets = [];
       previewBase = undefined;
+      expandedFamilies.clear();
       resetResult();
       return;
     }
@@ -181,6 +224,7 @@ export function createCrafting(view, i18n) {
     if (base !== previewBase) {
       allTiers = buildPool(data.mods, base, Infinity);
       referencePools = buildReferencePools(data, base);
+      expandedFamilies.clear();
     }
     modsById = new Map(pool.map((mod) => [mod.id, mod]));
     targets = (browseOnly ? [] : targets).flatMap((target) => {
@@ -197,6 +241,7 @@ export function createCrafting(view, i18n) {
     previewHistory = [];
     previewStatus = "";
     renderTagChoices();
+    renderOriginChoices();
     renderPool();
     renderTargets();
     if (ui.CalculatePreview.checked) updateCalculatorActions();
@@ -204,110 +249,210 @@ export function createCrafting(view, i18n) {
   }
 
   function renderTagChoices() {
-    const previous = ui.ModifierTag.value;
-    const mods = [...pool, ...[...referencePools.values()].flat().filter((mod) => mod.level <= ui.Level.valueAsNumber)];
-    const tags = [...new Set(mods.flatMap((mod) => mod.tags ?? []))].sort();
-    ui.ModifierTag.replaceChildren(option("", t("craftingAllTags")), ...tags.map((tag) => option(tag, tagLabel(tag))));
-    if (tags.includes(previous)) ui.ModifierTag.value = previous;
+    const mods = [...allTiers, ...[...referencePools.values()].flat()];
+    const tags = [...new Set(mods.flatMap((mod) => mod.tags ?? []))].sort((a, b) => tagLabel(a).localeCompare(tagLabel(b)));
+    if (!tags.includes(tagFilter.replace(/^!/, ""))) tagFilter = "";
+    const choices = [filterButton(t("craftingAllTags"), "", "crafting-filter-chip")];
+    for (const exclude of [false, true]) {
+      for (const tag of tags) {
+        const label = tagLabel(tag);
+        const chip = filterButton(exclude ? t("craftingNonTag", { tag: label }) : label,
+          exclude ? `!${tag}` : tag, "crafting-filter-chip crafting-tag-color");
+        chip.dataset.tag = tag;
+        choices.push(chip);
+      }
+    }
+    ui.ModifierTags.replaceChildren(...choices);
+    updateFilterButtons(ui.ModifierTags, tagFilter);
+  }
+
+  function renderOriginChoices() {
+    const choices = ["", ...poolOrigins].map((origin) => filterButton(
+      t(origin ? `craftingOrigin_${origin}` : "craftingAllOrigins"), origin, "crafting-filter-chip"));
+    ui.Origins.replaceChildren(...choices);
+    updateFilterButtons(ui.Origins, originFilter);
+  }
+
+  function filterButton(label, value, className) {
+    const chip = button(label);
+    chip.className = className;
+    chip.dataset.filter = value;
+    return chip;
+  }
+
+  function updateFilterButtons(container, selected) {
+    for (const chip of container.children) chip.setAttribute("aria-pressed", String(chip.dataset.filter === selected));
   }
 
   function renderPool() {
     const query = ui.Search.value.trim().toLowerCase();
     const type = ui.ModifierType.value;
-    const tag = ui.ModifierTag.value;
-    const matches = (mod) => (!type || mod.side === type) && (!tag || mod.tags?.includes(tag)) &&
-      `${mod.name} ${mod.text}`.toLowerCase().includes(query);
+    const exclude = tagFilter.startsWith("!");
+    const tag = exclude ? tagFilter.slice(1) : tagFilter;
+    const matches = (mod) => (!tag || Boolean(mod.tags?.includes(tag)) !== exclude) &&
+      `${mod.name} ${modifierText(mod.text)}`.toLowerCase().includes(query);
     const weights = new Intl.NumberFormat(i18n.formatLocale, { maximumFractionDigits: 2 });
-    const percentages = new Intl.NumberFormat(i18n.formatLocale, { style: "percent", maximumFractionDigits: 4 });
+    const percentages = new Intl.NumberFormat(i18n.formatLocale, { style: "percent", maximumFractionDigits: 3 });
     let count = 0;
+    let hasLockedTiers = false;
     const sections = [];
-    for (const origin of poolOrigins) {
+    for (const origin of originFilter ? [originFilter] : poolOrigins) {
       const normal = origin === "normal";
       const tiers = normal ? allTiers : referencePools.get(origin) ?? [];
       const eligible = normal ? pool : tiers.filter((mod) => mod.level <= ui.Level.valueAsNumber);
-      const visible = eligible.filter(matches);
-      if (!visible.length) continue;
-      count += visible.length;
-      const title = t(`craftingOrigin_${origin}`);
+      const tableStats = affixTableStats(eligible, tiers);
+      const groups = groupModifierTiers(tiers).filter((group) => {
+        if (type && group.side !== type) return false;
+        const matching = group.tiers.filter((mod) => (originFilter || tableStats.has(mod.id)) && matches(mod));
+        count += matching.length;
+        return matching.length > 0;
+      });
+      if (!groups.length) continue;
+      hasLockedTiers ||= groups.some((group) => group.tiers.some((mod) => !tableStats.has(mod.id)));
       const section = element("section", "", "crafting-pool-origin");
-      const heading = element("h4", title);
+      const heading = element("h4", t(`craftingOrigin_${origin}`));
       heading.id = `craftingOrigin-${origin}`;
       section.setAttribute("aria-labelledby", heading.id);
       const columns = element("div", "", "crafting-pool-columns");
-      const tableStats = affixTableStats(eligible, tiers);
       const showWeight = origin !== "crafted" && origin !== "essence";
       for (const side of type ? [type] : ["prefix", "suffix"]) {
-        const mods = visible.filter((mod) => mod.side === side);
-        columns.append(renderPoolColumn(mods, side, { title, normal, showWeight, tableStats, weights, percentages }));
+        columns.append(renderPoolColumn(groups.filter((group) => group.side === side), side,
+          { origin, normal, showWeight, tableStats, weights, percentages }));
       }
       section.append(heading, columns);
       sections.push(section);
     }
-    ui.Pool.replaceChildren(...(sections.length ? sections : [element("p", t("craftingNoModifiers"), "crafting-muted")]));
+    const unavailable = originFilter && originFilter !== "normal" && !referencePools.get(originFilter)?.length;
+    const emptyKey = unavailable ? "craftingOriginUnavailable" : "craftingNoModifiers";
+    ui.Pool.replaceChildren(...(sections.length ? sections : [element("p", t(emptyKey), "crafting-muted")]));
+    ui.LockedHelp.hidden = !hasLockedTiers;
     ui.PoolCount.textContent = t("craftingMatchCount", { count: new Intl.NumberFormat(i18n.formatLocale).format(count) });
     updatePoolSelection();
   }
 
-  function renderPoolColumn(visible, side, { title: origin, normal, showWeight, tableStats, weights, percentages }) {
-    const column = element("div", "", "crafting-pool-column");
-    const title = t(side === "prefix" ? "craftingPrefixes" : "craftingSuffixes");
+  function renderPoolColumn(groups, side, { origin, normal, showWeight, tableStats, weights, percentages }) {
+    const sideKey = side === "prefix" ? "craftingPrefixes" : "craftingSuffixes";
     const frame = element("div", "", "crafting-table-frame");
     frame.tabIndex = 0;
     frame.setAttribute("role", "region");
-    frame.setAttribute("aria-label", `${origin} · ${title}`);
+    frame.setAttribute("aria-label", `${t(`craftingOrigin_${origin}`)} · ${t(sideKey)}`);
+    frame.dataset.side = side;
     const table = element("table", "", "crafting-mod-table");
-    table.append(element("caption", title));
     const headings = table.createTHead().insertRow();
-    const headingKeys = ["craftingModifier", "craftingTableTier", "craftingLevel"];
+    const headingKeys = [sideKey, "craftingTableTiers", "craftingTableLevel"];
     if (showWeight) headingKeys.push("craftingWeight");
-    if (normal) headingKeys.push("craftingSideChance", "craftingPoolChance");
+    if (normal) headingKeys.push("craftingTableSideChance", "craftingTablePoolChance");
+    headingKeys.push("craftingTableDetails");
     for (const key of headingKeys) {
-      const heading = element("th", t(key));
+      const heading = element("th");
+      if (key === "craftingTableDetails") heading.setAttribute("aria-label", t(key));
+      else heading.textContent = t(key);
       heading.scope = "col";
       headings.append(heading);
     }
-    const families = new Map();
-    for (const mod of visible) {
-      if (!families.has(mod.family)) families.set(mod.family, []);
-      families.get(mod.family).push(mod);
+    headings.cells[2].title = t("craftingLevel");
+    if (normal) {
+      headings.cells[4].title = t("craftingSideChance");
+      headings.cells[5].title = t("craftingPoolChance");
     }
-    const groups = [...families.values()].sort((a, b) => familyText(a[0].text).localeCompare(familyText(b[0].text)));
-    const selectable = normal && !previewBase.browseOnly;
-    for (const mods of groups) {
-      mods.sort((a, b) => b.level - a.level || a.name.localeCompare(b.name));
-      const body = table.createTBody();
-      const family = element("th", familyText(mods[0].text));
-      family.scope = "rowgroup";
-      family.colSpan = headings.cells.length;
-      body.insertRow().append(family);
-      for (const mod of mods) {
-        const row = body.insertRow();
-        const { tier: rank, sideChance, poolChance } = tableStats.get(mod.id);
-        const text = mod.text.replaceAll("\n", " / ");
-        const tier = selectable ? button(text, `${mod.name} · ${text}`) : element("span", text, "crafting-tier");
-        if (selectable) {
-          tier.classList.add("crafting-tier");
-          tier.dataset.mod = mod.id;
-          tier.addEventListener("click", () => toggleTarget(mod));
-        }
-        tier.append(element("small", mod.name));
-        row.insertCell().append(tier);
-        const values = [`T${rank}`, weights.format(mod.level)];
-        if (showWeight) values.push(mod.weight ? weights.format(mod.weight) : t("craftingConditionalWeight"));
-        if (normal) values.push(mod.weight ? percentages.format(sideChance) : "—", mod.weight ? percentages.format(poolChance) : "—");
-        for (const value of values) {
-          row.insertCell().textContent = value;
-        }
+
+    function appendStats(row, mods, tierLabel) {
+      const eligible = mods.filter((mod) => tableStats.has(mod.id));
+      const weight = eligible.reduce((sum, mod) => sum + (mod.weight ?? 0), 0);
+      const chance = (key) => percentages.format(eligible.reduce((sum, mod) => sum + tableStats.get(mod.id)[key], 0));
+      const level = weights.format(Math.max(...mods.map((mod) => mod.level)));
+      const values = [tierLabel, level];
+      if (showWeight) values.push(!eligible.length ? "—" : weight ? weights.format(weight) : t("craftingConditionalWeight"));
+      if (normal) values.push(weight ? chance("sideChance") : "—", weight ? chance("poolChance") : "—");
+      for (const value of values) row.insertCell().textContent = value;
+      if (!eligible.length) {
+        row.classList.add("crafting-tier-locked");
+        row.cells[2].title = t("craftingLockedHelp");
       }
+      return row.insertCell();
     }
-    if (!groups.length) {
+
+    const selectable = normal && !previewBase.browseOnly;
+    for (const { key: groupKey, label: text, tiers: mods } of groups) {
+      const body = table.createTBody();
+      body.className = "crafting-mod-family";
+      const first = mods[0];
+      const summary = body.insertRow();
+      if (mods.length === 1) {
+        summary.insertCell().append(renderTier(first, selectable && tableStats.has(first.id)));
+        appendStats(summary, mods, "1");
+        continue;
+      }
+
+      const key = `${origin}:${groupKey}`;
+      const tiersId = `crafting-tiers-${origin}-${side}-${table.tBodies.length}`;
+      const label = element("span", "", "crafting-mod-label");
+      label.append(element("span", text, "crafting-mod-text"), renderModTags(mods));
+      summary.insertCell().append(label);
+      const count = weights.format(mods.length);
+      const toggle = button("", t("craftingToggleTiers", { modifier: text, count }));
+      toggle.classList.replace("text-button", "crafting-tier-toggle");
+      toggle.setAttribute("aria-controls", tiersId);
+      appendStats(summary, mods, count).append(toggle);
+
+      const tiers = table.createTBody();
+      tiers.id = tiersId;
+      tiers.className = "crafting-tier-rows";
+      const levels = [...new Set(mods.map((mod) => mod.level))];
+      for (const mod of mods) {
+        const row = tiers.insertRow();
+        row.insertCell().append(renderTier(mod, selectable && tableStats.has(mod.id)));
+        appendStats(row, [mod], `T${levels.indexOf(mod.level) + 1}`);
+      }
+      function setExpanded(expanded) {
+        toggle.setAttribute("aria-expanded", String(expanded));
+        tiers.hidden = !expanded;
+      }
+      setExpanded(expandedFamilies.has(key));
+      toggle.addEventListener("click", () => {
+        const expanded = !expandedFamilies.has(key);
+        if (expanded) expandedFamilies.add(key);
+        else expandedFamilies.delete(key);
+        setExpanded(expanded);
+      });
+    }
+    const visibleEligible = groups.flatMap((group) => group.tiers.filter((mod) => tableStats.has(mod.id)));
+    if (visibleEligible.length && showWeight) {
+      const row = table.createTFoot().insertRow();
+      const heading = element("th", t("craftingTotals"));
+      heading.scope = "row";
+      row.append(heading);
+      appendStats(row, visibleEligible, weights.format(visibleEligible.length));
+    } else if (!groups.length) {
       const empty = table.createTBody().insertRow().insertCell();
       empty.colSpan = headings.cells.length;
       empty.textContent = t("craftingNoModifiers");
     }
     frame.append(table);
-    column.append(frame);
-    return column;
+    return frame;
+  }
+
+  function renderModTags(mods) {
+    const tags = element("span", "", "crafting-mod-tags");
+    for (const tag of new Set(mods.flatMap((mod) => mod.tags ?? []))) {
+      const badge = element("span", tagLabel(tag), "crafting-mod-tag crafting-tag-color");
+      badge.dataset.tag = tag;
+      tags.append(badge);
+    }
+    return tags;
+  }
+
+  function renderTier(mod, selectable) {
+    const text = modifierText(mod.text);
+    const label = element("span", "", "crafting-mod-label");
+    const tier = selectable ? button(text) : element("span", text);
+    tier.classList.add("crafting-tier", "crafting-mod-text");
+    if (selectable) {
+      tier.dataset.mod = mod.id;
+      tier.addEventListener("click", () => toggleTarget(mod));
+    }
+    label.append(tier, renderModTags([mod]));
+    return label;
   }
 
   function selectedTargetIndex(mod) {
@@ -613,6 +758,7 @@ export function createCrafting(view, i18n) {
     ui.DataSource.textContent = t("craftingDataSource", { revision: data.revision });
     if (previewBase && !ui.Bench.hidden) {
       renderTagChoices();
+      renderOriginChoices();
       renderPool();
       renderTargets();
     }
@@ -635,7 +781,20 @@ export function createCrafting(view, i18n) {
   ui.Level.addEventListener("input", updatePool);
   ui.Search.addEventListener("input", renderPool);
   ui.ModifierType.addEventListener("change", renderPool);
-  ui.ModifierTag.addEventListener("change", renderPool);
+  ui.ModifierTags.addEventListener("click", (event) => {
+    const chip = event.target.closest("button");
+    if (!chip) return;
+    tagFilter = chip.dataset.filter === tagFilter ? "" : chip.dataset.filter;
+    updateFilterButtons(ui.ModifierTags, tagFilter);
+    renderPool();
+  });
+  ui.Origins.addEventListener("click", (event) => {
+    const chip = event.target.closest("button");
+    if (!chip) return;
+    originFilter = chip.dataset.filter;
+    updateFilterButtons(ui.Origins, originFilter);
+    renderPool();
+  });
   ui.Search.addEventListener("keydown", (event) => { if (event.key === "Enter") event.preventDefault(); });
   ui.Tier.addEventListener("change", updatePoolSelection);
   ui.PreviewCurrency.addEventListener("change", () => {
