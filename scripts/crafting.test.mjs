@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { affixTableStats, buildPool, buildReferencePools, confidenceInterval, craftItem, matchesTarget, simulate } from "../crafting-engine.mjs";
+import { createCrafting } from "../crafting.mjs";
 
 const base = { tags: ["ring", "default"] };
 const modifier = (id, side, options = {}) => ({
@@ -15,6 +16,20 @@ function run(mods, steps, options = {}, random = () => 0) {
   return simulate({ base, pool: buildPool(mods, base, 80), targets: [], match: "all", rarity: "normal",
     steps, trials: 1, ...options }, random);
 }
+
+test("an older crafting page offers a reload instead of failing to initialize", () => {
+  const status = { hidden: true };
+  const retry = { hidden: true, addEventListener() {} };
+  const elements = { "#craftingStatus": status, "#craftingRetry": retry };
+  const view = { querySelector: (selector) => elements[selector], querySelectorAll: () => [] };
+  const crafting = createCrafting(view, { t: (key) => key });
+
+  crafting.open();
+
+  assert.equal(status.textContent, "Crafting has been updated. Reload the page to continue.");
+  assert.equal(status.hidden, false);
+  assert.equal(retry.hidden, false);
+});
 
 test("the PoE1 catalog resolves a real base's tiers and filters by item level, tags and spawn weight", async () => {
   const data = JSON.parse(await readFile(new URL("../data/poe_data/crafting.json", import.meta.url)));
