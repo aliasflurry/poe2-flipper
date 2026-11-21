@@ -32,7 +32,7 @@ const INCLUDED_CATEGORIES_STORAGE_KEY = "exchange-included-categories";
 const RATE_OVERRIDES_STORAGE_KEY = "exchange-rate-overrides";
 const FILTER_SETTINGS_STORAGE_KEY = "exchange-filter-settings";
 const TRENDS_SETTINGS_STORAGE_KEY = "price-trends-settings";
-const TRENDS_MIN_DAILY_VOLUME = 100;
+const TRENDS_VOLUME_CUTOFF = 100;
 const FORECAST_CHECKPOINT_COUNT = 8;
 const DEFAULT_CHECKPOINT_MS = 2.5 * 60 * 60 * 1000;
 const HISTORY_PREDICTION_COLOR = "#9aa4b5";
@@ -134,6 +134,8 @@ const els = {
   priceTrendsView: document.querySelector("#priceTrendsView"),
   campaignView: document.querySelector("#campaignView"),
   campaignTabButton: document.querySelector('.tab-button[data-tab="campaign"]'),
+  craftingView: document.querySelector("#craftingView"),
+  craftingTabButton: document.querySelector('.tab-button[data-tab="crafting"]'),
   trendsControls: document.querySelector("#trendsControls"),
   trendsStartCurrency: document.querySelector("#trendsStartCurrency"),
   trendsSearch: document.querySelector("#trendsSearch"),
@@ -157,11 +159,14 @@ const els = {
 const TAB_VIEWS = {
   exchange: () => els.exchangeView,
   "price-trends": () => els.priceTrendsView,
-  campaign: () => els.campaignView
+  campaign: () => els.campaignView,
+  crafting: () => els.craftingView
 };
 
 let numberFormat;
 let percentFormat;
+let craftingTool;
+let craftingModule;
 
 function updateDisplayFormats() {
   numberFormat = new Intl.NumberFormat(I18n.formatLocale, { maximumFractionDigits: 4 });
@@ -1827,7 +1832,7 @@ function getTrendsPageSize() {
   return Math.min(100, Math.max(1, Number(els.trendsPageSize.value) || 10));
 }
 
-function buildTrendEntries(startId) {
+function buildTrendEntries(startId, search = "") {
   if (!startId || !state.items.has(startId)) return [];
 
   const entries = [];
@@ -1836,8 +1841,11 @@ function buildTrendEntries(startId) {
     const categoryId = String(item.category || "").toLowerCase();
     if (categoryId && state.excludedTrendsTypes.has(categoryId)) continue;
 
-    const volume = latestPairVolume(item.id, startId);
-    if (!(volume > TRENDS_MIN_DAILY_VOLUME)) continue;
+    if (search) {
+      if (!item.name.toLowerCase().includes(search) && !itemLabel(item.id).toLowerCase().includes(search)) continue;
+    } else if (!(latestPairVolume(item.id, startId) > TRENDS_VOLUME_CUTOFF)) {
+      continue;
+    }
 
     const points = pairRatePointsFor(item.id, startId);
     if (!points.length) continue;
@@ -1846,8 +1854,7 @@ function buildTrendEntries(startId) {
       name: item.name,
       points,
       change: historyChangeValue(points),
-      totalDifference: storedTotalDifference(item.id, startId) ?? historyTotalDifference(points),
-      volume
+      totalDifference: storedTotalDifference(item.id, startId) ?? historyTotalDifference(points)
     });
   }
 
@@ -1886,11 +1893,7 @@ function renderPriceTrends() {
     return;
   }
 
-  let entries = buildTrendEntries(startId);
-  if (search) {
-    entries = entries.filter((entry) => entry.name.toLowerCase().includes(search)
-      || itemLabel(entry.itemId).toLowerCase().includes(search));
-  }
+  const entries = buildTrendEntries(startId, search);
 
   const totalResults = entries.length;
   const totalPages = Math.max(1, Math.ceil(totalResults / pageSize));
@@ -1901,9 +1904,9 @@ function renderPriceTrends() {
   const excluded = excludedTypeCount
     ? I18n.t(excludedTypeCount === 1 ? "oneTypeExcluded" : "typesExcluded", { count: numberFormat.format(excludedTypeCount) })
     : "";
-  const volume = numberFormat.format(TRENDS_MIN_DAILY_VOLUME);
+  const volume = numberFormat.format(TRENDS_VOLUME_CUTOFF);
   els.trendsStatus.textContent = totalResults
-    ? I18n.t("trendResults", { count: numberFormat.format(totalResults), name: startName, volume, excluded })
+    ? I18n.t(search ? "trendSearchResults" : "trendResults", { count: numberFormat.format(totalResults), name: startName, volume, excluded })
     : search
       ? I18n.t("noSearchResults", { search: els.trendsSearch.value.trim() })
       : I18n.t("noHistoricalPairs", { name: startName, volume });
@@ -2272,7 +2275,8 @@ function commitRateInput(edge, input) {
 }
 
 function switchTab(tabName) {
-  const activeTab = TAB_VIEWS[tabName] ? tabName : "exchange";
+  const tabButton = Array.from(els.tabButtons).find((button) => button.dataset.tab === tabName);
+  const activeTab = tabButton && !tabButton.hidden ? tabName : "exchange";
 
   for (const [name, getView] of Object.entries(TAB_VIEWS)) {
     getView()?.classList.toggle("active", name === activeTab);
@@ -2287,6 +2291,16 @@ function switchTab(tabName) {
   if (activeTab === "price-trends") {
     renderPriceTrends();
   }
+  if (activeTab === "crafting") {
+    craftingModule ??= import("./crafting.mjs");
+    craftingModule.then(({ createCrafting }) => {
+      craftingTool ??= createCrafting(els.craftingView, I18n);
+      craftingTool.open();
+    }).catch(() => {
+      craftingModule = undefined;
+      els.craftingView.querySelector("#craftingStatus").textContent = I18n.t("craftingLoadError");
+    });
+  }
 }
 
 window.switchTab = switchTab;
@@ -2296,6 +2310,10 @@ function updateGameControls() {
   els.gameEyebrow.textContent = game.label;
   els.workspace?.setAttribute("data-game", state.gameId);
   window.CampaignModule?.setCampaignTabVisible(state.gameId === "poe2", els);
+  els.craftingTabButton.hidden = state.gameId !== "poe";
+  if (els.craftingTabButton.hidden && els.craftingTabButton.classList.contains("active")) {
+    switchTab("exchange");
+  }
 
   for (const button of els.gameButtons) {
     const isActive = button.dataset.game === state.gameId;
@@ -2401,6 +2419,7 @@ function renderMarketStatus() {
 }
 
 function renderLocalizedViews() {
+  craftingTool?.updateLanguage();
   updateDisplayFormats();
   const expandedRoutes = new Set(
     Array.from(els.results.querySelectorAll(".result-card.expanded"), (card) => card.dataset.route)

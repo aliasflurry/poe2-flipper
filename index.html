@@ -36,6 +36,7 @@
           <button class="tab-button active" type="button" data-tab="exchange" aria-pressed="true" data-i18n="exchange">Exchange</button>
           <button class="tab-button" type="button" data-tab="price-trends" aria-pressed="false" data-i18n="trends">Price trends</button>
           <button class="tab-button" type="button" data-tab="campaign" data-poe2-only aria-pressed="false" data-i18n="campaign">Campaign</button>
+          <button class="tab-button" type="button" data-tab="crafting" aria-pressed="false" data-i18n="crafting" hidden>Crafting</button>
         </nav>
 
         <section id="exchangeView" class="tab-view active">
@@ -195,6 +196,128 @@
           </section>
 
           <section id="campaignActs" class="campaign-acts"></section>
+        </section>
+
+        <section id="craftingView" class="tab-view" aria-labelledby="craftingTitle">
+          <div class="crafting-panel">
+            <header class="crafting-header">
+              <h2 id="craftingTitle" data-i18n="crafting">Crafting</h2>
+              <p data-i18n="craftingDescription">Estimate modifier odds and test currency sequences on ordinary, uninfluenced equipment.</p>
+            </header>
+            <p id="craftingStatus" role="status" aria-live="polite"></p>
+            <button id="craftingRetry" class="text-button" type="button" data-i18n="craftingRetry" hidden>Retry loading</button>
+            <form id="craftingForm" hidden>
+              <section class="crafting-card" aria-labelledby="craftingItemTitle">
+                <h3 id="craftingItemTitle" data-i18n="craftingItem">Item setup</h3>
+                <div class="crafting-fields crafting-item-picker">
+                  <label><span data-i18n="craftingChooseGroup">Choose an item group</span><select id="craftingGroup"></select></label>
+                  <label><span data-i18n="craftingChooseClass">Choose an item class</span><select id="craftingClass" disabled></select></label>
+                  <label><span data-i18n="craftingChooseBase">Choose an item base</span><select id="craftingBase" disabled></select></label>
+                  <label><span data-i18n="craftingLevel">Item level</span><input id="craftingLevel" type="number" min="1" max="100" value="84" required></label>
+                </div>
+              </section>
+
+              <div id="craftingBench" class="crafting-bench" hidden>
+                <p id="craftingBrowseOnly" class="crafting-muted" data-i18n="craftingBrowseOnly" hidden>Modifier reference for this base.</p>
+                <div class="crafting-workspace">
+                  <section class="crafting-card" aria-labelledby="craftingPoolTitle">
+                    <h3 id="craftingPoolTitle" data-i18n="craftingPoolTitle">Modifier pool</h3>
+                    <div class="crafting-fields crafting-mod-filters">
+                      <label><span data-i18n="craftingSearch">Find a modifier</span><input id="craftingSearch" type="search" placeholder="e.g. maximum life" data-i18n-placeholder="craftingSearchExample"></label>
+                      <label><span data-i18n="craftingModifierType">Modifier type</span><select id="craftingModifierType">
+                        <option value="" data-i18n="craftingAllTypes">All types</option>
+                        <option value="prefix" data-i18n="craftingPrefixes">Prefixes</option>
+                        <option value="suffix" data-i18n="craftingSuffixes">Suffixes</option>
+                      </select></label>
+                      <label><span data-i18n="craftingModifierTag">Modifier tag</span><select id="craftingModifierTag"></select></label>
+                      <label id="craftingTierPicker"><span data-i18n="craftingTier">Target tier</span><select id="craftingTier">
+                        <option value="exact" data-i18n="craftingExact">Selected tier</option>
+                        <option value="minimum" data-i18n="craftingMinimum">Selected tier or better</option>
+                        <option value="family" data-i18n="craftingFamily">Any tier</option>
+                      </select></label>
+                    </div>
+                    <p class="crafting-muted" data-i18n="craftingTableChanceHelp">Chances are for a single roll on the unmodified base at this item level. Filters only change the rows shown.</p>
+                    <p id="craftingPoolHelp" class="crafting-muted" data-i18n="craftingPoolHelp">Select a Normal modifier to add it to your targets. Other origins are for reference.</p>
+                    <p id="craftingPoolCount" class="crafting-muted" role="status"></p>
+                    <div id="craftingPool" class="crafting-pool"></div>
+                  </section>
+                  <div id="craftingTools" class="crafting-tools">
+                    <div class="crafting-modes" role="group" aria-label="Crafting tool" data-i18n-aria-label="craftingTool">
+                      <button class="game-tab-button active" type="button" data-crafting-mode="calculator" aria-pressed="true" data-i18n="craftingCalculator">Calculator</button>
+                      <button class="game-tab-button" type="button" data-crafting-mode="simulator" aria-pressed="false" data-i18n="craftingSimulator">Simulator</button>
+                    </div>
+
+                    <section class="crafting-card" aria-labelledby="craftingPreviewTitle">
+                      <h3 id="craftingPreviewTitle" data-i18n="craftingPreview">Item preview</h3>
+                      <div aria-live="polite">
+                        <button id="craftingPreview" class="crafting-preview" type="button" aria-describedby="craftingPreviewHint"></button>
+                      </div>
+                      <div class="crafting-preview-controls">
+                        <label><span data-i18n="craftingChooseCurrency">Choose a currency</span><select id="craftingPreviewCurrency"></select></label>
+                        <p id="craftingPreviewHint" class="crafting-muted"></p>
+                        <div class="crafting-run">
+                          <button id="craftingUndo" class="text-button" type="button" data-i18n="craftingUndo">Undo</button>
+                          <button id="craftingReset" class="text-button" type="button" data-i18n="craftingReset">Reset item</button>
+                        </div>
+                      </div>
+                      <p id="craftingPreviewStatus" class="crafting-muted" role="status" hidden></p>
+                    </section>
+
+                    <section class="crafting-card" aria-labelledby="craftingTargetsTitle">
+                      <h3 id="craftingTargetsTitle" data-i18n="craftingTargetsTitle">Target modifiers</h3>
+                      <ul id="craftingTargets" class="crafting-targets" aria-live="polite"></ul>
+                      <div class="crafting-fields">
+                        <label><span data-i18n="craftingGoal">Success requires</span><select id="craftingMatch">
+                          <option value="all" data-i18n="craftingAll">All targets</option>
+                          <option value="any" data-i18n="craftingAny">Any target</option>
+                        </select></label>
+                        <label><span data-i18n="craftingOpenPrefixes">Minimum open prefixes</span><select id="craftingOpenPrefixes">
+                          <option>0</option><option>1</option><option>2</option><option>3</option>
+                        </select></label>
+                        <label><span data-i18n="craftingOpenSuffixes">Minimum open suffixes</span><select id="craftingOpenSuffixes">
+                          <option>0</option><option>1</option><option>2</option><option>3</option>
+                        </select></label>
+                      </div>
+                    </section>
+
+                    <section class="crafting-card" aria-label="Crafting setup" data-i18n-aria-label="craftingSetup">
+                      <div id="craftingCalculator">
+                        <p class="crafting-muted" data-i18n="craftingCalculatorHelp">Estimate the chance that one use of a currency rolls your targets.</p>
+                        <label class="crafting-check"><input id="craftingCalculatePreview" type="checkbox"><span data-i18n="craftingCalculatePreview">Start with the current item preview</span></label>
+                        <label><span data-i18n="craftingCurrency">Currency</span><select id="craftingCurrency"></select></label>
+                        <button id="craftingTransfer" class="text-button" type="button" data-i18n="craftingTransfer">Simulate this outcome</button>
+                      </div>
+                      <div id="craftingSimulator" hidden>
+                        <label><span data-i18n="craftingRarity">Starting item</span><select id="craftingRarity">
+                          <option value="normal" data-i18n="craftingNormalStart">Normal · no modifiers</option>
+                          <option value="magic" data-i18n="craftingMagicStart">Magic · random modifiers</option>
+                          <option value="rare" data-i18n="craftingRareStart">Rare · random modifiers</option>
+                          <option value="preview" data-i18n="craftingPreviewStart">Current item preview</option>
+                        </select></label>
+                        <ol id="craftingSteps" class="crafting-steps"></ol>
+                        <button id="craftingAddStep" class="text-button" type="button" data-i18n="craftingAddStep">Add step</button>
+                        <button id="craftingRestorePlan" class="text-button" type="button" data-i18n="craftingRestorePlan" hidden>Restore previous plan</button>
+                        <p class="crafting-muted" data-i18n="craftingSimulatorHelp">Each trial starts with a fresh item. Conditions are checked before every use.</p>
+                      </div>
+                      <div class="crafting-run">
+                        <label><span data-i18n="craftingTrials">Trials</span><select id="craftingTrials">
+                          <option value="1000">1,000</option><option value="10000" selected>10,000</option><option value="50000">50,000</option>
+                        </select></label>
+                        <button id="craftingRun" class="text-button crafting-primary" type="submit" data-i18n="craftingCalculate">Estimate odds</button>
+                        <button id="craftingCancel" class="text-button" type="button" data-i18n="craftingCancel" hidden>Cancel</button>
+                      </div>
+                    </section>
+
+                    <section class="crafting-card crafting-results" aria-labelledby="craftingResultTitle" aria-live="polite">
+                      <h3 id="craftingResultTitle" data-i18n="craftingResults">Results</h3>
+                      <div id="craftingResults"></div>
+                    </section>
+                  </div>
+                </div>
+                <p class="crafting-muted" id="craftingDataSource"></p>
+              </div>
+            </form>
+          </div>
         </section>
       </section>
       <p class="third-party-notice" data-i18n="thirdParty">This product isn't affiliated with or endorsed by Grinding Gear Games in any way.</p>
